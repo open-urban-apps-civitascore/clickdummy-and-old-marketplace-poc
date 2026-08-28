@@ -37,6 +37,7 @@ const USE_CASE: UseCase = {
   categories: [],
   images: [],
   provides: [],
+  endUserSurfaces: [],
   roles: [],
   curationTier: "experimental",
   installPath: "portal",

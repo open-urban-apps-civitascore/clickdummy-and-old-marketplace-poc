@@ -7,6 +7,7 @@ import { DemoDataHighlight } from "@/components/use-cases/demo-data-highlight";
 import { FitCheck } from "@/components/use-cases/fit-check";
 import { IncludedArtifactsSpec } from "@/components/use-cases/included-artifacts-spec";
 import { InstallUseCaseButton } from "@/components/use-cases/install-use-case-button";
+import { EndUserSurfaces } from "@/components/use-cases/end-user-surfaces";
 import { ProvidedSurfaces } from "@/components/use-cases/provided-surfaces";
 import { TrustPanel } from "@/components/use-cases/trust-panel";
 import { UseCaseFacts } from "@/components/use-cases/use-case-facts";
@@ -131,7 +132,14 @@ export default async function UseCaseDetailPage({
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
           <section className="flex flex-col gap-6">
-            <ProvidedSurfaces surfaces={useCase.provides} />
+            <EndUserSurfaces
+              surfaces={useCase.endUserSurfaces}
+              title="Was Sie damit bekommen"
+            />
+            <ProvidedSurfaces
+              surfaces={useCase.provides}
+              title="Schnittstellen dieses Anwendungsfalls"
+            />
           </section>
 
           <aside className="flex flex-col gap-6">

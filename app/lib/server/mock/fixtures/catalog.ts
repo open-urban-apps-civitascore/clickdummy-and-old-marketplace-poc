@@ -362,6 +362,29 @@ const RAW_INDEX = {
         "components": ["PORTAL_BACKEND", "POSTGIS", "GEOSERVER"],
         "connectors": []
       },
+      "endUserSurfaces": [
+        {
+          "kind": "masterportal",
+          "label": "Baumkataster im Stadtplan",
+          "summary": "Bürgerinnen finden den Baum vor ihrer Tür, sehen Art, Pflanzjahr und Kronendurchmesser per Klick.",
+          "requiresAddon": "Geoportal",
+          "via": "OWS-Route /karte",
+          "urlTemplate": "https://geoportal.musterstadt.de/?layers={datasetId}"
+        },
+        {
+          "kind": "chatbot",
+          "label": "Baum-Auskunft",
+          "summary": "„Wann wurde die Linde am Hansaplatz gepflanzt?\" — der Assistent beantwortet Anfragen aus dem Kataster in Alltagssprache.",
+          "requiresAddon": "Chatbot",
+          "via": "WFS-Route dieses Datensatzes"
+        },
+        {
+          "kind": "app",
+          "label": "Baumpaten-App",
+          "summary": "Anwohnerinnen übernehmen Gießpatenschaften und melden Schäden — eine schlanke Web-App auf denselben Daten.",
+          "via": "API-Route dieses Datensatzes"
+        }
+      ],
       "provides": [
         {
           "kind": "map",
@@ -482,6 +505,30 @@ const RAW_INDEX = {
         "components": ["PORTAL_BACKEND", "FROST", "NIFI"],
         "connectors": ["MQTT"]
       },
+      "endUserSurfaces": [
+        {
+          "kind": "superset",
+          "label": "Verkehrsaufkommen je Zählstelle",
+          "summary": "Wochenverlauf, Tagesspitzen, Vergleich der Standorte — die Ansicht für Fachamt und Rat.",
+          "requiresAddon": "Superset",
+          "via": "Zeitreihen-API dieses Datensatzes",
+          "urlTemplate": "https://superset.musterstadt.de/dashboard/verkehr-{datasetId}"
+        },
+        {
+          "kind": "masterportal",
+          "label": "Zählstellen auf der Stadtkarte",
+          "summary": "Wo gemessen wird und wie stark — Standorte mit aktuellen Werten im Klick-Overlay.",
+          "requiresAddon": "Geoportal",
+          "via": "OWS-Route /karte"
+        },
+        {
+          "kind": "grafana",
+          "label": "Zählstellen-Betriebsmonitor",
+          "summary": "Liefert jede Zählstelle noch Daten? Ausfälle und Lücken fallen sofort auf.",
+          "requiresAddon": "Grafana",
+          "via": "Zeitreihen-API dieses Datensatzes"
+        }
+      ],
       "provides": [
         {
           "kind": "api",
@@ -584,6 +631,29 @@ const RAW_INDEX = {
         "components": ["PORTAL_BACKEND", "FROST", "NIFI", "SUPERSET"],
         "connectors": ["MQTT"]
       },
+      "endUserSurfaces": [
+        {
+          "kind": "superset",
+          "label": "Feinstaub im Wochenverlauf",
+          "summary": "Grenzwertüberschreitungen je Messstelle, als Bericht für die Umweltverwaltung.",
+          "requiresAddon": "Superset",
+          "via": "Zeitreihen-API dieses Datensatzes",
+          "urlTemplate": "https://superset.musterstadt.de/dashboard/luft-{datasetId}"
+        },
+        {
+          "kind": "app",
+          "label": "Luftqualität heute",
+          "summary": "Eine öffentliche Seite mit der aktuellen Belastung — verständlich, ohne Fachbegriffe.",
+          "via": "Open-Data-Route dieses Datensatzes"
+        },
+        {
+          "kind": "chatbot",
+          "label": "Umwelt-Auskunft",
+          "summary": "„Wie war die Luft letzte Woche in der Innenstadt?\" — Fragen in Alltagssprache, Antworten aus den Messwerten.",
+          "requiresAddon": "Chatbot",
+          "via": "Zeitreihen-API dieses Datensatzes"
+        }
+      ],
       "provides": [
         {
           "kind": "api",

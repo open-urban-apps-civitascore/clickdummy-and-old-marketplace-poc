@@ -4,6 +4,8 @@ import { CalendarClock, Database, FileJson2, Link2, PackagePlus, UsersRound } fr
 import { ActivateInstalledUseCaseButton } from "@/components/use-cases/activate-installed-use-case-button";
 import { Badge } from "@/components/ui/badge";
 import { DemoDataPreview } from "@/components/use-cases/demo-data-preview";
+import { DemoStreamPanel } from "@/components/use-cases/demo-stream-panel";
+import { EndUserSurfaces } from "@/components/use-cases/end-user-surfaces";
 import { ProvidedSurfaces } from "@/components/use-cases/provided-surfaces";
 import { RemoveInstalledUseCaseButton } from "@/components/use-cases/remove-installed-use-case-button";
 import { SwitchDataSourceButton } from "@/components/use-cases/switch-data-source-button";
@@ -12,6 +14,7 @@ import { type Deprecation } from "@/types/curation-tier";
 import {
   DATASET_LIFECYCLE_STATUS_LABELS,
   INSTALLED_USE_CASE_SOURCE_LABELS,
+  type EndUserSurface,
   type InstalledUseCase,
   type ProvidedSurface,
 } from "@/types/use-cases";
@@ -28,11 +31,14 @@ function formatTimestamp(value: string): string {
 export function UseCaseInstallationCard({
   installation,
   surfaces = [],
+  endUserSurfaces = [],
   deprecation,
 }: {
   installation: InstalledUseCase;
   /** What the catalog entry declares this use case provides, if it is still listed. */
   surfaces?: ProvidedSurface[];
+  /** Destinations a person opens — rendered above the interfaces. */
+  endUserSurfaces?: EndUserSurface[];
   /** Set when the catalog has meanwhile deprecated this entry — deprecation
       must reach the instances that already installed it. */
   deprecation?: Deprecation;
@@ -65,6 +71,13 @@ export function UseCaseInstallationCard({
         </div>
       </div>
 
+      {/* The generator controls, directly under the header like in the real
+          PoC: whether data flows is the first operational question. Renders
+          nothing for use cases that bundle no simulations. */}
+      {installation.dataSourceMode === "demo" ? (
+        <DemoStreamPanel useCaseId={installation.useCaseId} />
+      ) : null}
+
       {/* Once the use case is live, show the working thing rather than an empty
           shell. Only for a running installation that declares a dashboard. */}
       {installation.status === "AVAILABLE" &&
@@ -77,11 +90,20 @@ export function UseCaseInstallationCard({
         />
       ) : null}
 
+      {/* Destinations first, interfaces second: the reader wants to know what
+          they can OPEN before what the data speaks. */}
+      <EndUserSurfaces
+        surfaces={endUserSurfaces}
+        datasetId={installation.id}
+        isDemoData={installation.dataSourceMode === "demo"}
+        title="Was jetzt bereitsteht"
+      />
+
       <ProvidedSurfaces
         surfaces={surfaces}
         datasetId={installation.id}
         isDemoData={installation.dataSourceMode === "demo"}
-        title="Was jetzt bereitsteht"
+        title="Schnittstellen dieser Installation"
       />
 
       {/* The step from trial to production: swap the source, keep everything

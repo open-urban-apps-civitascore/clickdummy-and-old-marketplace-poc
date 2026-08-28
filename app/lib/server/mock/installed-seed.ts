@@ -35,6 +35,7 @@ const TRAFFICCOUNTER_INSTALL: InstalledUseCase = installedUseCaseSchema.parse({
   useCaseTitle: "Verkehrszählung Mittelerde",
   installedAt: "2026-07-15T13:47:00.000Z",
   status: "AVAILABLE",
+  dataSourceMode: "demo",
   source: "portal-backend",
   createdDataset: {
     name: "TrafficCounter Mittelerde",

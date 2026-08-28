@@ -16,6 +16,9 @@ export default async function InstalledPage() {
   // install record. Missing entry (unlisted since install) → no panel.
   const catalogue = await getUseCases().catch(() => []);
   const catalogueSurfaces = new Map(catalogue.map((useCase) => [useCase.id, useCase.provides]));
+  const catalogueEndUserSurfaces = new Map(
+    catalogue.map((useCase) => [useCase.id, useCase.endUserSurfaces]),
+  );
   const catalogueDeprecations = new Map(
     catalogue
       .filter((useCase) => useCase.deprecated)
@@ -66,6 +69,7 @@ export default async function InstalledPage() {
                 key={installation.id}
                 installation={installation}
                 surfaces={catalogueSurfaces.get(installation.useCaseId) ?? []}
+                endUserSurfaces={catalogueEndUserSurfaces.get(installation.useCaseId) ?? []}
                 deprecation={catalogueDeprecations.get(installation.useCaseId)}
               />
             ))}

@@ -171,6 +171,29 @@ export const providedSurfaceSchema = z.object({
 });
 
 /**
+ * What a person — not an integrator — opens after the install: the dashboard,
+ * the map, the app, the assistant. Distinct from `provides` on purpose:
+ * `provides` lists interfaces (STA, WFS, an export), these list DESTINATIONS.
+ * A citizen never opens a WFS endpoint; they open a map that happens to read one.
+ *
+ * Every entry names the add-on it needs, because that is the honest dependency:
+ * a use case cannot conjure a dashboard, it can only declare that its data fits
+ * one. `via` says which route or dataset the surface consumes, so the chain from
+ * bundle → API → surface stays visible rather than magical.
+ */
+export const endUserSurfaceSchema = z.object({
+  kind: z.enum(["superset", "masterportal", "grafana", "app", "chatbot"]),
+  label: z.string(),
+  /** One sentence on what a person does here — not what the tool is. */
+  summary: z.string(),
+  /** Add-on this surface needs; absent means it ships with the platform. */
+  requiresAddon: z.string().optional(),
+  /** Which interface it consumes, e.g. "OWS-Route /karte" — keeps the chain visible. */
+  via: z.string().optional(),
+  urlTemplate: z.string().optional(),
+});
+
+/**
  * Role *definitions* a bundle ships. Bindings (assignments to concrete groups)
  * are instance-specific and are created by the install wizard — verified against
  * the portal model on 2026-07-19: `Assignment` binds a concrete group FK, `Role`
@@ -239,6 +262,8 @@ const useCaseObjectSchema = z.object({
   demoData: demoDataSchema.optional(),
   trust: trustMetadataSchema.optional(),
   provides: z.array(providedSurfaceSchema).default([]),
+  /** End-user destinations — rendered above `provides`, which stays the integrator's view. */
+  endUserSurfaces: z.array(endUserSurfaceSchema).default([]),
   roles: z.array(roleDefinitionSchema).default([]),
   requirements: platformRequirementsSchema.optional(),
 });
@@ -353,8 +378,17 @@ export type TrustMetadata = z.infer<typeof trustMetadataSchema>;
 export type UseCaseImage = z.infer<typeof useCaseImageSchema>;
 export type DemoData = z.infer<typeof demoDataSchema>;
 export type ProvidedSurface = z.infer<typeof providedSurfaceSchema>;
+export type EndUserSurface = z.infer<typeof endUserSurfaceSchema>;
 export type RoleDefinition = z.infer<typeof roleDefinitionSchema>;
 export type PlatformRequirements = z.infer<typeof platformRequirementsSchema>;
+
+export const END_USER_SURFACE_KIND_LABELS: Record<EndUserSurface["kind"], string> = {
+  superset: "Dashboard",
+  masterportal: "Kartenportal",
+  grafana: "Monitoring",
+  app: "Web-App",
+  chatbot: "Assistent",
+};
 
 export const PROVIDED_SURFACE_KIND_LABELS: Record<ProvidedSurface["kind"], string> = {
   api: "API",
