@@ -1,28 +1,36 @@
-import { AlertTriangle } from "lucide-react";
+import Link from "next/link";
+import { AlertTriangle, ArrowUpRight, CalendarClock, Database } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
 import { InstalledAutoRefresh } from "@/components/use-cases/installed-auto-refresh";
 import { MarketplacePageShell } from "@/components/marketplace/page-shell";
-import { UseCaseInstallationCard } from "@/components/use-cases/use-case-installation-card";
 import { getMarketplaceText } from "@/lib/marketplace-text";
 import { getUseCases } from "@/lib/getUseCases";
 import { listInstalledUseCases } from "@/lib/use-case-installations";
-import type { InstalledUseCase } from "@/types/use-cases";
+import {
+  DATASET_LIFECYCLE_STATUS_LABELS,
+  type InstalledUseCase,
+} from "@/types/use-cases";
 
+function formatDate(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("de-DE", { dateStyle: "medium" }).format(date);
+}
+
+/**
+ * Overview of all installations as compact cards — the full record (demo-data
+ * controls, destinations, interfaces, roles) lives on the per-installation
+ * detail page, mirroring the catalog's list → detail pattern.
+ */
 export default async function InstalledPage() {
   const text = getMarketplaceText();
 
-  // What each installed use case *provides* — and whether the catalog has
-  // meanwhile deprecated it — is declared by its catalog entry, not by the
-  // install record. Missing entry (unlisted since install) → no panel.
+  // Deprecation must reach the instances that already installed the entry —
+  // it is catalog state, so the list resolves it per install.
   const catalogue = await getUseCases().catch(() => []);
-  const catalogueSurfaces = new Map(catalogue.map((useCase) => [useCase.id, useCase.provides]));
-  const catalogueEndUserSurfaces = new Map(
-    catalogue.map((useCase) => [useCase.id, useCase.endUserSurfaces]),
-  );
-  const catalogueDeprecations = new Map(
-    catalogue
-      .filter((useCase) => useCase.deprecated)
-      .map((useCase) => [useCase.id, useCase.deprecated]),
+  const catalogueDeprecations = new Set(
+    catalogue.filter((useCase) => useCase.deprecated).map((useCase) => useCase.id),
   );
 
   // This page reads its installs from the local install store and refreshes their
@@ -63,15 +71,47 @@ export default async function InstalledPage() {
             </div>
           </div>
         ) : installations.length > 0 ? (
-          <div className="grid grid-cols-1 gap-5">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {installations.map((installation) => (
-              <UseCaseInstallationCard
+              <Link
                 key={installation.id}
-                installation={installation}
-                surfaces={catalogueSurfaces.get(installation.useCaseId) ?? []}
-                endUserSurfaces={catalogueEndUserSurfaces.get(installation.useCaseId) ?? []}
-                deprecation={catalogueDeprecations.get(installation.useCaseId)}
-              />
+                href={`/installed/${installation.useCaseId}`}
+                className="group flex flex-col gap-3 rounded-md border bg-card p-5 transition-colors hover:border-foreground/20 hover:bg-muted/30"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <h2 className="text-base font-semibold text-foreground">
+                    {installation.useCaseTitle}
+                  </h2>
+                  <ArrowUpRight className="mt-0.5 size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
+                </div>
+                <p className="line-clamp-2 text-sm text-muted-foreground">
+                  {installation.createdDataset.description}
+                </p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge>{DATASET_LIFECYCLE_STATUS_LABELS[installation.status]}</Badge>
+                  {installation.dataSourceMode === "demo" ? (
+                    <span className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
+                      Demo-Daten
+                    </span>
+                  ) : null}
+                  {catalogueDeprecations.has(installation.useCaseId) ? (
+                    <span className="inline-flex items-center gap-1 rounded bg-amber-500/10 px-1.5 py-0.5 text-xs text-amber-700 dark:text-amber-400">
+                      <AlertTriangle className="size-3" />
+                      Eingestellt
+                    </span>
+                  ) : null}
+                </div>
+                <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-1 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1.5">
+                    <Database className="size-3.5" />
+                    {installation.createdDataset.name}
+                  </span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <CalendarClock className="size-3.5" />
+                    {formatDate(installation.installedAt)}
+                  </span>
+                </div>
+              </Link>
             ))}
           </div>
         ) : (

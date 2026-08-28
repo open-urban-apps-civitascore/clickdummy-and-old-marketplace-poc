@@ -25,6 +25,10 @@ export function RemoveInstalledUseCaseButton({ useCaseId }: { useCaseId: string 
         throw new Error(payload?.error ?? "Der installierte Entwurf konnte nicht entfernt werden.");
       }
 
+      // The button lives on the installation's detail page — after a
+      // successful delete that page has no record to render (a refresh would
+      // land on 404), so leave for the overview instead.
+      router.push("/installed");
       router.refresh();
     } catch (caughtError) {
       setError(

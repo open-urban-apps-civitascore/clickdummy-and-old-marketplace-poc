@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Building2, Link2 } from "lucide-react";
+import { ArrowLeft, Building2 } from "lucide-react";
 
 import { MarketplacePageShell } from "@/components/marketplace/page-shell";
 import { DemoDataHighlight } from "@/components/use-cases/demo-data-highlight";

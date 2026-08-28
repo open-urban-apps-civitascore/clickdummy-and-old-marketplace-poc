@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { CalendarClock, Database, FileJson2, Link2, PackagePlus, UsersRound } from "lucide-react";
+import { CalendarClock, Database, FileJson2, Link2, UsersRound } from "lucide-react";
 
 import { ActivateInstalledUseCaseButton } from "@/components/use-cases/activate-installed-use-case-button";
 import { Badge } from "@/components/ui/badge";
@@ -48,7 +47,11 @@ export function UseCaseInstallationCard({
       {deprecation ? <DeprecatedNotice deprecation={deprecation} /> : null}
       <div className="flex flex-col items-start justify-between gap-3 sm:flex-row">
         <div>
-          <h2 className="text-lg font-semibold text-foreground">{installation.useCaseTitle}</h2>
+          {/* The card is the whole subject of its detail page, so it owns the
+              page's only h1 — at the catalog detail page's title scale. */}
+          <h1 className="text-2xl font-bold text-foreground lg:text-3xl">
+            {installation.useCaseTitle}
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground">{installation.createdDataset.description}</p>
           <p className="mt-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
             {INSTALLED_USE_CASE_SOURCE_LABELS[installation.source]}
@@ -60,13 +63,9 @@ export function UseCaseInstallationCard({
             useCaseId={installation.useCaseId}
             status={installation.status}
           />
-          <Link
-            href={`/export?from=${installation.useCaseId}`}
-            className="inline-flex items-center gap-1.5 text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
-          >
-            <PackagePlus className="size-4" />
-            Beitragen
-          </Link>
+          {/* No "Beitragen" here: on a card that shows nothing about local
+              adaptations the link reads as re-uploading what was just
+              downloaded. Contributing starts from the sidebar's own entry. */}
           <RemoveInstalledUseCaseButton useCaseId={installation.useCaseId} />
         </div>
       </div>
