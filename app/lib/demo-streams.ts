@@ -4,9 +4,19 @@
  * generator's registry (GET /simulations). Stream names, topics and payload
  * shapes mirror the real packages so the dummy demos the same story.
  *
- * A use case with NO entry here renders no panel at all: master-data packages
- * (SQL sources) bundle no simulations, and offering a control that can only
- * answer "nothing to do" reads as an error (real-PoC finding 36).
+ * A use case with NO entry here renders no panel at all — offering a control
+ * that can only answer "nothing to do" reads as an error (real-PoC finding 36).
+ *
+ * Which use cases those are is a limit of the current generator, NOT a property
+ * of master data. A tree register changes constantly — plantings, fellings,
+ * condition surveys — and simulating it would exercise the SQL/cron path end to
+ * end, which is arguably the better demo. What stops it today is that such a
+ * generator would have to WRITE into a Fachverfahren database rather than
+ * publish to a broker: it needs write credentials on someone's system of
+ * record, its rows accumulate and need a reset path, and a realistic cadence
+ * (weekly, seasonal) is invisible in a five-minute demo unless the time
+ * compression is stated out loud. Those are different requirements, not a
+ * different config — see the task candidate in ptf-meta-stuff.
  */
 
 export interface DemoStream {
