@@ -15,7 +15,7 @@
 #
 # Deploy:  kubectl apply -f deployment/clickdummy.yaml
 # Image:   docker buildx build --platform linux/amd64 \
-#            -t ghcr.io/open-urban-apps-civitascore/clickdummy:v0.1.0 \
+#            -t ghcr.io/open-urban-apps-civitascore/clickdummy:v0.2.0 \
 #            app --push
 #          (MARKETPLACE_MOCK=1 is baked into the image — see app/Dockerfile.)
 ---
@@ -48,7 +48,10 @@ spec:
         runAsGroup: 1001
       containers:
         - name: app
-          image: ghcr.io/open-urban-apps-civitascore/clickdummy:v0.1.0
+          # Bump on every rebuild: with an unchanged tag `kubectl apply` reports
+          # "unchanged" and rolls out nothing, so the cluster keeps serving the
+          # old code while the registry already holds the new image.
+          image: ghcr.io/open-urban-apps-civitascore/clickdummy:v0.2.0
           ports:
             - name: http
               containerPort: 3001
