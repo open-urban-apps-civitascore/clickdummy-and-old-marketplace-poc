@@ -24,17 +24,23 @@ export function UseCaseFacts({ useCase, text }: { useCase: UseCase; text: Market
         </span>
       </Row>
       <Row label={t.artifactsLabel}>{useCase.includedArtifacts.length}</Row>
-      <Row label={t.sourceLabel}>
-        <Link
-          href={useCase.source.repoUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-1 font-mono text-xs text-primary hover:underline"
-        >
-          {useCase.source.gitIdentifier}
-          <ExternalLink className="size-3" />
-        </Link>
-      </Row>
+      {/* Was der Leser sieht, ist der Release-Name — was installiert wird, ist
+          der Commit. Ohne Release (releaseTag null) steht die gekürzte SHA da,
+          wie im echten Marketplace. Ohne Pin entfällt die Zeile ganz: ein
+          Eintrag ohne festgelegten Stand ist nicht installierbar. */}
+      {useCase.deploymentRef ? (
+        <Row label={t.sourceLabel}>
+          <Link
+            href={useCase.deploymentRef.url}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 font-mono text-xs text-primary hover:underline"
+          >
+            {useCase.deploymentRef.releaseTag ?? useCase.deploymentRef.ref.slice(0, 12)}
+            <ExternalLink className="size-3" />
+          </Link>
+        </Row>
+      ) : null}
     </dl>
   );
 }

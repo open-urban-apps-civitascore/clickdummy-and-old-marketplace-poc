@@ -8,7 +8,9 @@ import type { UseCase } from "@/types/use-cases";
  * install reaches AVAILABLE while the other two send the empty placeholder model
  * and the (mock) saga compensates back to READY — exactly like the live stack.
  *
- * Keyed by `source.repoUrl` because that is all `fetchBundle` receives.
+ * Keyed by `deploymentRef.url` because that is all `fetchBundle` receives. The
+ * pinned `ref` is not part of the key: mock mode fetches nothing, so one
+ * fixture per repo is the whole truth here.
  */
 
 const TRAFFICCOUNTER_BUNDLE: UseCaseBundle = {
@@ -101,7 +103,12 @@ const TRAFFICCOUNTER_BUNDLE: UseCaseBundle = {
       }
     }
   ],
-  source: { repoUrl: "https://gitlab.com/civitascore-openurbanapps/commune-musterhausen-trafficcounter", gitIdentifier: "v1.1.0" },
+  deploymentRef: {
+    url: "https://gitlab.com/civitascore-openurbanapps/commune-musterhausen-trafficcounter",
+    ref: "b95660bc21b90c67f13bae25ef8452c9a8293227",
+    releaseTag: "v2.2.0",
+    path: ".",
+  },
   pipeline: {
     "edges": [
       {
@@ -303,7 +310,12 @@ const BAUMKATASTER_BUNDLE: UseCaseBundle = {
       }
     }
   ],
-  source: { repoUrl: "https://gitlab.com/civitascore-openurbanapps/commune-musterbach-baumkataster", gitIdentifier: "v1.0.0" },
+  deploymentRef: {
+    url: "https://gitlab.com/civitascore-openurbanapps/commune-musterbach-kiez-baumkataster",
+    ref: "2d7b7fd3f4e675bf85c321dd43699c4ed6fcc286",
+    releaseTag: "v2.2.0",
+    path: ".",
+  },
 };
 
 const FEINSTAUB_BUNDLE: UseCaseBundle = {
@@ -378,22 +390,27 @@ const FEINSTAUB_BUNDLE: UseCaseBundle = {
       }
     }
   ],
-  source: { repoUrl: "https://gitlab.com/civitascore-openurbanapps/commune-musterhausen-feinstaub", gitIdentifier: "v1.0.0" },
+  deploymentRef: {
+    url: "https://gitlab.com/civitascore-openurbanapps/commune-musterhausen-feinstaub",
+    ref: "5236fb9231f161cf770fb286e71140ac9d7f856e",
+    releaseTag: "v2.2.0",
+    path: ".",
+  },
 };
 
 export const mockBundlesByRepoUrl: Record<string, UseCaseBundle> = {
-  [TRAFFICCOUNTER_BUNDLE.source.repoUrl]: TRAFFICCOUNTER_BUNDLE,
-  [BAUMKATASTER_BUNDLE.source.repoUrl]: BAUMKATASTER_BUNDLE,
-  [FEINSTAUB_BUNDLE.source.repoUrl]: FEINSTAUB_BUNDLE,
+  [TRAFFICCOUNTER_BUNDLE.deploymentRef.url]: TRAFFICCOUNTER_BUNDLE,
+  [BAUMKATASTER_BUNDLE.deploymentRef.url]: BAUMKATASTER_BUNDLE,
+  [FEINSTAUB_BUNDLE.deploymentRef.url]: FEINSTAUB_BUNDLE,
 };
 
 /** Drop-in for `fetchUseCaseBundle` in mock mode — resolves from the fixtures above. */
 export async function mockFetchBundle(
-  source: NonNullable<UseCase["source"]>,
+  deploymentRef: NonNullable<UseCase["deploymentRef"]>,
 ): Promise<UseCaseBundle> {
-  const bundle = mockBundlesByRepoUrl[source.repoUrl];
+  const bundle = mockBundlesByRepoUrl[deploymentRef.url];
   if (!bundle) {
-    throw new BundleError(`Mock mode has no bundle fixture for ${source.repoUrl}`, 424);
+    throw new BundleError(`Mock mode has no bundle fixture for ${deploymentRef.url}`, 424);
   }
   return bundle;
 }

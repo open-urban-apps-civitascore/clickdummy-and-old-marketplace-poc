@@ -30,7 +30,12 @@ const BUNDLE: UseCaseBundle = {
     dataStructureRefs: [DS_REF],
   },
   elements: [{ ref: DS_REF, schema: { $id: DS_REF, title: "TreeRecord", type: "object" } }],
-  source: { repoUrl: "https://gitlab.com/example/baumkataster", gitIdentifier: "v1.0.0" },
+  deploymentRef: {
+    url: "https://gitlab.com/example/baumkataster",
+    ref: "0123456789abcdef0123456789abcdef01234567",
+    releaseTag: "v1.0.0",
+    path: ".",
+  },
 };
 
 // Shapes below were verified against a live portal-backend on 2026-07-14.

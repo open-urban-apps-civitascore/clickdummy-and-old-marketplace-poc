@@ -44,9 +44,7 @@ export interface UseCaseBundle {
   dataset: z.infer<typeof datasetManifestSchema>;
   /** Element JSON Schemas, in `dataStructureRefs` (dependency) order. */
   elements: { ref: string; schema: Record<string, unknown> }[];
-  source: NonNullable<UseCase["source"]>;
-  /** The commit SHA `source.gitIdentifier` resolved to (immutable pin); absent if resolution failed. */
-  commit?: string;
+  deploymentRef: NonNullable<UseCase["deploymentRef"]>;
   /**
    * The pipeline flow graph (the React-Flow model the portal pipeline editor
    * produces), from `core-ir/pipeline.json`. Optional: a bundle without it installs
@@ -62,6 +60,15 @@ export interface UseCaseBundle {
 // repo-list itself is fetched (…/-/raw/<ref>/<path>).
 function rawUrl(repoUrl: string, ref: string, path: string): string {
   return `${repoUrl.replace(/\/+$/, "")}/-/raw/${encodeURIComponent(ref)}/${path}`;
+}
+
+/**
+ * `deploymentRef.path` is the folder inside the repo holding the package — `.`
+ * for the root, a subfolder for monorepos that carry several catalog entries.
+ */
+function packagePath(path: string, file: string): string {
+  const folder = path.replace(/^\.?\/*/, "").replace(/\/+$/, "");
+  return folder ? `${folder}/${file}` : file;
 }
 
 /**
@@ -136,25 +143,31 @@ async function fetchOptionalJson(url: string): Promise<Record<string, unknown> |
 }
 
 export async function fetchUseCaseBundle(
-  source: NonNullable<UseCase["source"]>,
+  deploymentRef: NonNullable<UseCase["deploymentRef"]>,
 ): Promise<UseCaseBundle> {
-  const { repoUrl, gitIdentifier } = source;
+  const { url: repoUrl, ref, path } = deploymentRef;
 
-  // Resolve the pinned ref to an immutable commit SHA, then fetch the bundle *at
-  // that commit* — so the installed content provably matches the recorded SHA (no
-  // race with a moving tag). Falls back to the ref itself if resolution fails.
-  const commit = await resolveCommitSha(repoUrl, gitIdentifier);
-  const ref = commit ?? gitIdentifier;
+  // Catalog format v3: the pin IS the commit, so there is nothing to resolve
+  // and nothing to race. v2 pinned a tag, resolved it at install time and fell
+  // back to the tag itself when resolution failed — which meant a tag moved
+  // upstream silently changed what got installed. Fetching only at a verified
+  // SHA is what makes two installs of the same listed version byte-identical.
+  if (!/^[0-9a-f]{40}$/.test(ref)) {
+    throw new BundleError(
+      `Refusing to install: '${ref}' is not a full commit SHA. Only an immutable pin may be fetched.`,
+      424,
+    );
+  }
 
   const dataset = datasetManifestSchema.parse(
-    await fetchJson(rawUrl(repoUrl, ref, "core-ir/dataset.json")),
+    await fetchJson(rawUrl(repoUrl, ref, packagePath(path, "core-ir/dataset.json"))),
   );
 
   const elements: UseCaseBundle["elements"] = [];
   for (const structureRef of dataset.dataStructureRefs) {
     const name = parseUrn(structureRef).name;
     const schema = (await fetchJson(
-      rawUrl(repoUrl, ref, `core-ir/${name}.schema.json`),
+      rawUrl(repoUrl, ref, packagePath(path, `core-ir/${name}.schema.json`)),
     )) as Record<string, unknown>;
 
     // The file resolved by name must actually be the element the dataset refers
@@ -169,7 +182,9 @@ export async function fetchUseCaseBundle(
   }
 
   // Optional flow graph — a bundle without it installs with an empty placeholder.
-  const pipeline = await fetchOptionalJson(rawUrl(repoUrl, ref, "core-ir/pipeline.json"));
+  const pipeline = await fetchOptionalJson(
+    rawUrl(repoUrl, ref, packagePath(path, "core-ir/pipeline.json")),
+  );
 
-  return { dataset, elements, source, commit: commit ?? undefined, pipeline };
+  return { dataset, elements, deploymentRef, pipeline };
 }

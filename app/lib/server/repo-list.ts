@@ -36,6 +36,7 @@ const EMPTY_INDEX: RepoListIndex = {
   updatedAt: new Date(0).toISOString(),
   addons: [],
   useCases: [],
+  dataStructures: [],
 };
 
 const DEFAULT_TTL_SECONDS = 900;

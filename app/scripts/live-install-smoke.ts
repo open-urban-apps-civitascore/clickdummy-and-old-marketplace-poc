@@ -46,7 +46,12 @@ const USE_CASE: UseCase = {
   installQuestions: [],
   includedArtifacts: [],
   modelForge: { datasetId: "urn:core:platform:civitas:dataset:demo:LiveSmoke:1.0.0" },
-  source: { repoUrl: "https://gitlab.com/example/unused", gitIdentifier: "v1.0.0" },
+  deploymentRef: {
+    url: "https://gitlab.com/example/unused",
+    ref: "0123456789abcdef0123456789abcdef01234567",
+    releaseTag: "v1.0.0",
+    path: ".",
+  },
 };
 
 const BUNDLE: UseCaseBundle = {
@@ -69,7 +74,7 @@ const BUNDLE: UseCaseBundle = {
       },
     },
   ],
-  source: USE_CASE.source,
+  deploymentRef: USE_CASE.deploymentRef!,
   // A real flow graph (Start → dataSource → frost sink → End). The datasource/sink
   // node entityIds (null here) are re-bound to the created ids at install time.
   pipeline: {

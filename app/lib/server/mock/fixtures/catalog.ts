@@ -348,9 +348,11 @@ const RAW_INDEX = {
         "datasetId": "urn:core:platform:civitas:dataset:common:Baumkataster-Starter:1.0.0",
         "note": "Beim Installieren legt der Marketplace die Artefakte (DataStructure + DataSet) über das CivitasCore Portal-Backend an, falls sie noch nicht existieren, und durchläuft den DataSet-Lebenszyklus (stage → release)."
       },
-      "source": {
-        "repoUrl": "https://gitlab.com/civitascore-openurbanapps/commune-musterbach-baumkataster",
-        "gitIdentifier": "v1.0.0"
+      "deploymentRef": {
+        "url": "https://gitlab.com/civitascore-openurbanapps/commune-musterbach-kiez-baumkataster",
+        "ref": "2d7b7fd3f4e675bf85c321dd43699c4ed6fcc286",
+        "releaseTag": "v2.2.0",
+        "path": "."
       },
       "trust": {
         "maintainer": { "name": "Stadt Musterstadt" },
@@ -453,9 +455,11 @@ const RAW_INDEX = {
           "description": "Geokoordinate (lat/lon), gemeinsam genutztes Plattform-Element."
         }
       ],
-      "source": {
-        "repoUrl": "https://gitlab.com/civitascore-openurbanapps/commune-musterhausen-trafficcounter",
-        "gitIdentifier": "v1.1.0"
+      "deploymentRef": {
+        "url": "https://gitlab.com/civitascore-openurbanapps/commune-musterhausen-trafficcounter",
+        "ref": "b95660bc21b90c67f13bae25ef8452c9a8293227",
+        "releaseTag": "v2.2.0",
+        "path": "."
       },
       "demoData": {
         "contains": "eine Woche Zähldaten von drei Standorten",
@@ -615,9 +619,11 @@ const RAW_INDEX = {
           "description": "Geokoordinate (lat/lon), gemeinsam genutztes Plattform-Element."
         }
       ],
-      "source": {
-        "repoUrl": "https://gitlab.com/civitascore-openurbanapps/commune-musterhausen-feinstaub",
-        "gitIdentifier": "v1.0.0"
+      "deploymentRef": {
+        "url": "https://gitlab.com/civitascore-openurbanapps/commune-musterhausen-feinstaub",
+        "ref": "5236fb9231f161cf770fb286e71140ac9d7f856e",
+        "releaseTag": "v2.2.0",
+        "path": "."
       },
       "trust": {
         "maintainer": { "name": "Stadt Musterhausen" },

@@ -34,7 +34,12 @@ const USE_CASE: UseCase = {
   installQuestions: [],
   includedArtifacts: [],
   modelForge: { datasetId: DATASET_URN, note: "Referenz" },
-  source: { repoUrl: "https://gitlab.com/example/baumkataster", gitIdentifier: "v1.0.0" },
+  deploymentRef: {
+    url: "https://gitlab.com/example/baumkataster",
+    ref: "0123456789abcdef0123456789abcdef01234567",
+    releaseTag: "v1.0.0",
+    path: ".",
+  },
 };
 
 const BUNDLE: UseCaseBundle = {
@@ -49,8 +54,7 @@ const BUNDLE: UseCaseBundle = {
     { ref: DS_TREE_RECORD, schema: { $id: DS_TREE_RECORD, title: "TreeRecord", type: "object" } },
     { ref: DS_TREE_SPECIES, schema: { $id: DS_TREE_SPECIES, title: "TreeSpecies", type: "object" } },
   ],
-  source: USE_CASE.source,
-  commit: "abc1234",
+  deploymentRef: USE_CASE.deploymentRef!,
 };
 
 function seedRecord(overrides: Partial<InstalledUseCase> = {}): InstalledUseCase {

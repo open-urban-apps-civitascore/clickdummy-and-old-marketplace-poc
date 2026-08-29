@@ -61,7 +61,7 @@ import {
 export interface InstallDeps {
   client: PortalBackendClient;
   store: InstallStore;
-  fetchBundle: (source: UseCase["source"]) => Promise<UseCaseBundle>;
+  fetchBundle: (deploymentRef: NonNullable<UseCase["deploymentRef"]>) => Promise<UseCaseBundle>;
   now: () => Date;
   /** Post-release saga polling; injectable so tests run in milliseconds. */
   poll?: { intervalMs: number; timeoutMs: number };
@@ -82,6 +82,23 @@ export interface InstallOutcome {
   record: InstalledUseCase;
   /** false = an existing install was reused (idempotent), not created anew. */
   created: boolean;
+}
+
+/**
+ * `deploymentRef` is optional on a catalog row — tombstoned entries keep their
+ * historical pin unparsed, and local fixtures need no fetch. Installing one of
+ * those is not a degraded install, it is an impossible one: without a pinned
+ * commit there is no defined content to fetch. Refusing here is the same
+ * fail-closed rule the bundle fetch applies to a ref that is not a SHA.
+ */
+function requirePin(useCase: UseCase): NonNullable<UseCase["deploymentRef"]> {
+  if (!useCase.deploymentRef) {
+    throw new PortalBackendError(
+      `Der Katalogeintrag „${useCase.title}" trägt keinen festgelegten Paket-Stand — ohne Commit-Pin kann nichts installiert werden.`,
+      424,
+    );
+  }
+  return useCase.deploymentRef;
 }
 
 const DEFAULT_POLL = { intervalMs: 2_000, timeoutMs: 60_000 };
@@ -150,7 +167,7 @@ export async function installUseCase(
   }
 
   // ── Fresh provisioning ───────────────────────────────────────────────────────
-  const bundle = await d.fetchBundle(useCase.source);
+  const bundle = await d.fetchBundle(requirePin(useCase));
   const plan = buildInstallPlan(bundle);
   const steps: ProvisioningStep[] = [];
 
@@ -428,7 +445,7 @@ export async function activateInstalledUseCase(
   };
 
   if (state.backendStatus === "DRAFT") {
-    const bundle = await d.fetchBundle(useCase.source);
+    const bundle = await d.fetchBundle(requirePin(useCase));
     const primaryVersionId = resources.dataStructures.at(-1)?.versionId;
     if (!primaryVersionId) {
       throw new PortalBackendError(

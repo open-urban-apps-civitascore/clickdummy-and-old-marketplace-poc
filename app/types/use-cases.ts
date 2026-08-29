@@ -215,6 +215,29 @@ export const platformRequirementsSchema = z.object({
   connectors: z.array(z.string()).default([]),
 });
 
+/**
+ * Where a catalog row's content lives — catalog format v3, "the pin IS the
+ * commit". Shared by use cases and data structures, which carry the same pin.
+ *
+ * `ref` is a full 40-hex commit SHA and the only thing an install ever fetches.
+ * v2 pinned a tag and resolved it at install time, so a tag moved upstream
+ * silently changed what got installed; there is nothing left to resolve now.
+ * `releaseTag` is the label people read — display and drift detection only,
+ * never fetched, `null` when upstream has no release. `path` is the folder
+ * inside the repo, for monorepos carrying several entries.
+ */
+export const deploymentRefSchema = z.object({
+  url: z.string().url(),
+  ref: z
+    .string()
+    .regex(
+      /^[0-9a-f]{40}$/,
+      "ref must be a full lowercase 40-hex commit SHA — a tag or branch can move, a commit cannot",
+    ),
+  releaseTag: z.string().nullable().default(null),
+  path: z.string().default("."),
+});
+
 const useCaseObjectSchema = z.object({
   id: z.string().min(3),
   title: z.string().min(3),
@@ -239,21 +262,20 @@ const useCaseObjectSchema = z.object({
   // Catalog JSON key kept as `modelForge` for backward compatibility (see
   // `datasetReferenceSchema`); it is a reference to the use case's CORE dataset URN.
   modelForge: datasetReferenceSchema,
-  // The git artifact repo the use case installs from: its CORE-IR bundle is
-  // fetched at `gitIdentifier`. Required (all-reference model — the catalog only
-  // *references* content, never inlines it). The ref must be an immutable pin — a
-  // version tag (v1.2.3) or a commit hash, never a branch — so installs are
-  // reproducible (a branch is mutable). Heuristic; real "is it a tag" enforcement
-  // needs a CI resolve-check + protected tags on the artifact repo.
-  source: z.object({
-    repoUrl: z.string().url(),
-    gitIdentifier: z
-      .string()
-      .regex(
-        /^(v?\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?|[0-9a-f]{7,64})$/,
-        "gitIdentifier must be an immutable ref — a version tag (v1.2.3) or a commit hash, not a branch",
-      ),
-  }),
+  // The git artifact repo the use case installs from (all-reference model — the
+  // catalog only *references* content, never inlines it).
+  //
+  // Catalog format v3, "the pin IS the commit": `ref` is a full 40-hex commit
+  // SHA and the only thing an install ever fetches. v2 pinned a tag and resolved
+  // it at install time, which meant a moved tag silently changed what got
+  // installed; there is nothing left to resolve, so nothing left to race.
+  // `releaseTag` is the human-readable label the SHA was curated from — display
+  // and drift detection only, never fetched, `null` when upstream has no
+  // release. `path` supports monorepos carrying several entries.
+  //
+  // Optional, mirroring the marketplace's own contract: tombstoned rows keep
+  // their historical pin unparsed, and local fixtures need no fetch at all.
+  deploymentRef: deploymentRefSchema.optional(),
   revoked: z.boolean().optional(),
   revokedReason: z.string().optional(),
 

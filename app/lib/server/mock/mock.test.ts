@@ -52,9 +52,13 @@ describe("mock mode — fixtures", () => {
     assert.equal(mockRepoListIndex.useCases.length, 3);
     assert.ok(mockRepoListIndex.addons.length > 0, "addons fixture is empty");
     for (const useCase of mockRepoListIndex.useCases) {
+      // Every catalog use case must carry a pin AND a matching fixture: an
+      // entry without a pinned commit is not installable at all (v3), so a
+      // fixture catalog that lost one would fail late instead of here.
+      assert.ok(useCase.deploymentRef, `catalog use case '${useCase.id}' has no deploymentRef`);
       assert.ok(
-        mockBundlesByRepoUrl[useCase.source.repoUrl],
-        `no bundle fixture for catalog use case '${useCase.id}' (${useCase.source.repoUrl})`,
+        mockBundlesByRepoUrl[useCase.deploymentRef.url],
+        `no bundle fixture for catalog use case '${useCase.id}' (${useCase.deploymentRef.url})`,
       );
     }
   });
@@ -83,7 +87,12 @@ describe("mock mode — fixtures", () => {
 
   test("mockFetchBundle rejects unknown repos loudly", async () => {
     await assert.rejects(
-      mockFetchBundle({ repoUrl: "https://example.invalid/nope", gitIdentifier: "v1.0.0" }),
+      mockFetchBundle({
+        url: "https://example.invalid/nope",
+        ref: "0123456789abcdef0123456789abcdef01234567",
+        releaseTag: null,
+        path: ".",
+      }),
       /no bundle fixture/,
     );
   });

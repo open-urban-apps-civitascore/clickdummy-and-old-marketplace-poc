@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { addonCatalogSchema } from "./addons";
-import { useCaseCatalogSchema } from "./use-cases";
+import { deploymentRefSchema, useCaseCatalogSchema } from "./use-cases";
 
 /**
  * The repo-list index: one git-hosted `index.json` with two sections and one
@@ -11,6 +11,31 @@ import { useCaseCatalogSchema } from "./use-cases";
  * This is the single source of truth the JSON Schema is generated from
  * (scripts/generate-schema.ts → the catalog repo's index.schema.json).
  */
+/**
+ * A shared data model, listed for its own sake: installable on its own and
+ * usable by several use cases at once — which is what makes data comparable
+ * between municipalities. Leaner than a use case row (no artifacts, no pipeline,
+ * no demo metadata): the catalogue manifest plus the pin.
+ *
+ * Declared but not yet rendered anywhere — the marketplace has no data-structure
+ * view. Parsing it here is what makes that view possible later; before format
+ * v3 the section was not in this schema at all, so zod silently dropped it and
+ * the data never reached the app.
+ */
+export const dataStructureEntrySchema = z.object({
+  id: z.string().min(3),
+  type: z.literal("datastructure"),
+  displayName: z.string().min(3),
+  description: z.string(),
+  version: z.string(),
+  maintainer: z.string(),
+  license: z.string(),
+  keywords: z.array(z.string()).default([]),
+  deploymentRef: deploymentRefSchema.optional(),
+  revoked: z.boolean().optional(),
+  revokedReason: z.string().optional(),
+});
+
 export const repoListIndexSchema = z.object({
   // Optional pointer to index.schema.json so editors validate index.json inline
   // as it is authored. Ignored at runtime; present only for author DX.
@@ -19,6 +44,11 @@ export const repoListIndexSchema = z.object({
   updatedAt: z.string().datetime(),
   addons: addonCatalogSchema.shape.addons,
   useCases: useCaseCatalogSchema.shape.useCases,
+  // Absent in format v2 indexes, so default rather than require — an older
+  // catalog must still parse.
+  dataStructures: z.array(dataStructureEntrySchema).default([]),
 });
+
+export type DataStructureEntry = z.infer<typeof dataStructureEntrySchema>;
 
 export type RepoListIndex = z.infer<typeof repoListIndexSchema>;
