@@ -5,7 +5,7 @@ import { publisherSlug } from "@/lib/slug";
 
 describe("publisherSlug", () => {
   test("lowercases and hyphenates a publisher name", () => {
-    assert.equal(publisherSlug("Kommune Mittelerde"), "kommune-mittelerde");
+    assert.equal(publisherSlug("Stadt Musterhausen"), "stadt-musterhausen");
     assert.equal(publisherSlug("Stadt Musterstadt"), "stadt-musterstadt");
   });
 
@@ -15,7 +15,7 @@ describe("publisherSlug", () => {
   });
 
   test("is stable — slugifying a slug returns it unchanged", () => {
-    const slug = publisherSlug("Kommune Mittelerde");
+    const slug = publisherSlug("Stadt Musterhausen");
     assert.equal(publisherSlug(slug), slug);
   });
 });

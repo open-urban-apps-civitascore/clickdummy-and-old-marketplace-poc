@@ -349,7 +349,7 @@ const RAW_INDEX = {
         "note": "Beim Installieren legt der Marketplace die Artefakte (DataStructure + DataSet) über das CivitasCore Portal-Backend an, falls sie noch nicht existieren, und durchläuft den DataSet-Lebenszyklus (stage → release)."
       },
       "source": {
-        "repoUrl": "https://gitlab.com/civitascore-openurbanapps/commune-musterstadt-baumkataster",
+        "repoUrl": "https://gitlab.com/civitascore-openurbanapps/commune-musterbach-baumkataster",
         "gitIdentifier": "v1.0.0"
       },
       "trust": {
@@ -401,11 +401,11 @@ const RAW_INDEX = {
       "roles": []
     },
     {
-      "id": "mittelerde-trafficcounter",
-      "title": "Verkehrszählung Mittelerde",
+      "id": "musterhausen-trafficcounter",
+      "title": "Verkehrszählung Musterhausen",
       "summary": "Verkehrszählung über Dialog-Displays: Fahrzeugzahlen und Geschwindigkeiten je Zählstelle als wiederverwendbares Use-Case-Paket.",
-      "description": "Die Kommune Mittelerde erfasst mit Dialog-Displays (Smiley-Tafeln) Fahrzeugzahlen und Durchschnittsgeschwindigkeiten. Dieser Use-Case installiert die Datenstrukturen und den Datensatz dafür über das CivitasCore Portal-Backend. Die Artefakt-Quelle liegt in einem eigenen Git-Repo (siehe source); der Marketplace installiert direkt aus diesem Repo.",
-      "publisher": "Kommune Mittelerde",
+      "description": "Die Stadt Musterhausen erfasst mit Dialog-Displays (Smiley-Tafeln) Fahrzeugzahlen und Durchschnittsgeschwindigkeiten. Dieser Use-Case installiert die Datenstrukturen und den Datensatz dafür über das CivitasCore Portal-Backend. Die Artefakt-Quelle liegt in einem eigenen Git-Repo (siehe source); der Marketplace installiert direkt aus diesem Repo.",
+      "publisher": "Stadt Musterhausen",
       "categories": [
         "Mobilität",
         "Verkehr"
@@ -425,10 +425,10 @@ const RAW_INDEX = {
       ],
       "includedArtifacts": [
         {
-          "id": "urn:core:platform:civitas:dataset:common:TrafficCounter-Mittelerde:1.0.0",
-          "title": "TrafficCounter Mittelerde",
+          "id": "urn:core:platform:civitas:dataset:common:TrafficCounter-Musterhausen:1.0.0",
+          "title": "TrafficCounter Musterhausen",
           "kind": "dataset",
-          "description": "Datensatz für die Verkehrszählung der Kommune Mittelerde."
+          "description": "Datensatz für die Verkehrszählung der Stadt Musterhausen."
         },
         {
           "id": "urn:core:platform:civitas:datastructure:mobility:TrafficCounterReading:1.0.0",
@@ -454,7 +454,7 @@ const RAW_INDEX = {
         }
       ],
       "source": {
-        "repoUrl": "https://gitlab.com/civitascore-openurbanapps/commune-mittelerde-trafficcounter",
+        "repoUrl": "https://gitlab.com/civitascore-openurbanapps/commune-musterhausen-trafficcounter",
         "gitIdentifier": "v1.1.0"
       },
       "demoData": {
@@ -484,17 +484,17 @@ const RAW_INDEX = {
       ],
       "trust": {
         "maintainer": {
-          "name": "Kommune Mittelerde",
-          "contactUrl": "https://gitlab.com/civitascore-openurbanapps/commune-mittelerde-trafficcounter"
+          "name": "Stadt Musterhausen",
+          "contactUrl": "https://gitlab.com/civitascore-openurbanapps/commune-musterhausen-trafficcounter"
         },
         "contactPerson": {
-          "name": "Samweis Gamdschie",
+          "name": "Sabine Becker",
           "role": "Amt für Digitalisierung",
-          "email": "s.gamdschie@mittelerde.example"
+          "email": "s.becker@musterhausen.example"
         },
         "productionReferences": [
-          { "municipality": "Kommune Mittelerde", "since": "2026" },
-          { "municipality": "Stadt Bruchtal", "since": "2026" }
+          { "municipality": "Stadt Musterhausen", "since": "2026" },
+          { "municipality": "Gemeinde Musterbach", "since": "2026" }
         ],
         "curatedBy": "Civitas Connect e. V.",
         "curatedAt": "2026-07-19",
@@ -565,16 +565,16 @@ const RAW_INDEX = {
         }
       ],
       "modelForge": {
-        "datasetId": "urn:core:platform:civitas:dataset:common:TrafficCounter-Mittelerde:1.0.0",
+        "datasetId": "urn:core:platform:civitas:dataset:common:TrafficCounter-Musterhausen:1.0.0",
         "note": "Beim Installieren legt der Marketplace die Artefakte (GeoPoint, TrafficCounterReading, DataSet) über das CivitasCore Portal-Backend an, falls sie noch nicht existieren. GeoPoint wird wiederverwendet, wenn es bereits existiert."
       }
     },
     {
-      "id": "mittelerde-feinstaub",
-      "title": "Feinstaub Mittelerde",
+      "id": "musterhausen-feinstaub",
+      "title": "Feinstaub Musterhausen",
       "summary": "Feinstaub-Messwerte (PM2.5/PM10) je Messstation als wiederverwendbares Use-Case-Paket.",
-      "description": "Die Kommune Mittelerde erfasst Feinstaub (PM2.5/PM10) an Messstationen. Beim Installieren wird der Inhalt direkt aus dem Artefakt-Repo (Tag v1.0.0) geladen und über das CivitasCore Portal-Backend angelegt — der Marketplace liefert nichts davon mit.",
-      "publisher": "Kommune Mittelerde",
+      "description": "Die Stadt Musterhausen erfasst Feinstaub (PM2.5/PM10) an Messstationen. Beim Installieren wird der Inhalt direkt aus dem Artefakt-Repo (Tag v1.0.0) geladen und über das CivitasCore Portal-Backend angelegt — der Marketplace liefert nichts davon mit.",
+      "publisher": "Stadt Musterhausen",
       "categories": [
         "Umwelt",
         "Luftqualität"
@@ -591,10 +591,10 @@ const RAW_INDEX = {
       ],
       "includedArtifacts": [
         {
-          "id": "urn:core:platform:civitas:dataset:common:Feinstaub-Mittelerde:1.0.0",
-          "title": "Feinstaub Mittelerde",
+          "id": "urn:core:platform:civitas:dataset:common:Feinstaub-Musterhausen:1.0.0",
+          "title": "Feinstaub Musterhausen",
           "kind": "dataset",
-          "description": "Datensatz für die Feinstaub-Messungen der Kommune Mittelerde."
+          "description": "Datensatz für die Feinstaub-Messungen der Stadt Musterhausen."
         },
         {
           "id": "urn:core:platform:civitas:datastructure:environment:AirQualityReading:1.0.0",
@@ -616,12 +616,12 @@ const RAW_INDEX = {
         }
       ],
       "source": {
-        "repoUrl": "https://gitlab.com/civitascore-openurbanapps/commune-mittelerde-feinstaub",
+        "repoUrl": "https://gitlab.com/civitascore-openurbanapps/commune-musterhausen-feinstaub",
         "gitIdentifier": "v1.0.0"
       },
       "trust": {
-        "maintainer": { "name": "Kommune Mittelerde" },
-        "productionReferences": [{ "municipality": "Kommune Mittelerde", "since": "2026" }],
+        "maintainer": { "name": "Stadt Musterhausen" },
+        "productionReferences": [{ "municipality": "Stadt Musterhausen", "since": "2026" }],
         "curatedBy": "Civitas Connect e. V.",
         "curatedAt": "2026-07-12",
         "license": "EUPL-1.2"
@@ -677,7 +677,7 @@ const RAW_INDEX = {
         }
       ],
       "modelForge": {
-        "datasetId": "urn:core:platform:civitas:dataset:common:Feinstaub-Mittelerde:1.0.0",
+        "datasetId": "urn:core:platform:civitas:dataset:common:Feinstaub-Musterhausen:1.0.0",
         "note": "Beim Installieren wird das Bundle aus dem Artefakt-Repo (Tag v1.0.0) geholt und über das CivitasCore Portal-Backend angelegt. GeoPoint wird wiederverwendet, falls es bereits existiert."
       }
     }

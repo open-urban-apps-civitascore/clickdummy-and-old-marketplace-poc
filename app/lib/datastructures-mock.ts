@@ -34,7 +34,7 @@ const DATA_STRUCTURES: CatalogDataStructure[] = [
     name: "TrafficCounterReading",
     description:
       "Eine Zählstellen-Messung: Fahrzeuganzahl, Durchschnittsgeschwindigkeit, Richtung und Standort — das Format hinter Verkehrszählungen.",
-    publisher: "Kommune Mittelerde",
+    publisher: "Stadt Musterhausen",
     domain: "Mobilität",
     usedByUseCases: 1,
   },
@@ -43,7 +43,7 @@ const DATA_STRUCTURES: CatalogDataStructure[] = [
     name: "AirQualityReading",
     description:
       "Eine Luftqualitätsmessung: PM2.5 und PM10 mit Zeitpunkt und Standort — anschlussfähig an gängige Sensor-Bausätze.",
-    publisher: "Kommune Mittelerde",
+    publisher: "Stadt Musterhausen",
     domain: "Umwelt",
     usedByUseCases: 1,
   },

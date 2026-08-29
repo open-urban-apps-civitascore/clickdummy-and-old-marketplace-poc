@@ -11,7 +11,7 @@ export const MOCK_USE_CASES: UseCase[] = [
     category: "mobility",
     maturity: "verified",
     installability: "direct",
-    publisher: "Stadt Mannheim",
+    publisher: "Stadt Musterhausen",
     capabilities: ["datasets", "datasources", "pipelines", "validation", "dashboard"],
   },
   {
@@ -22,7 +22,7 @@ export const MOCK_USE_CASES: UseCase[] = [
     category: "environment",
     maturity: "operational",
     installability: "adaptation",
-    publisher: "Stadt Wuppertal",
+    publisher: "Gemeinde Musterbach",
     capabilities: ["datasets", "datasources", "pipelines", "validation", "dashboard"],
   },
   {
@@ -33,7 +33,7 @@ export const MOCK_USE_CASES: UseCase[] = [
     category: "environment",
     maturity: "verified",
     installability: "direct",
-    publisher: "Stadt Stuttgart",
+    publisher: "Kreis Musterland",
     capabilities: ["datasets", "datasources", "pipelines", "validation", "dashboard"],
   },
   {
@@ -44,7 +44,7 @@ export const MOCK_USE_CASES: UseCase[] = [
     category: "environment",
     maturity: "prototype",
     installability: "experimental",
-    publisher: "Stadt Karlsruhe",
+    publisher: "Stadt Musterhausen",
     capabilities: ["datasets", "datasources", "pipelines", "validation", "dashboard"],
   },
   {
@@ -55,7 +55,7 @@ export const MOCK_USE_CASES: UseCase[] = [
     category: "mobility",
     maturity: "operational",
     installability: "adaptation",
-    publisher: "Stadt Köln",
+    publisher: "Gemeinde Musterbach",
     capabilities: ["datasets", "datasources", "pipelines", "validation", "dashboard"],
   },
   {
@@ -66,7 +66,7 @@ export const MOCK_USE_CASES: UseCase[] = [
     category: "citizen-service",
     maturity: "verified",
     installability: "direct",
-    publisher: "Stadt Leipzig",
+    publisher: "Kreis Musterland",
     capabilities: ["datasets", "datasources", "pipelines", "validation", "dashboard"],
   },
   {
@@ -77,7 +77,7 @@ export const MOCK_USE_CASES: UseCase[] = [
     category: "energy",
     maturity: "operational",
     installability: "adaptation",
-    publisher: "Stadt Freiburg",
+    publisher: "Stadt Musterhausen",
     capabilities: ["datasets", "datasources", "pipelines", "validation", "dashboard"],
   },
   {
@@ -88,7 +88,7 @@ export const MOCK_USE_CASES: UseCase[] = [
     category: "energy",
     maturity: "prototype",
     installability: "experimental",
-    publisher: "Stadt Münster",
+    publisher: "Gemeinde Musterbach",
     capabilities: ["datasets", "datasources", "pipelines", "validation", "dashboard"],
   },
   {

@@ -94,12 +94,12 @@ const INVENTORY: InstanceArtifact[] = [
   },
   {
     id: "ds-trafficcounter",
-    name: "TrafficCounter Mittelerde",
+    name: "TrafficCounter Musterhausen",
     kind: "dataset",
     description: "Aus dem Katalog installiert.",
     dependsOn: [],
     origin: "installed",
-    fromUseCaseId: "traffic-counter-mittelerde",
+    fromUseCaseId: "traffic-counter-musterhausen",
   },
 ];
 

@@ -104,9 +104,9 @@ const SUBMISSIONS: Submission[] = [
     title: "Radverkehrszählung Innenstadt",
     summary:
       "Zählstellen an Knotenpunkten, stündlich aggregiert, mit Auswertung nach Richtung.",
-    submittedBy: "Stadt Bamberg",
+    submittedBy: "Stadt Musterhausen",
     submittedAt: "2026-07-22T09:14:00Z",
-    repository: "https://gitlab.com/civitascore-openurbanapps/commune-bamberg-radverkehr",
+    repository: "https://gitlab.com/civitascore-openurbanapps/stadt-musterhausen-radverkehr",
     gitIdentifier: "v1.1.0",
     license: "EUPL-1.2",
     contact: "opendata@bamberg.example",
@@ -126,9 +126,9 @@ const SUBMISSIONS: Submission[] = [
     id: "sub-schulwege",
     title: "Schulwege-Sicherheitsindex",
     summary: "Verknüpft Unfallmeldungen mit Schulstandorten und Gehwegbreiten.",
-    submittedBy: "Kreis Seehafen",
+    submittedBy: "Kreis Musterland",
     submittedAt: "2026-07-24T15:40:00Z",
-    repository: "https://gitlab.com/civitascore-openurbanapps/kreis-seehafen-schulwege",
+    repository: "https://gitlab.com/civitascore-openurbanapps/kreis-musterland-schulwege",
     gitIdentifier: "main",
     artifactCount: 7,
     automaticResults: {

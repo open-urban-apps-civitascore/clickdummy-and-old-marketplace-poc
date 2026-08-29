@@ -20,7 +20,7 @@ export interface DemoStream {
 }
 
 export const DEMO_STREAMS: Record<string, DemoStream[]> = {
-  "mittelerde-trafficcounter": [
+  "musterhausen-trafficcounter": [
     {
       name: "zaehlstelle-hafen",
       topic: "openurbanapps/verkehrszaehlung",

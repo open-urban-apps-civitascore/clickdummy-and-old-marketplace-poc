@@ -30,7 +30,7 @@ export interface UseCase {
   category: UseCaseCategory;
   maturity: Maturity;
   installability: Installability;
-  /** Publishing municipality, e.g. "Stadt Mannheim". */
+  /** Publishing municipality, e.g. "Stadt Musterhausen". */
   publisher: string;
   capabilities: Capability[];
 }

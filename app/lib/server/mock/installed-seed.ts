@@ -31,15 +31,15 @@ const step = (label: string, method: string, path: string, status: number) => ({
 
 const TRAFFICCOUNTER_INSTALL: InstalledUseCase = installedUseCaseSchema.parse({
   id: "seed-dataset-1",
-  useCaseId: "mittelerde-trafficcounter",
-  useCaseTitle: "Verkehrszählung Mittelerde",
+  useCaseId: "musterhausen-trafficcounter",
+  useCaseTitle: "Verkehrszählung Musterhausen",
   installedAt: "2026-07-15T13:47:00.000Z",
   status: "AVAILABLE",
   dataSourceMode: "demo",
   source: "portal-backend",
   createdDataset: {
-    name: "TrafficCounter Mittelerde",
-    description: "Als Entwurf installierter Datensatz für die Verkehrszählung der Kommune Mittelerde.",
+    name: "TrafficCounter Musterhausen",
+    description: "Als Entwurf installierter Datensatz für die Verkehrszählung der Stadt Musterhausen.",
     openDataAccess: false,
     status: "AVAILABLE",
   },
@@ -48,7 +48,7 @@ const TRAFFICCOUNTER_INSTALL: InstalledUseCase = installedUseCaseSchema.parse({
     { name: "TrafficCounterReading", version: "1.0.0" },
   ],
   datasetRef: {
-    datasetId: "urn:core:platform:civitas:dataset:common:TrafficCounter-Mittelerde:1.0.0",
+    datasetId: "urn:core:platform:civitas:dataset:common:TrafficCounter-Musterhausen:1.0.0",
   },
   provisioningTrace: {
     provisionedAt: "2026-07-15T13:47:09.000Z",

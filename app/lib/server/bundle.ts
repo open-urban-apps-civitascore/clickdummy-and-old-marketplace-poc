@@ -8,7 +8,7 @@ import type { UseCase } from "@/types/use-cases";
  * — the M3 install source. The bundle is the single source of the use case's
  * content; nothing is shipped with the app.
  *
- * Layout convention (matches commune-mittelerde-trafficcounter):
+ * Layout convention (matches commune-musterhausen-trafficcounter):
  *   core-ir/dataset.json          — the DataSet manifest (entry point)
  *   core-ir/<ElementName>.schema.json — one JSON-Schema file per element,
  *                                       named after the URN's name segment

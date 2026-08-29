@@ -10,13 +10,13 @@ test("a plain-language traffic question finds the traffic use case first", () =>
   const matches = matchUseCases("Wir wollen wissen, wie der Verkehr am Bahnhof fließt", USE_CASES);
 
   assert.ok(matches.length > 0);
-  assert.equal(matches[0]?.useCase.id, "mittelerde-trafficcounter");
+  assert.equal(matches[0]?.useCase.id, "musterhausen-trafficcounter");
   assert.ok(matches[0]?.reason.length > 0, "a match must carry a reason, never a bare score");
 });
 
 test("an air-quality question finds the particulate-matter use case", () => {
   const matches = matchUseCases("Die Luftqualität in der Innenstadt soll gemessen werden", USE_CASES);
-  assert.equal(matches[0]?.useCase.id, "mittelerde-feinstaub");
+  assert.equal(matches[0]?.useCase.id, "musterhausen-feinstaub");
 });
 
 test("an unrelated question returns nothing rather than a bad guess", () => {

@@ -13,9 +13,9 @@ import type { UseCase } from "@/types/use-cases";
 
 const TRAFFICCOUNTER_BUNDLE: UseCaseBundle = {
   dataset: {
-    "id": "urn:core:platform:civitas:dataset:common:TrafficCounter-Mittelerde:1.0.0",
-    "title": "TrafficCounter Mittelerde",
-    "description": "Als Entwurf installierter Datensatz für die Verkehrszählung der Kommune Mittelerde.",
+    "id": "urn:core:platform:civitas:dataset:common:TrafficCounter-Musterhausen:1.0.0",
+    "title": "TrafficCounter Musterhausen",
+    "description": "Als Entwurf installierter Datensatz für die Verkehrszählung der Stadt Musterhausen.",
     "version": "1.0",
     "dataStructureRefs": [
       "urn:core:platform:civitas:datastructure:common:GeoPoint:1.0.0",
@@ -101,7 +101,7 @@ const TRAFFICCOUNTER_BUNDLE: UseCaseBundle = {
       }
     }
   ],
-  source: { repoUrl: "https://gitlab.com/civitascore-openurbanapps/commune-mittelerde-trafficcounter", gitIdentifier: "v1.1.0" },
+  source: { repoUrl: "https://gitlab.com/civitascore-openurbanapps/commune-musterhausen-trafficcounter", gitIdentifier: "v1.1.0" },
   pipeline: {
     "edges": [
       {
@@ -159,7 +159,7 @@ const TRAFFICCOUNTER_BUNDLE: UseCaseBundle = {
           "label": "DataSource",
           "entityId": null,
           "configured": true,
-          "entityName": "TrafficCounter Mittelerde – Source",
+          "entityName": "TrafficCounter Musterhausen – Source",
           "entityType": "datasource",
           "entityMetadata": {
             "connector": "MQTT"
@@ -303,14 +303,14 @@ const BAUMKATASTER_BUNDLE: UseCaseBundle = {
       }
     }
   ],
-  source: { repoUrl: "https://gitlab.com/civitascore-openurbanapps/commune-musterstadt-baumkataster", gitIdentifier: "v1.0.0" },
+  source: { repoUrl: "https://gitlab.com/civitascore-openurbanapps/commune-musterbach-baumkataster", gitIdentifier: "v1.0.0" },
 };
 
 const FEINSTAUB_BUNDLE: UseCaseBundle = {
   dataset: {
-    "id": "urn:core:platform:civitas:dataset:common:Feinstaub-Mittelerde:1.0.0",
-    "title": "Feinstaub Mittelerde",
-    "description": "Feinstaub-Messwerte (PM2.5/PM10) der Kommune Mittelerde.",
+    "id": "urn:core:platform:civitas:dataset:common:Feinstaub-Musterhausen:1.0.0",
+    "title": "Feinstaub Musterhausen",
+    "description": "Feinstaub-Messwerte (PM2.5/PM10) der Stadt Musterhausen.",
     "version": "1.0",
     "dataStructureRefs": [
       "urn:core:platform:civitas:datastructure:common:GeoPoint:1.0.0",
@@ -378,7 +378,7 @@ const FEINSTAUB_BUNDLE: UseCaseBundle = {
       }
     }
   ],
-  source: { repoUrl: "https://gitlab.com/civitascore-openurbanapps/commune-mittelerde-feinstaub", gitIdentifier: "v1.0.0" },
+  source: { repoUrl: "https://gitlab.com/civitascore-openurbanapps/commune-musterhausen-feinstaub", gitIdentifier: "v1.0.0" },
 };
 
 export const mockBundlesByRepoUrl: Record<string, UseCaseBundle> = {
