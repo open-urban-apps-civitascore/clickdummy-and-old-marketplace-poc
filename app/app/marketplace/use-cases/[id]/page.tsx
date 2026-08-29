@@ -39,7 +39,6 @@ export default async function UseCaseDetailPage({
   return (
     <MarketplacePageShell
       breadcrumb={`${text.sidebar.nav.breadcrumbUseCases} / ${useCase.title}`}
-      tenantName="Stadt Musterstadt"
     >
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
         <Link

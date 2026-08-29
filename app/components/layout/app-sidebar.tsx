@@ -1,7 +1,6 @@
 import {
   ClipboardCheck,
   FileQuestion,
-  Hexagon,
   LayoutGrid,
   type LucideIcon,
   PackageCheck,
@@ -9,6 +8,8 @@ import {
   Sparkles,
 } from "lucide-react";
 
+import { Logo } from "@/components/brand/logo";
+import { Wordmark } from "@/components/brand/wordmark";
 import { NavLink, SubNavLink } from "@/components/layout/nav-link";
 import { RoleSwitch } from "@/components/layout/role-switch";
 import { getUseCases } from "@/lib/getUseCases";
@@ -72,11 +73,7 @@ const getNavSections = (
   ];
 };
 
-export const AppSidebar = async ({
-  tenantName = "Stadt Musterstadt",
-}: {
-  tenantName?: string;
-}) => {
+export const AppSidebar = async () => {
   // The installed count reads the local install store (+ a best-effort
   // portal-backend status refresh); the catalog (repo-list) does not. Degrade the
   // count instead of 500-ing every page — browsing the catalog must not depend on
@@ -97,14 +94,13 @@ export const AppSidebar = async ({
       aria-label="Hauptnavigation"
       className="flex h-full w-64 shrink-0 flex-col border-r bg-sidebar text-sidebar-foreground lg:h-svh"
     >
+      {/* Oben links steht das Produkt, nicht der Mandant: Wer die Anwendung
+          benutzt, steht unten links am Benutzerblock — dort, wo auch die
+          Kommune steht. Vorher stand der Mandantenname an beiden Stellen. */}
       <div className="flex items-center gap-2.5 p-3">
-        <div className="flex size-9 items-center justify-center rounded-lg bg-[#036aa1]">
-          <Hexagon className="size-5 text-white" />
-        </div>
+        <Logo className="size-9 shrink-0" />
         <div className="grid leading-tight">
-          <span className="truncate text-sm font-semibold">
-            {role === "curator" ? profile.organisation : tenantName}
-          </span>
+          <Wordmark className="truncate text-sm" />
           <span className="truncate text-xs text-muted-foreground">CIVITAS/CORE</span>
         </div>
       </div>

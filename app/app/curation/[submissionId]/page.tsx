@@ -36,7 +36,6 @@ export default async function CurationReviewPage({
   return (
     <MarketplacePageShell
       breadcrumb={`Kuratierung / ${submission.title}`}
-      tenantName="Stadt Musterstadt"
     >
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
         <Link

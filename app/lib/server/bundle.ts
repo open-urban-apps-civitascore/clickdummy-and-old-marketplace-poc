@@ -71,30 +71,6 @@ function packagePath(path: string, file: string): string {
   return folder ? `${folder}/${file}` : file;
 }
 
-/**
- * Resolve a git ref (tag/commit) to its full commit SHA via the GitLab commits API
- * (public, no token). Returns null on failure — the install still proceeds from the
- * ref, just without the immutable commit pin. GitLab-specific, like `rawUrl`.
- */
-async function resolveCommitSha(repoUrl: string, ref: string): Promise<string | null> {
-  try {
-    const url = new URL(repoUrl);
-    const project = encodeURIComponent(url.pathname.replace(/^\/+|\/+$/g, ""));
-    const api = `${url.origin}/api/v4/projects/${project}/repository/commits/${encodeURIComponent(ref)}`;
-    const response = await fetch(api, {
-      headers: { Accept: "application/json" },
-      cache: "no-store",
-      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-    });
-    if (!response.ok) return null;
-    const body = (await response.json()) as { id?: unknown };
-    return typeof body.id === "string" ? body.id : null;
-  } catch (error) {
-    console.warn(`[bundle] could not resolve commit for ${repoUrl}@${ref}:`, error);
-    return null;
-  }
-}
-
 async function fetchJson(url: string): Promise<unknown> {
   const response = await fetch(url, {
     headers: { Accept: "application/json" },

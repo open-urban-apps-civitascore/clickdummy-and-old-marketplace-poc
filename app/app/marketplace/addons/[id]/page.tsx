@@ -70,7 +70,6 @@ export default async function AddonDetailPage({
   return (
     <MarketplacePageShell
       breadcrumb={`${text.sidebar.nav.breadcrumbCatalog} / ${addon.name}`}
-      tenantName="Stadt Musterstadt"
     >
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
         <Link

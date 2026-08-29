@@ -25,7 +25,7 @@ export default async function ExportPage({
     : [];
 
   return (
-    <MarketplacePageShell breadcrumb="Beitragen" tenantName="Stadt Musterstadt">
+    <MarketplacePageShell breadcrumb="Beitragen">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
         <div>
           {/* <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">

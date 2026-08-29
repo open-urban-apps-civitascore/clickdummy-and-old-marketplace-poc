@@ -15,7 +15,7 @@ export default async function AssistantPage() {
   const useCases = await getUseCases();
 
   return (
-    <MarketplacePageShell breadcrumb="Assistent" tenantName="Stadt Musterstadt">
+    <MarketplacePageShell breadcrumb="Assistent">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
         <div>
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">

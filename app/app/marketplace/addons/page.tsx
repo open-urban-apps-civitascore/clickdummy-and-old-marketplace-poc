@@ -11,7 +11,6 @@ export default async function MarketplaceAddonsPage() {
   return (
     <MarketplacePageShell
       breadcrumb={text.sidebar.nav.breadcrumbCatalog}
-      tenantName="Stadt Musterstadt"
     >
       <AddonCatalog
         addons={catalog.addons}

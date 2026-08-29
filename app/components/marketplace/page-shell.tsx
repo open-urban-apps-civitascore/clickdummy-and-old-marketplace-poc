@@ -10,13 +10,11 @@ import { isMockMode } from "@/lib/server/mock/mode";
 interface MarketplacePageShellProps {
   children: ReactNode;
   breadcrumb: string;
-  tenantName?: string;
 }
 
 export async function MarketplacePageShell({
   children,
   breadcrumb,
-  tenantName,
 }: MarketplacePageShellProps) {
   const session = await auth();
 
@@ -44,11 +42,7 @@ export async function MarketplacePageShell({
 
   return (
     <AppShell
-      sidebar={
-        <AppSidebar
-          tenantName={tenantName || session?.user?.name || session?.user?.email || undefined}
-        />
-      }
+      sidebar={<AppSidebar />}
     >
       <AppHeader breadcrumb={breadcrumb} />
       <div className="flex-1 overflow-y-auto bg-muted/40 p-4 lg:p-6">{children}</div>

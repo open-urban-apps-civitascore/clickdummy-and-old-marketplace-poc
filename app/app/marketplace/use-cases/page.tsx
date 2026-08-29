@@ -15,7 +15,6 @@ export default async function MarketplaceUseCasesPage({
   return (
     <MarketplacePageShell
       breadcrumb={text.sidebar.nav.breadcrumbUseCases}
-      tenantName="Stadt Musterstadt"
     >
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
         <UseCaseCatalog

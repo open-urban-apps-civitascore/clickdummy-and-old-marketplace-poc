@@ -27,7 +27,7 @@ export default async function CurationPage() {
   }));
 
   return (
-    <MarketplacePageShell breadcrumb="Kuratierung" tenantName="Stadt Musterstadt">
+    <MarketplacePageShell breadcrumb="Kuratierung">
       <div className="mx-auto flex w-full max-w-4xl flex-col gap-6">
         <div>
           {/* <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">

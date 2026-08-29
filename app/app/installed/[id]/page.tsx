@@ -36,7 +36,6 @@ export default async function InstalledUseCaseDetailPage({
   return (
     <MarketplacePageShell
       breadcrumb={`${text.sidebar.nav.installed} / ${installation.useCaseTitle}`}
-      tenantName="Stadt Musterstadt"
     >
       <InstalledAutoRefresh active={installation.status === "PROVISIONING"} />
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">

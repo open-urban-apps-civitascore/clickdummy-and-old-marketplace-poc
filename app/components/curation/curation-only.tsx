@@ -10,7 +10,7 @@ import { MarketplacePageShell } from "@/components/marketplace/page-shell";
  */
 export function CurationOnly() {
   return (
-    <MarketplacePageShell breadcrumb="Kuratierung" tenantName="Stadt Musterstadt">
+    <MarketplacePageShell breadcrumb="Kuratierung">
       <div className="mx-auto flex w-full max-w-2xl flex-col items-start gap-4 rounded-xl border bg-card p-8">
         <span className="grid size-11 place-items-center rounded-lg bg-muted text-muted-foreground">
           <Lock className="size-5" />

@@ -51,7 +51,6 @@ export default async function InstalledPage() {
   return (
     <MarketplacePageShell
       breadcrumb={text.sidebar.nav.installed}
-      tenantName="Stadt Musterstadt"
     >
       <InstalledAutoRefresh active={hasProvisioning} />
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">

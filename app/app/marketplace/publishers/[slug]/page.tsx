@@ -36,7 +36,7 @@ export default async function PublisherPage({
   const total = useCases.length + addons.length;
 
   return (
-    <MarketplacePageShell breadcrumb={publisherName} tenantName="Stadt Musterstadt">
+    <MarketplacePageShell breadcrumb={publisherName}>
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-8">
         <div className="flex flex-col gap-3">
           <Link

@@ -16,7 +16,6 @@ export default function MarketplaceDataStructuresPage() {
   return (
     <MarketplacePageShell
       breadcrumb={text.sidebar.nav.dataStructures}
-      tenantName="Stadt Musterstadt"
     >
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
         <div className="max-w-3xl">
