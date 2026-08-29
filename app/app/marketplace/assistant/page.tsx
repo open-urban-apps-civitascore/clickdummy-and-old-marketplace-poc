@@ -23,7 +23,7 @@ export default async function AssistantPage() {
           </p>
           <h1 className="mt-1 text-3xl font-bold text-foreground">Nicht suchen. Fragen.</h1>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Beschreiben Sie, was in Ihrer Kommune ansteht — der Katalog schlägt passende
+            Beschreiben Sie, was bei Ihnen ansteht — der Katalog schlägt passende
             Anwendungsfälle vor und sagt dazu, warum sie passen. Sie müssen die Begriffe des
             Katalogs nicht kennen.
           </p>

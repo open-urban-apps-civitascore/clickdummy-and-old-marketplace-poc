@@ -33,7 +33,7 @@ export default async function ExportPage({
           </p> */}
           <h1 className="mt-1 text-3xl font-bold text-foreground">Anwendungsfall beitragen</h1>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Aus dem, was in Ihrer Instanz läuft, wird ein portables Bündel für andere Kommunen. Sie
+            Aus dem, was in Ihrer Instanz läuft, wird ein portables Bündel für andere Nachnutzende. Sie
             wählen die Artefakte — ob Sie sie selbst modelliert oder aus dem Katalog installiert
             haben, spielt keine Rolle. Alles Instanzspezifische bleibt zurück.
           </p>
