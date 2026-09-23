@@ -290,9 +290,13 @@ installing is a deterministic provisioning sequence.
   agreement.) Comments explain *why*, not *what*.
 - German compounds break layouts. Card titles get `hyphens-auto break-words`;
   the root layout sets `lang="de"` so hyphenation lands correctly.
-- A sticky element must never be taller than the viewport — its lower half
-  becomes unreachable. Either don't stick it, or cap it with
-  `max-h-[calc(100svh-1rem)] overflow-y-auto`.
+- A sticky element **may** be taller than the viewport, as long as its
+  containing block is taller still: once the block's bottom is reached the
+  element is pushed up and its lower end comes into view. It only traps content
+  when element and containing block end together — then cap it with
+  `max-h-[calc(100svh-1rem)] overflow-y-auto`, and accept the nested scrollbar.
+  Measure before reaching for the cap; an earlier version of this rule assumed
+  the trap without checking and cost the use-case rail its stickiness.
 
 ---
 

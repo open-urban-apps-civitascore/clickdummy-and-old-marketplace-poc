@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { Section } from "@/components/ui/layout";
 import { MarketplacePageShell } from "@/components/marketplace/page-shell";
 import { DemoDataHighlight } from "@/components/use-cases/demo-data-highlight";
-import { FitCheck } from "@/components/use-cases/fit-check";
+// import { FitCheck } from "@/components/use-cases/fit-check";
 import { IncludedArtifactsSpec } from "@/components/use-cases/included-artifacts-spec";
 import { InstallUseCaseButton } from "@/components/use-cases/install-use-case-button";
 import { LogicModel } from "@/components/use-cases/logic-model";
@@ -137,14 +137,23 @@ export default async function UseCaseDetailPage({
             <LogicModel useCase={useCase} />
           </div>
 
-          {/* NICHT sticky: der Steckbrief plus Fit-Check ist regelmäßig höher
-              als das Fenster (gemessen 1354 px bei 768 px Höhe). Ein
-              angehefteter Block, der höher ist als der Viewport, klemmt oben
-              fest — sein unteres Ende, hier Kosten und Kooperationsbedarf,
-              lässt sich dann gar nicht mehr erreichen. */}
-          <div className="flex flex-col gap-6">
+          {/* Sticky, uncapped, no inner scrollbar.
+              The rail (~1030px) IS taller than a 768px viewport, but that is
+              only a problem when its containing block ends with it. Here the
+              grid is ~2000px tall because of the reading column, so once the
+              grid's bottom is reached the rail is pushed up and its lower end
+              comes into view — measured: the last field becomes fully visible
+              at scrollTop 2040. Capping it and scrolling it internally was
+              therefore solving a problem that does not exist, at the cost of a
+              nested scrollbar. */}
+          <div className="flex flex-col gap-6 lg:sticky lg:top-2">
             <UseCaseInfobox useCase={useCase} />
-            <FitCheck useCase={useCase} />
+            {/* Ausgeblendet (Ewa, 2026-09-23). Der Fit-Check bleibt im Code:
+                `checkFit` ist getestet, nur das Instanzprofil ist noch eine
+                Konstante. Beim Wiedereinschalten die Voraussetzungs-Zeilen in
+                „Technische Eckdaten" wieder entfernen — sonst stehen sie
+                doppelt da, einmal geprüft und einmal blank. */}
+            {/* <FitCheck useCase={useCase} /> */}
           </div>
         </div>
 

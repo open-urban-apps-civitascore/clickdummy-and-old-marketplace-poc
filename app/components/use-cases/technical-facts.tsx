@@ -23,19 +23,14 @@ import { type UseCase } from "@/types/use-cases";
 export function TechnicalFacts({ useCase }: { useCase: UseCase }) {
   const stack = useCase.implementation?.stack ?? [];
   const trust = useCase.trust;
+  const components = useCase.requirements?.components ?? [];
+  const connectors = useCase.requirements?.connectors ?? [];
 
   return (
     <Panel
       title="Technische Eckdaten"
       icon={<Cpu aria-hidden className="size-4" />}
       tone="usecase"
-      footer={
-        <>
-          Was Ihre Instanz dafür mitbringen muss — CivitasCore-Version,
-          Plattform-Komponenten und Konnektoren — steht geprüft unter „Passt zu dieser
-          Instanz?“.
-        </>
-      }
     >
       <FieldList layout="columns">
         {stack.length > 0 ? (
@@ -43,6 +38,41 @@ export function TechnicalFacts({ useCase }: { useCase: UseCase }) {
             <div className="flex flex-wrap gap-1.5">
               {stack.map((item) => (
                 <Badge key={item} variant="outline">
+                  {item}
+                </Badge>
+              ))}
+            </div>
+          </Field>
+        ) : null}
+
+        {/* Back here while the fit check is hidden (Ewa, 2026-09-23). These
+            rows had been removed as duplicates of „Passt zu dieser Instanz?",
+            which showed the same values checked against the running instance —
+            with that box gone they would otherwise not appear at all. Remove
+            them again when the fit check returns. */}
+        <Field layout="columns" label="Kompatibilität">
+          <span className="font-mono text-xs">
+            {useCase.compatibility.map((version) => `Core ${version}`).join(" · ")}
+          </span>
+        </Field>
+
+        {components.length > 0 ? (
+          <Field layout="columns" label="Benötigte Plattform-Komponenten">
+            <div className="flex flex-wrap gap-1.5">
+              {components.map((item) => (
+                <Badge key={item} variant="outline" className="font-mono">
+                  {item}
+                </Badge>
+              ))}
+            </div>
+          </Field>
+        ) : null}
+
+        {connectors.length > 0 ? (
+          <Field layout="columns" label="Benötigte Konnektoren">
+            <div className="flex flex-wrap gap-1.5">
+              {connectors.map((item) => (
+                <Badge key={item} variant="outline" className="font-mono">
                   {item}
                 </Badge>
               ))}
