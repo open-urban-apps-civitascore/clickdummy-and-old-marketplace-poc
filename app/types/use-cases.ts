@@ -5,6 +5,7 @@ import {
   deprecationSchema,
   installPathSchema,
 } from "@/types/curation-tier";
+import { implementationSchema } from "@/types/implementation";
 
 // Legacy catalog vocabulary — still accepted on parse (the published index.json
 // carries it) and normalized into the single trust vocabulary (curation tier +
@@ -288,6 +289,21 @@ const useCaseObjectSchema = z.object({
   endUserSurfaces: z.array(endUserSurfaceSchema).default([]),
   roles: z.array(roleDefinitionSchema).default([]),
   requirements: platformRequirementsSchema.optional(),
+  /**
+   * How this was realised in practice: who runs it, what it cost to build and
+   * to keep running, what it changed. The questions a commune asks before it
+   * decides — as opposed to everything above, which answers what the platform
+   * needs to install it. See `types/implementation.ts`.
+   */
+  implementation: implementationSchema.optional(),
+  /**
+   * When the entry was taken into the catalog — a plain `YYYY-MM-DD`, not a
+   * timestamp: the index is hand-authored and reviewed as a diff, and a human
+   * writes a date. ISO dates also sort lexicographically, so "zuletzt
+   * hinzugefügt" needs no date parsing. Absent means no date on record; such
+   * an entry sorts last and shows nothing, rather than a fabricated default.
+   */
+  addedAt: z.iso.date().optional(),
 });
 
 // Normalizes the two legacy scales into the single trust vocabulary. An entry

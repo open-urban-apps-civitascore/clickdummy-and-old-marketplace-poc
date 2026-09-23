@@ -1,5 +1,6 @@
-import { AlertTriangle, FlaskConical, RefreshCw } from "lucide-react";
+import { AlertTriangle, RefreshCw } from "lucide-react";
 
+import { formatCatalogDate } from "@/lib/catalog-recency";
 import { getRepoListMeta } from "@/lib/server/repo-list";
 
 const formatWhen = (value: Date): string =>
@@ -12,15 +13,6 @@ const formatWhen = (value: Date): string =>
  */
 export async function CatalogFreshness() {
   const meta = await getRepoListMeta();
-
-  // if (meta.origin === "mock") {
-  //   return (
-  //     <p className="inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-500">
-  //       <FlaskConical className="size-3.5" />
-  //       Mock-Modus: Demo-Katalog · v{meta.version} (keine Live-Daten)
-  //     </p>
-  //   );
-  // }
 
   if (meta.origin === "unconfigured") {
     return (
@@ -50,10 +42,15 @@ export async function CatalogFreshness() {
     );
   }
 
+  // Two different dates, and the difference matters: `updatedAt` is when the
+  // catalog last changed, `fetchedAt` is only when we last looked.
+  const catalogDate = formatCatalogDate(meta.updatedAt.slice(0, 10));
+
   return (
     <p className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
       <RefreshCw className="size-3.5" />
-      Katalog aktualisiert: {formatWhen(meta.fetchedAt)} · v{meta.version}
+      {catalogDate ? `Katalog-Stand: ${catalogDate} · ` : ""}
+      zuletzt geprüft {formatWhen(meta.fetchedAt)} · v{meta.version}
     </p>
   );
 }

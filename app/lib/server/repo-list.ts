@@ -1,7 +1,11 @@
 import { mockRepoListIndex } from "@/lib/server/mock/fixtures/catalog";
 import { isMockMode } from "@/lib/server/mock/mode";
 import { type Addon } from "@/types/addons";
-import { repoListIndexSchema, type RepoListIndex } from "@/types/repo-list";
+import {
+  repoListIndexSchema,
+  type DataStructureEntry,
+  type RepoListIndex,
+} from "@/types/repo-list";
 import { type UseCase } from "@/types/use-cases";
 
 /**
@@ -110,7 +114,10 @@ async function loadIndex(): Promise<CacheEntry> {
 
 export type RepoListMeta = {
   version: string;
+  /** When we last fetched the index — not when its content changed. */
   fetchedAt: Date;
+  /** The catalog's own stamp, i.e. when an entry last moved. */
+  updatedAt: string;
   origin: IndexOrigin;
   stale: boolean;
 };
@@ -118,7 +125,7 @@ export type RepoListMeta = {
 /** Freshness metadata for the "catalog as of …" hint in the UI. */
 export async function getRepoListMeta(): Promise<RepoListMeta> {
   const { index, fetchedAt, origin, stale } = await loadIndex();
-  return { version: index.version, fetchedAt, origin, stale };
+  return { version: index.version, fetchedAt, updatedAt: index.updatedAt, origin, stale };
 }
 
 /** The catalog content version — stamped onto installs as `civitas:catalogVersion`. */
@@ -134,4 +141,9 @@ export async function getRepoListAddons(): Promise<Addon[]> {
 /** Listable use cases (revoked entries are hidden — tombstone convention). */
 export async function getRepoListUseCases(): Promise<UseCase[]> {
   return (await loadIndex()).index.useCases.filter((useCase) => !useCase.revoked);
+}
+
+/** Listable data structures (revoked entries are hidden — tombstone convention). */
+export async function getRepoListDataStructures(): Promise<DataStructureEntry[]> {
+  return (await loadIndex()).index.dataStructures.filter((entry) => !entry.revoked);
 }

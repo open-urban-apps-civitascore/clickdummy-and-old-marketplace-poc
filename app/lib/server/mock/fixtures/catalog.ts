@@ -8,9 +8,15 @@ import { repoListIndexSchema, type RepoListIndex } from "@/types/repo-list";
  * the schema, the app fails loudly, not subtly.
  *
  * The enrichment is the optional blocks `trust`, `requirements`, `provides`,
- * `roles` plus the trust vocabulary `curationTier` / `deprecated` — see
- * `types/use-cases.ts` and `types/curation-tier.ts`. They are NOT in the
- * published index.json yet, because nothing authors or curates them so far.
+ * `roles`, `implementation` and `addedAt`, the whole `dataStructures` section,
+ * plus the trust vocabulary `curationTier` / `deprecated` — see
+ * `types/use-cases.ts`, `types/implementation.ts` and `types/curation-tier.ts`.
+ * They are NOT in the published index.json yet, because nothing authors or
+ * curates them so far.
+ *
+ * `implementation` (Kosten, Aufwand, Wirkungslogik, Beteiligte) is INVENTED,
+ * like the municipalities it describes — Musterstadt and Musterhausen do not
+ * exist. Nothing here may be read as a claim about a real commune.
  * Everything else here is verbatim (incl. the legacy `maturity` /
  * `installability` fields, which the schema still accepts and normalizes).
  *
@@ -23,6 +29,7 @@ const RAW_INDEX = {
   "addons": [
     {
       "id": "nodered-addon",
+      "addedAt": "2026-06-11",
       "name": "NodeRed",
       "description": "Flow-based programming for the Internet of Things",
       "author": "bonn-624-dev",
@@ -77,6 +84,7 @@ const RAW_INDEX = {
     },
     {
       "id": "airflow-addon",
+      "addedAt": "2026-04-03",
       "name": "Apache Airflow",
       "description": "Platform to programmatically author, schedule and monitor workflows",
       "author": "bonn-624-dev",
@@ -110,6 +118,7 @@ const RAW_INDEX = {
     },
     {
       "id": "minio-addon",
+      "addedAt": "2026-03-18",
       "name": "MinIO",
       "description": "High Performance Object Storage",
       "author": "bonn-624-dev",
@@ -142,6 +151,7 @@ const RAW_INDEX = {
     },
     {
       "id": "appsmith-addon",
+      "addedAt": "2026-09-08",
       "name": "Appsmith",
       "description": "Build internal tools, CRUD apps and dashboards",
       "author": "bonn-624-dev",
@@ -179,6 +189,7 @@ const RAW_INDEX = {
     },
     {
       "id": "hasura-addon",
+      "addedAt": "2026-02-26",
       "name": "Hasura",
       "description": "Instant GraphQL APIs on your data",
       "author": "bonn-624-dev",
@@ -201,6 +212,7 @@ const RAW_INDEX = {
     },
     {
       "id": "supabase-addon",
+      "addedAt": "2026-08-19",
       "name": "Supabase",
       "description": "Open source Firebase alternative",
       "author": "tsb-udp",
@@ -228,6 +240,7 @@ const RAW_INDEX = {
     },
     {
       "id": "outline-addon",
+      "addedAt": "2026-01-15",
       "name": "Outline",
       "description": "Wiki and knowledge base for growing teams",
       "author": "bonn-624-dev",
@@ -253,6 +266,7 @@ const RAW_INDEX = {
     },
     {
       "id": "opensearch-addon",
+      "addedAt": "2026-07-24",
       "name": "OpenSearch",
       "description": "Open source distributed search & analytics suite",
       "author": "bonn-624-dev",
@@ -275,6 +289,7 @@ const RAW_INDEX = {
     },
     {
       "id": "geonetwork-addon",
+      "addedAt": "2026-05-06",
       "name": "GeoNetwork",
       "description": "Catalog application to manage spatially referenced resources",
       "author": "bonn-624-dev",
@@ -302,6 +317,42 @@ const RAW_INDEX = {
   "useCases": [
     {
       "id": "tree-register-starter",
+      "addedAt": "2026-08-28",
+      "implementation": {
+        "status": "prototyp",
+        "operator": "Stadt Musterstadt",
+        "parties": {
+          "stakeholders": [
+            "Grünflächenamt Musterstadt",
+            "Bauhof Musterstadt"
+          ]
+        },
+        "stack": [
+          "CivitasCore Portal-Backend",
+          "PostGIS",
+          "GeoServer"
+        ],
+        "resources": {
+          "cost": "S, unter 1.000 Euro",
+          "effort": "S, unter 10 Tage",
+          "costBand": "s",
+          "setupCost": "s",
+          "runningCost": "s",
+          "effortBand": "s",
+          "funding": "Haushaltsmittel der Stadt Musterstadt",
+          "note": "Ohne eigene Sensorik: die Kosten decken das Anlegen der Datenstruktur und die Ersterfassung des Bestands, nicht die Pflege im Feld."
+        },
+        "logicModel": {
+          "input": "Vorhandene Baumliste aus dem Grünflächenamt, ein Nachmittag Abstimmung über die Felder, kein zusätzliches Personal.",
+          "output": "Ein gemeinsamer Baumkataster-Datensatz mit Kartenansicht und Auskunftsseite.",
+          "outcome": "Bauhof und Grünflächenamt arbeiten auf demselben Stand statt auf zwei getrennten Tabellen.",
+          "impact": "Baumbestand und Pflegezustand werden für Verwaltung und Öffentlichkeit nachvollziehbar."
+        },
+        "collaboration": {
+          "wanted": true,
+          "seeking": "Kommunen, die ihren Baumbestand nach demselben Schema erfassen wollen - gemeinsame Weiterentwicklung der Datenstruktur."
+        }
+      },
       "title": "Baumkataster Starter App",
       "summary": "Ein kleines, wiederverwendbares Starterpaket für einen kommunalen Baumkataster-Datensatz.",
       "description": "Dieser Demo-Anwendungsfall installiert einen einfachen CORE-Datensatz inklusive einer Datenstruktur für Baumeinträge über das CivitasCore Portal-Backend. Er dient als prototypischer Installationsfluss im Marketplace Add-on.",
@@ -404,6 +455,46 @@ const RAW_INDEX = {
     },
     {
       "id": "musterhausen-trafficcounter",
+      "addedAt": "2026-07-02",
+      "implementation": {
+        "status": "produktiv",
+        "operator": "Stadt Musterhausen",
+        "parties": {
+          "stakeholders": [
+            "Tiefbauamt Musterhausen",
+            "Verkehrsplanung Musterhausen"
+          ],
+          "serviceProviders": [
+            "Stadtwerke Musterhausen (Betrieb des LoRaWAN-Netzes)"
+          ]
+        },
+        "stack": [
+          "Dialog-Displays",
+          "MQTT",
+          "FROST-Server",
+          "NiFi",
+          "Superset"
+        ],
+        "resources": {
+          "cost": "M, unter 10.000 Euro",
+          "effort": "M, unter 50 Tage",
+          "costBand": "m",
+          "setupCost": "m",
+          "runningCost": "s",
+          "effortBand": "m",
+          "funding": "Haushaltsmittel, ergänzt aus einem Förderprogramm für kommunale Mobilität",
+          "note": "Aufbau enthält Hardware und Montage der Dialog-Displays; laufend bleiben Mobilfunk, Wartung und Datenpflege."
+        },
+        "logicModel": {
+          "input": "Zwölf Dialog-Displays, Anbindung ans LoRaWAN-Netz der Stadtwerke, Einrichtung der Datenstrecke, Personal aus Tiefbauamt und Verkehrsplanung.",
+          "output": "Ein Dashboard mit Fahrzeugzahlen und Geschwindigkeiten je Zählstelle sowie eine öffentliche Karte der Standorte.",
+          "outcome": "Die Verkehrsplanung diskutiert Tempo-30-Anträge mit Messwerten statt mit Schätzungen aus der Bürgerschaft.",
+          "impact": "Entscheidungen über Verkehrsberuhigung werden begründbar und im Rat nachvollziehbar."
+        },
+        "collaboration": {
+          "wanted": false
+        }
+      },
       "title": "Verkehrszählung Musterhausen",
       "summary": "Verkehrszählung über Dialog-Displays: Fahrzeugzahlen und Geschwindigkeiten je Zählstelle als wiederverwendbares Use-Case-Paket.",
       "description": "Die Stadt Musterhausen erfasst mit Dialog-Displays (Smiley-Tafeln) Fahrzeugzahlen und Durchschnittsgeschwindigkeiten. Dieser Use-Case installiert die Datenstrukturen und den Datensatz dafür über das CivitasCore Portal-Backend. Die Artefakt-Quelle liegt in einem eigenen Git-Repo (siehe source); der Marketplace installiert direkt aus diesem Repo.",
@@ -575,6 +666,43 @@ const RAW_INDEX = {
     },
     {
       "id": "musterhausen-feinstaub",
+      "addedAt": "2026-05-20",
+      "implementation": {
+        "status": "produktiv",
+        "operator": "Stadt Musterhausen",
+        "parties": {
+          "stakeholders": [
+            "Umweltamt Musterhausen"
+          ]
+        },
+        "stack": [
+          "Feinstaub-Sensorik",
+          "MQTT",
+          "FROST-Server",
+          "NiFi",
+          "Superset"
+        ],
+        "resources": {
+          "cost": "S, unter 1.000 Euro",
+          "effort": "S, unter 10 Tage",
+          "costBand": "s",
+          "setupCost": "s",
+          "runningCost": "s",
+          "effortBand": "s",
+          "funding": "Haushaltsmittel der Stadt Musterhausen",
+          "note": "Die Messstationen waren bereits vorhanden; abgebildet ist nur der Aufwand, sie an die Plattform anzubinden."
+        },
+        "logicModel": {
+          "input": "Bestehende Messstationen, Anbindung über MQTT, wenige Tage Einrichtung im Umweltamt.",
+          "output": "Wochenverlauf und Tageswerte der Luftqualität als Dashboard und als Auskunftsseite.",
+          "outcome": "Anfragen aus der Bürgerschaft werden mit einem Link beantwortet statt mit einer Einzelauswertung.",
+          "impact": "Die Belastungslage in den Wohngebieten ist dauerhaft öffentlich einsehbar."
+        },
+        "collaboration": {
+          "wanted": true,
+          "seeking": "Austausch mit Kommunen, die günstige Sensorik betreiben — besonders zur Kalibrierung."
+        }
+      },
       "title": "Feinstaub Musterhausen",
       "summary": "Feinstaub-Messwerte (PM2.5/PM10) je Messstation als wiederverwendbares Use-Case-Paket.",
       "description": "Die Stadt Musterhausen erfasst Feinstaub (PM2.5/PM10) an Messstationen. Beim Installieren wird der Inhalt direkt aus dem Artefakt-Repo (Tag v1.0.0) geladen und über das CivitasCore Portal-Backend angelegt — der Marketplace liefert nichts davon mit.",
@@ -686,6 +814,72 @@ const RAW_INDEX = {
         "datasetId": "urn:core:platform:civitas:dataset:common:Feinstaub-Musterhausen:1.0.0",
         "note": "Beim Installieren wird das Bundle aus dem Artefakt-Repo (Tag v1.0.0) geholt und über das CivitasCore Portal-Backend angelegt. GeoPoint wird wiederverwendet, falls es bereits existiert."
       }
+    }
+  ],
+  "dataStructures":   [
+    {
+      "id": "urn:core:platform:civitas:datastructure:common:GeoPoint:1.0.0",
+      "type": "datastructure",
+      "displayName": "GeoPoint",
+      "description": "Geokoordinate (Breite, Länge) als gemeinsames Element. Wird von Anwendungsfällen mitbenutzt statt neu definiert — deshalb passen ihre Daten zusammen.",
+      "version": "1.0.0",
+      "maintainer": "Musterverbund Kommunaler Daten",
+      "license": "EUPL-1.2",
+      "keywords": [
+        "geo",
+        "basis",
+        "element"
+      ],
+      "domain": "Basis",
+      "addedAt": "2026-04-22"
+    },
+    {
+      "id": "urn:core:platform:civitas:datastructure:mobility:TrafficCounterReading:1.0.0",
+      "type": "datastructure",
+      "displayName": "TrafficCounterReading",
+      "description": "Eine Zählstellen-Messung: Fahrzeuganzahl, Durchschnittsgeschwindigkeit, Richtung und Standort — das Format hinter Verkehrszählungen.",
+      "version": "1.0.0",
+      "maintainer": "Stadt Musterhausen",
+      "license": "EUPL-1.2",
+      "keywords": [
+        "verkehr",
+        "zaehlstelle",
+        "mobilitaet"
+      ],
+      "domain": "Mobilität",
+      "addedAt": "2026-07-02"
+    },
+    {
+      "id": "urn:core:platform:civitas:datastructure:environment:AirQualityReading:1.0.0",
+      "type": "datastructure",
+      "displayName": "AirQualityReading",
+      "description": "Eine Luftqualitätsmessung: PM2.5 und PM10 mit Zeitpunkt und Standort — anschlussfähig an gängige Sensor-Bausätze.",
+      "version": "1.0.0",
+      "maintainer": "Stadt Musterhausen",
+      "license": "EUPL-1.2",
+      "keywords": [
+        "luftqualitaet",
+        "feinstaub",
+        "umwelt"
+      ],
+      "domain": "Umwelt",
+      "addedAt": "2026-05-20"
+    },
+    {
+      "id": "urn:core:platform:civitas:datastructure:demo:TreeRecord:1.0.0",
+      "type": "datastructure",
+      "displayName": "TreeRecord",
+      "description": "Ein Baumeintrag: Art, Standort, Pflanzjahr und Zustand — die gemeinsame Grundlage für Baumkataster und Pflegeplanung.",
+      "version": "1.0.0",
+      "maintainer": "Stadt Musterstadt",
+      "license": "EUPL-1.2",
+      "keywords": [
+        "baum",
+        "kataster",
+        "gruenflaechen"
+      ],
+      "domain": "Umwelt",
+      "addedAt": "2026-08-28"
     }
   ]
 };

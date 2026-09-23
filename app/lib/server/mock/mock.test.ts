@@ -51,6 +51,28 @@ describe("mock mode — fixtures", () => {
     // would not even load). Assert content + that every use case has a bundle.
     assert.equal(mockRepoListIndex.useCases.length, 3);
     assert.ok(mockRepoListIndex.addons.length > 0, "addons fixture is empty");
+    assert.equal(mockRepoListIndex.dataStructures.length, 4);
+    // Every row carries a catalog date, else "zuletzt hinzugefügt" silently
+    // sorts it last and the front page looks half-authored.
+    for (const entry of [
+      ...mockRepoListIndex.useCases,
+      ...mockRepoListIndex.addons,
+      ...mockRepoListIndex.dataStructures,
+    ]) {
+      assert.ok(entry.addedAt, `catalog entry '${entry.id}' has no addedAt`);
+    }
+    // The listing metadata the detail page is built on — invented, but it must
+    // be present, or the whole implementation section renders empty.
+    for (const useCase of mockRepoListIndex.useCases) {
+      assert.ok(
+        useCase.implementation?.resources?.setupCost,
+        `use case '${useCase.id}' has no setup cost band`,
+      );
+      assert.ok(
+        useCase.implementation?.logicModel?.outcome,
+        `use case '${useCase.id}' has no logic model`,
+      );
+    }
     for (const useCase of mockRepoListIndex.useCases) {
       // Every catalog use case must carry a pin AND a matching fixture: an
       // entry without a pinned commit is not installable at all (v3), so a

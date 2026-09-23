@@ -92,7 +92,13 @@ export const addonSchema = z.object({
   revokedReason: z
     .string()
     .optional()
-    .describe('Human-readable reason shown when an entry is revoked')
+    .describe('Human-readable reason shown when an entry is revoked'),
+  addedAt: z.iso
+    .date()
+    .optional()
+    .describe(
+      'Date the entry was taken into the catalog (YYYY-MM-DD) — drives "zuletzt hinzugefügt"; absent entries sort last'
+    )
 });
 
 export const addonCatalogSchema = z.object({

@@ -240,6 +240,12 @@
           "revokedReason": {
             "description": "Human-readable reason shown when an entry is revoked",
             "type": "string"
+          },
+          "addedAt": {
+            "description": "Date the entry was taken into the catalog (YYYY-MM-DD) — drives \"zuletzt hinzugefügt\"; absent entries sort last",
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
           }
         },
         "required": [
@@ -436,21 +442,36 @@
               "datasetId"
             ]
           },
-          "source": {
+          "deploymentRef": {
             "type": "object",
             "properties": {
-              "repoUrl": {
+              "url": {
                 "type": "string",
                 "format": "uri"
               },
-              "gitIdentifier": {
+              "ref": {
                 "type": "string",
-                "pattern": "^(v?\\d+\\.\\d+\\.\\d+(-[0-9A-Za-z.-]+)?|[0-9a-f]{7,64})$"
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "releaseTag": {
+                "default": null,
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "path": {
+                "default": ".",
+                "type": "string"
               }
             },
             "required": [
-              "repoUrl",
-              "gitIdentifier"
+              "url",
+              "ref"
             ]
           },
           "revoked": {
@@ -600,6 +621,45 @@
               ]
             }
           },
+          "endUserSurfaces": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "superset",
+                    "masterportal",
+                    "grafana",
+                    "app",
+                    "chatbot"
+                  ]
+                },
+                "label": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "requiresAddon": {
+                  "type": "string"
+                },
+                "via": {
+                  "type": "string"
+                },
+                "urlTemplate": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "kind",
+                "label",
+                "summary"
+              ]
+            }
+          },
           "roles": {
             "default": [],
             "type": "array",
@@ -654,6 +714,152 @@
                 }
               }
             }
+          },
+          "implementation": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": [
+                  "idee",
+                  "entwurf",
+                  "in-entwicklung",
+                  "prototyp",
+                  "produktiv",
+                  "review",
+                  "archiviert"
+                ]
+              },
+              "operator": {
+                "type": "string"
+              },
+              "parties": {
+                "type": "object",
+                "properties": {
+                  "stakeholders": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "serviceProviders": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "stack": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "resources": {
+                "type": "object",
+                "properties": {
+                  "cost": {
+                    "type": "string"
+                  },
+                  "effort": {
+                    "type": "string"
+                  },
+                  "funding": {
+                    "type": "string"
+                  },
+                  "costBand": {
+                    "type": "string",
+                    "enum": [
+                      "s",
+                      "m",
+                      "l",
+                      "xl"
+                    ]
+                  },
+                  "setupCost": {
+                    "type": "string",
+                    "enum": [
+                      "s",
+                      "m",
+                      "l",
+                      "xl"
+                    ]
+                  },
+                  "runningCost": {
+                    "type": "string",
+                    "enum": [
+                      "s",
+                      "m",
+                      "l",
+                      "xl"
+                    ]
+                  },
+                  "effortBand": {
+                    "type": "string",
+                    "enum": [
+                      "s",
+                      "m",
+                      "l"
+                    ]
+                  },
+                  "note": {
+                    "type": "string"
+                  }
+                }
+              },
+              "logicModel": {
+                "type": "object",
+                "properties": {
+                  "input": {
+                    "type": "string"
+                  },
+                  "output": {
+                    "type": "string"
+                  },
+                  "impact": {
+                    "type": "string"
+                  },
+                  "outcome": {
+                    "type": "string"
+                  }
+                }
+              },
+              "collaboration": {
+                "type": "object",
+                "properties": {
+                  "wanted": {
+                    "type": "boolean"
+                  },
+                  "seeking": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "wanted"
+                ]
+              },
+              "reference": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "source": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "url"
+                ]
+              }
+            }
+          },
+          "addedAt": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
           }
         },
         "required": [
@@ -663,8 +869,102 @@
           "description",
           "publisher",
           "compatibility",
-          "modelForge",
-          "source"
+          "modelForge"
+        ]
+      }
+    },
+    "dataStructures": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 3
+          },
+          "type": {
+            "type": "string",
+            "const": "datastructure"
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 3
+          },
+          "description": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "maintainer": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          },
+          "keywords": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "domain": {
+            "type": "string"
+          },
+          "addedAt": {
+            "type": "string",
+            "format": "date",
+            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+          },
+          "deploymentRef": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "ref": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{40}$"
+              },
+              "releaseTag": {
+                "default": null,
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "path": {
+                "default": ".",
+                "type": "string"
+              }
+            },
+            "required": [
+              "url",
+              "ref"
+            ]
+          },
+          "revoked": {
+            "type": "boolean"
+          },
+          "revokedReason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "displayName",
+          "description",
+          "version",
+          "maintainer",
+          "license"
         ]
       }
     }

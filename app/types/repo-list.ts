@@ -31,6 +31,17 @@ export const dataStructureEntrySchema = z.object({
   maintainer: z.string(),
   license: z.string(),
   keywords: z.array(z.string()).default([]),
+  /**
+   * Primary classification shown on the card and used as a filter facet, e.g.
+   * "Mobilität" — the counterpart of a use case's first category. Distinct from
+   * `keywords`, which are lowercase search tokens rather than display labels.
+   */
+  domain: z.string().optional(),
+  /** See the note on `addedAt` in `useCaseObjectSchema`. */
+  addedAt: z.iso.date().optional(),
+  // No `curationTier` here on purpose: grading a data MODEL is a different
+  // judgement from grading a bundle, and nothing in `lib/curation.ts` covers
+  // it yet. Deliberately deferred rather than half-declared.
   deploymentRef: deploymentRefSchema.optional(),
   revoked: z.boolean().optional(),
   revokedReason: z.string().optional(),
