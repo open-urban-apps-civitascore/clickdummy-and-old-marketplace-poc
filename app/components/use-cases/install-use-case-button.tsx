@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   ArrowRight,
+  Download,
   FlaskConical,
   LoaderCircle,
   PlayCircle,
-  Sparkles,
   X,
 } from "lucide-react";
 
@@ -90,15 +90,12 @@ const STEP_LABELS: Record<StepId, string> = {
 const STEP_HINTS: Record<StepId, string> = {
   source: "Woher kommen die Daten? Zum Ausprobieren brauchen Sie noch keine eigenen.",
   golive: "Wann soll der Anwendungsfall live gehen?",
-  review: "Alles auf einen Blick — erst nach Ihrer Bestätigung wird etwas angelegt.",
+  review: "Alles auf einen Blick - erst nach Ihrer Bestätigung wird etwas angelegt.",
 };
 
 export function InstallUseCaseButton({ useCase }: { useCase: UseCase }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  // Friction proportional to trust: an "Experimentell" entry asks for one
-  // plain-language acknowledgement before the wizard starts. Curated tiers
-  // install without a warning — the absence of it is the trust signal.
   const [acknowledged, setAcknowledged] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [isPending, setIsPending] = useState(false);
@@ -177,8 +174,11 @@ export function InstallUseCaseButton({ useCase }: { useCase: UseCase }) {
 
   return (
     <>
+      {/* Download, not Sparkles: installing is a deterministic provisioning
+          sequence, not magic. Sparkles is the Assistent's glyph and means "AI"
+          everywhere else in the app. */}
       <Button onClick={() => setOpen(true)}>
-        <Sparkles className="size-4" />
+        <Download className="size-4" />
         Installieren
       </Button>
 
