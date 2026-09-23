@@ -1,23 +1,35 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Building2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
+import { Section } from "@/components/ui/layout";
 import { MarketplacePageShell } from "@/components/marketplace/page-shell";
 import { DemoDataHighlight } from "@/components/use-cases/demo-data-highlight";
 import { FitCheck } from "@/components/use-cases/fit-check";
 import { IncludedArtifactsSpec } from "@/components/use-cases/included-artifacts-spec";
 import { InstallUseCaseButton } from "@/components/use-cases/install-use-case-button";
+import { LogicModel } from "@/components/use-cases/logic-model";
 import { EndUserSurfaces } from "@/components/use-cases/end-user-surfaces";
 import { ProvidedSurfaces } from "@/components/use-cases/provided-surfaces";
-import { TrustPanel } from "@/components/use-cases/trust-panel";
-import { UseCaseFacts } from "@/components/use-cases/use-case-facts";
+import { TechnicalFacts } from "@/components/use-cases/technical-facts";
 import { UseCaseGallery } from "@/components/use-cases/use-case-gallery";
 import { UseCaseIllustration } from "@/components/use-cases/use-case-illustration";
+import { UseCaseInfobox } from "@/components/use-cases/use-case-infobox";
 import { DeprecatedNotice, TierBadge } from "@/components/use-cases/use-case-status";
 import { getUseCaseById } from "@/lib/getUseCases";
 import { getMarketplaceText } from "@/lib/marketplace-text";
-import { publisherSlug } from "@/lib/slug";
 
+/**
+ * The use-case detail page reads in three bands (redesign 2026-09-22):
+ *
+ *   1. a two-column READING ZONE — the pitch on the left, a Wikipedia-style
+ *      Steckbrief in a right rail, so the facts that decide a listing sit at
+ *      the top instead of halfway down the page;
+ *      The reading column carries the pitch and then the Wirkungslogik;
+ *   2. a full-width SURFACES band — what you actually open, in a grid that
+ *      adapts to how many surfaces the use case declares;
+ *   3. a full-width TECHNICAL ZONE — interfaces, artifacts, platform needs.
+ */
 export default async function UseCaseDetailPage({
   params,
 }: {
@@ -40,7 +52,7 @@ export default async function UseCaseDetailPage({
     <MarketplacePageShell
       breadcrumb={`${text.sidebar.nav.breadcrumbUseCases} / ${useCase.title}`}
     >
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
+      <div className="mx-auto flex w-full max-w-5xl flex-col gap-8">
         <Link
           href="/marketplace/use-cases"
           className="inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
@@ -57,130 +69,112 @@ export default async function UseCaseDetailPage({
           />
         ) : null}
 
-        {/* Stacked text hero (the marketplace majority pattern) — screenshots
-            live in the full-width media band below, never in a side rail. With
-            no screenshots, a slim decorative illustration banner (clearly art,
-            not a fake screenshot slot) gives the page its face. */}
-        <section className="overflow-hidden rounded-xl border bg-card">
-          {useCase.images.length === 0 ? (
-            <UseCaseIllustration
-              categories={useCase.categories}
-              className="h-24 border-b lg:h-28"
-            />
-          ) : null}
-          <div className="flex flex-col gap-4 p-6 lg:p-8">
-            {useCase.categories.length > 0 ? (
-              <div className="flex flex-wrap gap-1.5">
-                {useCase.categories.map((category) => (
-                  <span
-                    key={category}
-                    className="inline-flex items-center rounded-md bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-400"
-                  >
-                    {category}
-                  </span>
-                ))}
+        {/* ── Band 1: reading zone ──────────────────────────────────────── */}
+        {/* `items-start` is load-bearing: without it the grid stretches the
+            infobox to the hero's height and the Wikipedia effect is lost. */}
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[1fr_300px]">
+          <div className="flex min-w-0 flex-col gap-6">
+            {/* Stacked text hero — screenshots live in the media band below,
+                never in a side rail. With no screenshots, a slim decorative
+                illustration banner (clearly art, not a fake screenshot slot)
+                gives the page its face. */}
+            <section className="overflow-hidden rounded-xl border bg-card">
+              {useCase.images.length === 0 ? (
+                <UseCaseIllustration
+                  categories={useCase.categories}
+                  className="h-24 border-b lg:h-28"
+                />
+              ) : null}
+              <div className="flex flex-col gap-4 p-6 lg:p-8">
+                {useCase.categories.length > 0 ? (
+                  <div className="flex flex-wrap gap-1.5">
+                    {useCase.categories.map((category) => (
+                      <span
+                        key={category}
+                        className="inline-flex items-center rounded-md bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-400"
+                      >
+                        {category}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+                {/* Badge always directly below the title — inline placement
+                    made its position depend on whether the title wraps. */}
+                <div className="flex flex-col items-start gap-2">
+                  <h1 className="text-3xl font-bold text-foreground lg:text-4xl">
+                    {useCase.title}
+                  </h1>
+                  <TierBadge tier={useCase.curationTier} />
+                </div>
+                <p className="text-lg leading-relaxed text-muted-foreground">{useCase.summary}</p>
+
+                {/* The install action stays in the hero, not in the rail: the
+                    rail collapses below `lg`, and the primary CTA must not
+                    land at the bottom of a phone screen. */}
+                <div className="mt-1 flex w-full flex-col items-start gap-1.5">
+                  <InstallUseCaseButton useCase={useCase} />
+                  <p className="text-xs text-muted-foreground">
+                    {text.useCases.installDescription}
+                  </p>
+                </div>
               </div>
-            ) : null}
-            {/* Badge always directly below the title — inline placement made
-                  its position depend on whether the title wraps. */}
-            <div className="flex flex-col items-start gap-2">
-              <h1 className="text-3xl font-bold text-foreground lg:text-4xl">{useCase.title}</h1>
-              <TierBadge tier={useCase.curationTier} />
-            </div>
-            <p className="text-lg leading-relaxed text-muted-foreground">{useCase.summary}</p>
+            </section>
 
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <span className="flex items-center gap-2.5">
-                <span className="grid size-9 shrink-0 place-items-center rounded-md bg-primary/10 text-primary">
-                  <Building2 className="size-4" />
-                </span>
-                <span className="flex flex-col leading-tight">
-                  <Link
-                    href={`/marketplace/publishers/${publisherSlug(useCase.publisher)}`}
-                    className="text-sm font-medium text-foreground underline-offset-2 hover:underline"
-                  >
-                    {useCase.publisher}
-                  </Link>
-                  <span className="text-xs text-muted-foreground">
-                    {text.useCases.publisherLabel}
-                  </span>
-                </span>
-              </span>
-            </div>
+            <UseCaseGallery images={useCase.images} title={useCase.title} />
 
-            <div className="mt-1 flex w-full flex-col items-start gap-1.5">
-              <InstallUseCaseButton useCase={useCase} />
-              <p className="text-xs text-muted-foreground">{text.useCases.installDescription}</p>
-            </div>
+            {useCase.demoData ? <DemoDataHighlight demoData={useCase.demoData} /> : null}
+
+            <Section title={text.useCases.aboutHeading}>
+              <p className="text-base leading-relaxed text-muted-foreground lg:text-lg">
+                {useCase.description}
+              </p>
+            </Section>
+
+            {/* Wirkung VOR den Oberflächen (Ewa, 2026-09-23): erst wofür das
+                gut ist, dann womit man es bedient. Beide in der Hauptspalte
+                statt über die volle Breite, damit neben dem Steckbrief keine
+                leere Fläche stehen bleibt (Ewa, 2026-09-23). */}
+            <LogicModel useCase={useCase} />
           </div>
-        </section>
 
-        {/* Full-width 16:9 media band — renders only when screenshots exist. */}
-        <UseCaseGallery images={useCase.images} title={useCase.title} />
+          {/* NICHT sticky: der Steckbrief plus Fit-Check ist regelmäßig höher
+              als das Fenster (gemessen 1354 px bei 768 px Höhe). Ein
+              angehefteter Block, der höher ist als der Viewport, klemmt oben
+              fest — sein unteres Ende, hier Kosten und Kooperationsbedarf,
+              lässt sich dann gar nicht mehr erreichen. */}
+          <div className="flex flex-col gap-6">
+            <UseCaseInfobox useCase={useCase} />
+            <FitCheck useCase={useCase} />
+          </div>
+        </div>
 
-        {/* The reason trying is cheap — placed high, right after the pictures. */}
-        {useCase.demoData ? <DemoDataHighlight demoData={useCase.demoData} /> : null}
+        {/* Über die volle Breite (Ewa, 2026-09-23): die Kacheln brauchen Platz,
+            und ihre Zahl ist je Anwendungsfall verschieden — das Raster richtet
+            sich danach (siehe `surfaceGridClass`). */}
+        <Section
+          title="Was Sie damit bekommen"
+          lead="Oberflächen, die Menschen öffnen — Fachamt, Rat oder Öffentlichkeit."
+        >
+          <EndUserSurfaces surfaces={useCase.endUserSurfaces} />
+        </Section>
 
-        {/* ── Fachlicher Teil: what it does, what you get, who vouches ───── */}
-        <section className="rounded-md border bg-card p-6 lg:p-8">
-          <h2 className="text-xl font-semibold text-foreground">{text.useCases.aboutHeading}</h2>
-          <p className="mt-3 text-base leading-relaxed text-muted-foreground lg:text-lg">
-            {useCase.description}
-          </p>
-        </section>
-
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
-          <section className="flex flex-col gap-6">
-            <EndUserSurfaces
-              surfaces={useCase.endUserSurfaces}
-              title="Was Sie damit bekommen"
-            />
+        {/* ── Band 3: technical zone, visually separate for IT and data roles ─ */}
+        <Section title={text.useCases.technicalHeading} tone="muted">
+          <div className="flex flex-col gap-4">
             <ProvidedSurfaces
               surfaces={useCase.provides}
               title="Schnittstellen dieses Anwendungsfalls"
             />
-          </section>
 
-          <aside className="flex flex-col gap-6">
-            <TrustPanel tier={useCase.curationTier} trust={useCase.trust} />
-          </aside>
-        </div>
+            <IncludedArtifactsSpec
+              title={text.useCases.includedArtifacts}
+              artifacts={useCase.includedArtifacts}
+              urn={useCase.modelForge.datasetId}
+            />
 
-        {/* ── Technischer Teil: visually separate zone for IT and data roles ── */}
-        <section className="rounded-xl border bg-muted/30 p-6">
-          <h2 className="text-xl font-semibold text-foreground">
-            {text.useCases.technicalHeading}
-          </h2>
-
-          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[1fr_320px]">
-            <div className="flex flex-col gap-6">
-              <IncludedArtifactsSpec
-                title={text.useCases.includedArtifacts}
-                artifacts={useCase.includedArtifacts}
-                urn={useCase.modelForge.datasetId}
-              />
-
-              {/* <section className="rounded-md border bg-card p-5">
-                <div className="flex items-center gap-2">
-                  <Link2 className="size-4 text-muted-foreground" />
-                  <h3 className="text-sm font-semibold text-foreground">{text.useCases.datasetReference}</h3>
-                </div>
-                <p className="mt-3 text-sm text-muted-foreground">{useCase.modelForge.note}</p>
-              </section> */}
-            </div>
-
-            <aside className="flex flex-col gap-6">
-              <FitCheck useCase={useCase} />
-
-              <section className="rounded-md border bg-card p-5">
-                <p className="text-sm font-semibold text-foreground">{text.useCases.detailsHeading}</p>
-                <div className="mt-2">
-                  <UseCaseFacts useCase={useCase} text={text} />
-                </div>
-              </section>
-            </aside>
+            <TechnicalFacts useCase={useCase} />
           </div>
-        </section>
+        </Section>
       </div>
     </MarketplacePageShell>
   );

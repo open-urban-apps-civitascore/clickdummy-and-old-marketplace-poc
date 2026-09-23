@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { DemoDataBadge } from "@/components/use-cases/demo-data-highlight";
 import { UseCaseIllustration } from "@/components/use-cases/use-case-illustration";
 import { DeprecatedStatus, TierStatus } from "@/components/use-cases/use-case-status";
 import { type UseCase } from "@/types/use-cases";
@@ -11,9 +10,9 @@ export function UseCaseCard({ useCase }: { useCase: UseCase }) {
   return (
     <Link
       href={`/marketplace/use-cases/${useCase.id}`}
-      className="group block rounded-xl focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+      className="group block rounded-lg focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
     >
-      <article className="flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-shadow group-hover:shadow-md">
+      <article className="flex h-full flex-col overflow-hidden rounded-lg border bg-card transition-shadow group-hover:shadow-md">
         <div className="relative">
           <UseCaseIllustration categories={useCase.categories} />
           {category ? (
@@ -28,11 +27,6 @@ export function UseCaseCard({ useCase }: { useCase: UseCase }) {
           <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
             {useCase.summary}
           </p>
-          {useCase.demoData ? (
-            <div className="mt-2.5">
-              <DemoDataBadge />
-            </div>
-          ) : null}
 
           <div className="mt-4 flex items-center justify-between gap-3 border-t pt-4">
             {useCase.deprecated ? <DeprecatedStatus /> : <TierStatus tier={useCase.curationTier} />}

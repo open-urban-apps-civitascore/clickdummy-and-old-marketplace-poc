@@ -1,7 +1,19 @@
-import { BarChart3, Download, ExternalLink, Map, Radio, Sparkles } from "lucide-react";
+import {
+  BarChart3,
+  Download,
+  ExternalLink,
+  Map,
+  PlayCircle,
+  Plug,
+  Radio,
+} from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { PROVIDED_SURFACE_KIND_LABELS, type ProvidedSurface } from "@/types/use-cases";
+import { Panel } from "@/components/ui/layout";
+import {
+  PROVIDED_SURFACE_KIND_LABELS,
+  type ProvidedSurface,
+} from "@/types/use-cases";
 
 /**
  * "Was dieser Anwendungsfall bereitstellt" — the visible value a use case
@@ -25,7 +37,10 @@ const KIND_ICONS = {
   download: Download,
 } as const;
 
-function resolveUrl(surface: ProvidedSurface, datasetId?: string): string | undefined {
+function resolveUrl(
+  surface: ProvidedSurface,
+  datasetId?: string,
+): string | undefined {
   if (!surface.urlTemplate) return undefined;
   if (!surface.urlTemplate.includes("{datasetId}")) return surface.urlTemplate;
   if (!datasetId) return undefined;
@@ -47,18 +62,24 @@ export function ProvidedSurfaces({
   if (surfaces.length === 0) return null;
 
   return (
-    <section className="rounded-md border bg-card p-5">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-sm font-semibold text-foreground">{title}</h2>
-        {isDemoData ? (
+    <Panel
+      title={title}
+      icon={<Plug aria-hidden className="size-4" />}
+      tone="usecase"
+      aside={
+        isDemoData ? (
           <span className="inline-flex items-center gap-1.5 rounded-md bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-700 dark:text-amber-400">
-            <Sparkles className="size-3.5" />
+            <PlayCircle className="size-3.5" />
             Läuft auf Demo-Daten
           </span>
-        ) : null}
-      </div>
-
-      <ul className="mt-4 flex flex-col gap-3">
+        ) : null
+      }
+    >
+      {/* Rows are separated by hairlines, not by boxes: inside a Panel that
+          already sits in a Section, a third bordered layer reads as clutter
+          rather than as structure (Ewa, 2026-09-23). Matches the artifact
+          list, which was already built this way. */}
+      <ul>
         {surfaces.map((surface) => {
           const Icon = KIND_ICONS[surface.kind];
           const url = resolveUrl(surface, datasetId);
@@ -66,14 +87,16 @@ export function ProvidedSurfaces({
           return (
             <li
               key={`${surface.kind}-${surface.label}`}
-              className="flex items-start gap-3 rounded-md border bg-background p-3"
+              className="flex items-start gap-3 border-b py-3 last:border-b-0"
             >
               <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-md bg-primary/10 text-primary">
                 <Icon className="size-4" />
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-medium text-foreground">{surface.label}</span>
+                  <span className="text-sm font-medium text-foreground">
+                    {surface.label}
+                  </span>
                   <Badge variant="outline" className="text-[11px]">
                     {PROVIDED_SURFACE_KIND_LABELS[surface.kind]}
                   </Badge>
@@ -84,7 +107,9 @@ export function ProvidedSurfaces({
                   ) : null}
                 </div>
                 {surface.note ? (
-                  <p className="mt-1 text-xs text-muted-foreground">{surface.note}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {surface.note}
+                  </p>
                 ) : null}
                 {url ? (
                   <a
@@ -108,6 +133,6 @@ export function ProvidedSurfaces({
           );
         })}
       </ul>
-    </section>
+    </Panel>
   );
 }

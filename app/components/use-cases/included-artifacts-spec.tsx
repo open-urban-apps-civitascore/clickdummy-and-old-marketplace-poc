@@ -1,6 +1,7 @@
 import { Boxes, Plug } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
+import { Panel } from "@/components/ui/layout";
 import { parseUrn } from "@/lib/urn";
 import { INCLUDED_ARTIFACT_KIND_LABELS, type UseCase } from "@/types/use-cases";
 
@@ -26,20 +27,27 @@ export function IncludedArtifactsSpec({ title, artifacts, urn }: IncludedArtifac
   const hasPrerequisites = artifacts.some((artifact) => artifact.requires.length > 0);
 
   return (
-    <div className="rounded-md border bg-card p-6">
-      <div className="flex items-center gap-2">
-        <Boxes className="size-4 text-muted-foreground" />
-        <h2 className="text-lg font-semibold text-foreground">{title}</h2>
-      </div>
-
+    <Panel
+      title={title}
+      icon={<Boxes aria-hidden className="size-4" />}
+      tone="usecase"
+      footer={
+        <>
+          <span className="block font-mono text-[11px] uppercase tracking-wide">
+            CORE Dataset URN
+          </span>
+          <span className="mt-1 block break-all font-mono text-xs text-foreground/80">{urn}</span>
+        </>
+      }
+    >
       {hasPrerequisites ? (
-        <p className="mt-2 text-sm text-muted-foreground">
-          Was das Paket anlegt — und was Sie für den Betrieb mit echten Daten zusätzlich
+        <p className="-mt-1 mb-3 text-sm text-muted-foreground">
+          Was das Paket anlegt - und was Sie für den Betrieb mit echten Daten zusätzlich
           brauchen.
         </p>
       ) : null}
 
-      <ul className="mt-4">
+      <ul>
         {artifacts.map((artifact) => {
           const { version, isVersioned } = parseUrn(artifact.id);
           return (
@@ -96,12 +104,6 @@ export function IncludedArtifactsSpec({ title, artifacts, urn }: IncludedArtifac
         })}
       </ul>
 
-      <div className="mt-5 border-t pt-4">
-        <p className="font-mono text-[11px] uppercase tracking-wide text-muted-foreground">
-          CORE Dataset URN
-        </p>
-        <p className="mt-1 break-all font-mono text-xs text-foreground/80">{urn}</p>
-      </div>
-    </div>
+    </Panel>
   );
 }

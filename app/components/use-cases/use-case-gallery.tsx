@@ -27,9 +27,9 @@ export function UseCaseGallery({ images, title }: { images: UseCaseImage[]; titl
   const current = images[safeIndex];
 
   return (
-    <section aria-label="Screenshots" className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+    <section aria-label="Screenshots" className="flex flex-col gap-4">
       <figure className="flex flex-col gap-2">
-        <div className="relative overflow-hidden rounded-xl border bg-background">
+        <div className="relative overflow-hidden rounded-lg border bg-background">
           {/* Catalog screenshots come from arbitrary hosts; the mock skips the
               image optimizer instead of maintaining remotePatterns. */}
           <Image
@@ -39,6 +39,9 @@ export function UseCaseGallery({ images, title }: { images: UseCaseImage[]; titl
             width={1600}
             height={900}
             unoptimized
+            // The first screenshot sits above the fold and is the page's LCP
+            // element; the later ones only load once someone pages to them.
+            priority={safeIndex === 0}
             className="aspect-video w-full object-cover object-top"
           />
 
@@ -80,15 +83,16 @@ export function UseCaseGallery({ images, title }: { images: UseCaseImage[]; titl
       </figure>
 
       {/* Explains THIS screenshot — the points come per image from the
-          publisher's submission form, not from generic listing copy. */}
-      <div aria-live="polite" className="rounded-xl border bg-card p-4">
-        <p className="text-sm font-semibold text-foreground">Was Sie hier sehen</p>
+          publisher's submission form, not from generic listing copy. The
+          caption IS the heading here: a separate "Was Sie hier sehen" label
+          only repeated what the section already is (Ewa, 2026-09-22). */}
+      <div aria-live="polite" className="rounded-lg border bg-card p-5">
         {current.caption ? (
-          <p className="mt-1 text-xs font-medium text-muted-foreground">{current.caption}</p>
+          <p className="text-sm font-semibold text-foreground">{current.caption}</p>
         ) : null}
 
         {current.highlights.length > 0 ? (
-          <ul className="mt-3 flex list-none flex-col gap-2.5">
+          <ul className="mt-2.5 flex list-none flex-col gap-2.5">
             {current.highlights.map((highlight) => (
               <li
                 key={highlight}

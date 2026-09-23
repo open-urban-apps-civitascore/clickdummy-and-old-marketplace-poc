@@ -1,11 +1,7 @@
-import { BadgeCheck, Check, ExternalLink, MapPin, Scale, UserRound, Wrench } from "lucide-react";
+import { BadgeCheck, ExternalLink, MapPin, Scale, UserRound, Wrench } from "lucide-react";
 
-import { TierBadge } from "@/components/use-cases/use-case-status";
-import {
-  CURATION_TIER_CRITERIA,
-  CURATION_TIER_HINTS,
-  type CurationTier,
-} from "@/types/curation-tier";
+import { TierExplainer } from "@/components/use-cases/tier-explainer";
+import { type CurationTier } from "@/types/curation-tier";
 import type { TrustMetadata } from "@/types/use-cases";
 
 /**
@@ -46,26 +42,7 @@ export function TrustPanel({
       </div>
 
       <div className="mt-4">
-        <TierBadge tier={tier} />
-        <details className="mt-2 text-xs">
-          <summary className="cursor-pointer text-muted-foreground underline-offset-2 hover:underline">
-            Was bedeutet dieses Siegel?
-          </summary>
-          <div className="mt-2 rounded-md bg-muted/50 p-3">
-            <p className="text-muted-foreground">{CURATION_TIER_HINTS[tier]}</p>
-            <ul className="mt-2 flex flex-col gap-1">
-              {CURATION_TIER_CRITERIA[tier].map((criterion) => (
-                <li key={criterion} className="flex items-start gap-1.5 text-foreground">
-                  <Check aria-hidden className="mt-0.5 size-3 shrink-0 text-muted-foreground" />
-                  {criterion}
-                </li>
-              ))}
-            </ul>
-            <p className="mt-2 text-muted-foreground">
-              Vergeben von der Kuratierung der Community — und bei Verstößen entziehbar.
-            </p>
-          </div>
-        </details>
+        <TierExplainer tier={tier} showRevocable />
       </div>
 
       {!trust ? (

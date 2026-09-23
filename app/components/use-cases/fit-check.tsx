@@ -1,5 +1,6 @@
 import { Check, CircleAlert, CircleHelp, ServerCog } from "lucide-react";
 
+import { Panel } from "@/components/ui/layout";
 import { checkFit, getInstanceProfile } from "@/lib/instance-profile";
 import type { UseCase } from "@/types/use-cases";
 
@@ -12,6 +13,10 @@ import type { UseCase } from "@/types/use-cases";
  * PLACEHOLDER SOURCE: the instance profile is a constant
  * (`lib/instance-profile.ts`) and has to be read from the live backend instead.
  * The comparison itself is already the real logic and is unit-tested.
+ *
+ * Colour here is a Urteil (§4.1 of the communication design system): emerald
+ * passes, amber warns, muted is unknown — and every row pairs the colour with
+ * an icon and a label, never colour alone.
  */
 export function FitCheck({ useCase }: { useCase: UseCase }) {
   const profile = getInstanceProfile();
@@ -19,15 +24,12 @@ export function FitCheck({ useCase }: { useCase: UseCase }) {
   const hasUnknown = result.rows.some((row) => row.status === "unknown");
 
   return (
-    <section className="rounded-md border bg-card p-5">
-      <div className="flex items-center gap-2">
-        <ServerCog className="size-4 text-muted-foreground" />
-        <h2 className="text-sm font-semibold text-foreground">Passt zu dieser Instanz?</h2>
-      </div>
-
+    <Panel title="Passt zu dieser Instanz?" icon={<ServerCog aria-hidden className="size-4" />}>
       <p
-        className={`mt-3 flex items-center gap-2 text-sm font-medium ${
-          result.fits ? "text-emerald-700 dark:text-emerald-400" : "text-amber-700 dark:text-amber-400"
+        className={`flex items-center gap-2 text-sm font-medium ${
+          result.fits
+            ? "text-emerald-700 dark:text-emerald-400"
+            : "text-amber-700 dark:text-amber-400"
         }`}
       >
         {result.fits ? <Check className="size-4" /> : <CircleAlert className="size-4" />}
@@ -48,9 +50,7 @@ export function FitCheck({ useCase }: { useCase: UseCase }) {
             )}
             <span className="min-w-0">
               <span className="font-medium text-foreground">{row.label}</span>
-              {row.detail ? (
-                <span className="block text-muted-foreground">{row.detail}</span>
-              ) : null}
+              {row.detail ? <span className="block text-muted-foreground">{row.detail}</span> : null}
             </span>
           </li>
         ))}
@@ -65,10 +65,10 @@ export function FitCheck({ useCase }: { useCase: UseCase }) {
 
       {hasUnknown ? (
         <p className="mt-3 text-xs text-muted-foreground">
-          Punkte mit Fragezeichen lassen sich nicht automatisch prüfen — im Zweifel beim
-          Betreiber der Instanz nachfragen.
+          Punkte mit Fragezeichen lassen sich nicht automatisch prüfen — im Zweifel beim Betreiber
+          der Instanz nachfragen.
         </p>
       ) : null}
-    </section>
+    </Panel>
   );
 }

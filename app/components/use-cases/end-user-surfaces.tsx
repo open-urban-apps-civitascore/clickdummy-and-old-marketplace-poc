@@ -1,4 +1,4 @@
-import { ArrowUpRight, Blocks, Sparkles } from "lucide-react";
+import { ArrowUpRight, Blocks, PlayCircle } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { SurfacePreview } from "@/components/use-cases/surface-preview";
@@ -31,42 +31,47 @@ export function EndUserSurfaces({
   surfaces,
   datasetId,
   isDemoData = false,
-  title = "Was jetzt bereitsteht",
+  title,
 }: {
   surfaces: EndUserSurface[];
   datasetId?: string;
   isDemoData?: boolean;
+  /** Only when this renders inside its own card; the detail page uses a Section. */
   title?: string;
 }) {
   if (surfaces.length === 0) return null;
 
   return (
     <section>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h2 className="text-base font-semibold text-foreground">{title}</h2>
-          <p className="mt-0.5 text-sm text-muted-foreground">
-            Oberflächen, die Menschen öffnen — Fachamt, Rat oder Öffentlichkeit.
-          </p>
+      {/* Heading and lead belong to the enclosing `Section` (E2) on the detail
+          page; an installation view passes `title` because it renders this
+          inside a card of its own. */}
+      {title || isDemoData ? (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+          {title ? <h3 className="text-sm font-semibold text-foreground">{title}</h3> : <span />}
+          {isDemoData ? (
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-700 dark:text-amber-400">
+              <PlayCircle className="size-3.5" />
+              Läuft auf Demo-Daten
+            </span>
+          ) : null}
         </div>
-        {isDemoData ? (
-          <span className="inline-flex items-center gap-1.5 rounded-md bg-amber-500/10 px-2.5 py-1 text-xs font-medium text-amber-700 dark:text-amber-400">
-            <Sparkles className="size-3.5" />
-            Läuft auf Demo-Daten
-          </span>
-        ) : null}
-      </div>
+      ) : null}
 
-      <ul className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      <ul className={`grid gap-4 ${surfaceGridClass(surfaces.length)}`}>
         {surfaces.map((surface) => {
           const url = resolveUrl(surface, datasetId);
           const card = (
-            <article className="flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-shadow group-hover:shadow-md">
+            <article className="flex h-full flex-col overflow-hidden rounded-lg border bg-card transition-shadow group-hover:shadow-md">
               <SurfacePreview kind={surface.kind} />
 
               <div className="flex flex-1 flex-col gap-2 p-4">
                 <div className="flex items-start justify-between gap-2">
-                  <h3 className="min-w-0 text-sm font-semibold leading-tight text-foreground">
+                  {/* Deutsche Komposita („Verkehrsaufkommen") sind breiter als
+                      eine schmale Kachel; ohne Trennung schieben sie sich unter
+                      das Badge. `lang="de"` steht im Root-Layout, also trennt
+                      `hyphens-auto` korrekt. */}
+                  <h3 className="min-w-0 hyphens-auto break-words text-sm font-semibold leading-tight text-foreground">
                     {surface.label}
                   </h3>
                   <Badge variant="outline" className="shrink-0 text-[11px]">
@@ -125,4 +130,32 @@ export function EndUserSurfaces({
       </ul>
     </section>
   );
+}
+
+/**
+ * Column grid chosen by how many surfaces there are.
+ *
+ * The band runs full width, but the number of surfaces differs per use case
+ * (Ewa, 2026-09-23) — a fixed 3-column grid would leave a third empty with two
+ * entries, and strand a single straggler on a second row with four.
+ *
+ * The classes are deliberately written out as complete literals: Tailwind only
+ * emits what it can find in the source, so a composed `grid-cols-${n}` would
+ * never reach the build.
+ */
+function surfaceGridClass(count: number): string {
+  switch (count) {
+    case 1:
+      // Eine Kachel allein soll nicht über die ganze Breite gezogen werden.
+      return "max-w-sm";
+    case 2:
+      return "sm:grid-cols-2";
+    case 3:
+      return "sm:grid-cols-2 lg:grid-cols-3";
+    case 4:
+      return "sm:grid-cols-2 lg:grid-cols-4";
+    default:
+      // Ab fünf lieber drei bzw. vier je Zeile als immer schmalere Kacheln.
+      return "sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+  }
 }
