@@ -42,7 +42,7 @@ export default async function CurationPage() {
         </div>
 
         {submissions.length === 0 ? (
-          <div className="rounded-md border border-dashed bg-card p-12 text-center text-sm text-muted-foreground">
+          <div className="rounded-lg border border-dashed bg-card p-12 text-center text-sm text-muted-foreground">
             Keine offenen Einreichungen.
           </div>
         ) : (
