@@ -1,0 +1,74 @@
+import { byAddedAtDesc } from "@/lib/catalog-recency";
+import type { Addon } from "@/types/addons";
+import type { DataStructureEntry } from "@/types/repo-list";
+import type { UseCase } from "@/types/use-cases";
+
+export type CatalogKind = "use-case" | "data-structure" | "addon";
+
+export const CATALOG_KIND_LABELS: Record<CatalogKind, string> = {
+  "use-case": "Anwendungsfall",
+  "data-structure": "Datenstruktur",
+  addon: "Add-on",
+};
+
+/** One row of "Zuletzt hinzugefügt", normalised across the three entry shapes. */
+export interface CatalogHighlight {
+  kind: CatalogKind;
+  id: string;
+  title: string;
+  summary: string;
+  href: string;
+  /** Publisher / maintainer / author — whoever stands behind the entry. */
+  meta: string;
+  addedAt?: string;
+}
+
+/**
+ * The newest entries across all three catalog sections, mixed into one list.
+ *
+ * Mixed rather than three separate rails on purpose: one glance should show
+ * that this marketplace has use cases AND data structures AND add-ons, and
+ * that something happened here recently.
+ *
+ * Entries without `addedAt` sort last but are never dropped — otherwise the
+ * section stays empty until every row is dated, and a clickdummy that looks
+ * unfinished defeats its own purpose.
+ */
+export function recentlyAdded(
+  input: { useCases: UseCase[]; dataStructures: DataStructureEntry[]; addons: Addon[] },
+  limit = 6,
+): CatalogHighlight[] {
+  const useCases: CatalogHighlight[] = input.useCases.map((useCase) => ({
+    kind: "use-case",
+    id: useCase.id,
+    title: useCase.title,
+    summary: useCase.summary,
+    href: `/marketplace/use-cases/${useCase.id}`,
+    meta: useCase.publisher,
+    addedAt: useCase.addedAt,
+  }));
+
+  const addons: CatalogHighlight[] = input.addons.map((addon) => ({
+    kind: "addon",
+    id: addon.id,
+    title: addon.name,
+    summary: addon.description,
+    href: `/marketplace/addons/${addon.id}`,
+    meta: addon.author,
+    addedAt: addon.addedAt,
+  }));
+
+  // Data structures have no detail route yet, so the link lands on the card in
+  // the list (the card carries the URN as its anchor id).
+  const dataStructures: CatalogHighlight[] = input.dataStructures.map((entry) => ({
+    kind: "data-structure",
+    id: entry.id,
+    title: entry.displayName,
+    summary: entry.description,
+    href: `/marketplace/datastructures#${entry.id}`,
+    meta: entry.maintainer,
+    addedAt: entry.addedAt,
+  }));
+
+  return [...useCases, ...dataStructures, ...addons].sort(byAddedAtDesc).slice(0, limit);
+}

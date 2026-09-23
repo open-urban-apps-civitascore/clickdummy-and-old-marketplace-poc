@@ -32,12 +32,20 @@ export interface MarketplaceTexts {
   landing: {
     heading: string;
     subtitle: string;
+    intro: string;
     searchPlaceholder: string;
     searchButton: string;
     useCasesHeading: string;
     allUseCases: string;
     addonsTitle: string;
     addonsHint: string;
+    dataStructuresHint: string;
+    benefits: { title: string; body: string }[];
+    recentHeading: string;
+    recentSubtitle: string;
+    contributeTitle: string;
+    contributeBody: string;
+    contributeCta: string;
   };
   useCases: {
     heading: string;
@@ -141,7 +149,9 @@ const MARKETPLACE_TEXT_DE: Omit<MarketplaceTexts, "locale"> = {
   landing: {
     heading: "Erprobte Lösungen anderer Kommunen",
     subtitle:
-      "Finden, ausprobieren, produktiv nehmen — Anwendungsfälle, die in anderen Kommunen bereits laufen, installiert über die Plattform selbst.",
+      "Finden, ausprobieren, produktiv nehmen - Anwendungsfälle, die in anderen Kommunen bereits laufen, installiert über die Plattform selbst.",
+    intro:
+      "Dieser Marktplatz sammelt, was Kommunen auf CIVITAS/CORE bereits gebaut haben: fertige Anwendungsfälle, die gemeinsamen Datenstrukturen dahinter und die Add-ons, die sie brauchen. Jeder Eintrag nennt, wer ihn betreibt, was er gekostet hat und was er verändert hat - damit Sie entscheiden können, statt zu recherchieren.",
     searchPlaceholder: "Was möchten Sie lösen? z. B. Verkehr rund um den Bahnhof …",
     searchButton: "Suchen",
     useCasesHeading: "Anwendungsfälle",
@@ -149,6 +159,28 @@ const MARKETPLACE_TEXT_DE: Omit<MarketplaceTexts, "locale"> = {
     addonsTitle: "Add-ons",
     addonsHint:
       "Eigenständige Werkzeuge und Anwendungen — die Installation übernimmt der Betreiber der Instanz.",
+    dataStructuresHint:
+      "Gemeinsame Datenformate — die Grundlage dafür, dass Auswertungen anderer Kommunen auf Ihre Daten passen.",
+    benefits: [
+      {
+        title: "Übernehmen statt neu bauen",
+        body: "Was eine Kommune einmal gebaut hat, können andere installieren — samt Datenstrukturen, Schnittstellen und Oberflächen.",
+      },
+      {
+        title: "Vorher sehen, ob es passt",
+        body: "Jeder Eintrag prüft sich gegen Ihre Instanz, und viele bringen Demo-Daten mit: erst ansehen, dann entscheiden.",
+      },
+      {
+        title: "Nachvollziehbar geprüft",
+        body: "Das Siegel eines Eintrags sagt, wie genau er geprüft wurde - mit veröffentlichten Kriterien, nicht nach Gefühl.",
+      },
+    ],
+    recentHeading: "Zuletzt hinzugefügt",
+    recentSubtitle: "Die neuesten Einträge aus allen drei Bereichen.",
+    contributeTitle: "Eigenen Anwendungsfall beitragen",
+    contributeBody:
+      "Läuft bei Ihnen etwas, das andere übernehmen könnten? Sie schnüren daraus ein Paket und reichen es zur Kuratierung ein.",
+    contributeCta: "Beitrag vorbereiten",
   },
   useCases: {
     heading: "Anwendungsfälle",
