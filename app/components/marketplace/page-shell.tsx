@@ -16,11 +16,16 @@ export async function MarketplacePageShell({
   children,
   breadcrumb,
 }: MarketplacePageShellProps) {
-  const session = await auth();
+  // Mock mode runs fully offline (no Keycloak), so there is no session to
+  // fetch — and calling `auth()` without AUTH_SECRET logs a MissingSecret
+  // error on EVERY page render. Skip the call rather than discarding its
+  // result (`.env.example`: in mock mode "all other vars above are ignored").
+  const mock = isMockMode();
+  const session = mock ? null : await auth();
 
-  // Mock mode runs fully offline (no Keycloak) — skip the sign-in wall. The
-  // header shows the mock badge instead of a user-backed session.
-  if (!session?.user && !isMockMode()) {
+  // Mock mode also skips the sign-in wall. The header shows the mock badge
+  // instead of a user-backed session.
+  if (!session?.user && !mock) {
     const text = getMarketplaceText();
     return (
       <main className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
