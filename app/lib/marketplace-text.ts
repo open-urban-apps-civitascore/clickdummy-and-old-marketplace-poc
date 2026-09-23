@@ -42,7 +42,6 @@ export interface MarketplaceTexts {
     dataStructuresHint: string;
     benefits: { title: string; body: string }[];
     recentHeading: string;
-    recentSubtitle: string;
     contributeTitle: string;
     contributeBody: string;
     contributeCta: string;
@@ -176,7 +175,6 @@ const MARKETPLACE_TEXT_DE: Omit<MarketplaceTexts, "locale"> = {
       },
     ],
     recentHeading: "Zuletzt hinzugefügt",
-    recentSubtitle: "Die neuesten Einträge aus allen drei Bereichen.",
     contributeTitle: "Eigenen Anwendungsfall beitragen",
     contributeBody:
       "Läuft bei Ihnen etwas, das andere übernehmen könnten? Sie schnüren daraus ein Paket und reichen es zur Kuratierung ein.",

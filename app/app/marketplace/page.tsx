@@ -1,12 +1,5 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  Blocks,
-  Database,
-  LayoutGrid,
-  PackagePlus,
-  Search,
-} from "lucide-react";
+import { PackagePlus } from "lucide-react";
 
 import { CatalogFreshness } from "@/components/catalog/catalog-freshness";
 import { PageHeader } from "@/components/ui/layout";
@@ -16,7 +9,7 @@ import { getCatalog } from "@/lib/getCatalog";
 import { getDataStructures } from "@/lib/getDataStructures";
 import { getMarketplaceText } from "@/lib/marketplace-text";
 import { getUseCases } from "@/lib/getUseCases";
-import { recentlyAdded } from "@/lib/recently-added";
+import { recentlyAddedByKind } from "@/lib/recently-added";
 
 /**
  * The marketplace front page — the front door, not a catalog.
@@ -39,14 +32,21 @@ export default async function MarketplacePage() {
     getDataStructures().catch(() => []),
   ]);
 
-  const categories = Array.from(
-    new Set(useCases.flatMap((useCase) => useCase.categories)),
-  ).sort();
 
-  const recent = recentlyAdded(
-    { useCases, dataStructures, addons: catalog.addons },
-    6,
-  );
+  // The section hints used to live on a separate row of nav tiles below. Those
+  // tiles pointed at the same three destinations with the same three counts as
+  // these columns, so they were removed and their copy moved up here.
+  const SECTION_HINTS = {
+    "use-case": "Fertige Pakete, die eine Aufgabe lösen — installierbar über die Plattform.",
+    "data-structure": text.landing.dataStructuresHint,
+    addon: text.landing.addonsHint,
+  } as const;
+
+  const recentSections = recentlyAddedByKind({
+    useCases,
+    dataStructures,
+    addons: catalog.addons,
+  }).map((section) => ({ ...section, hint: SECTION_HINTS[section.kind] }));
 
 
   return (
@@ -58,42 +58,6 @@ export default async function MarketplacePage() {
             {text.landing.intro}
           </p>
 
-          {/* Plain GET form — lands on the use-case catalog with `?q=` prefilled. */}
-          <form
-            action="/marketplace/use-cases"
-            method="get"
-            className="mt-5 flex max-w-xl flex-col gap-2 sm:flex-row"
-          >
-            <label className="relative block flex-1">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <input
-                type="search"
-                name="q"
-                placeholder={text.landing.searchPlaceholder}
-                className="h-11 w-full rounded-lg border bg-card pl-9 pr-3 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
-              />
-            </label>
-            <button
-              type="submit"
-              className="inline-flex h-11 shrink-0 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              {text.landing.searchButton}
-            </button>
-          </form>
-
-          {categories.length > 0 ? (
-            <div className="mt-4 flex flex-wrap gap-2">
-              {categories.map((category) => (
-                <Link
-                  key={category}
-                  href={`/marketplace/use-cases?kategorie=${encodeURIComponent(category)}`}
-                  className="rounded-full border bg-card px-3.5 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
-                >
-                  {category}
-                </Link>
-              ))}
-            </div>
-          ) : null}
         </section>
 
         {/* Why this marketplace.
@@ -131,37 +95,7 @@ export default async function MarketplacePage() {
           </ol>
         </section>
 
-        <RecentlyAdded
-          entries={recent}
-          heading={text.landing.recentHeading}
-          subtitle={text.landing.recentSubtitle}
-        />
-
-        {/* The three sections, with their counts — the secondary navigation. */}
-        <section className="grid grid-cols-1 gap-5 sm:grid-cols-3">
-          <SectionTile
-            href="/marketplace/use-cases"
-            icon={LayoutGrid}
-            tone="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
-            title={`${text.landing.useCasesHeading} (${useCases.length})`}
-            hint="Fertige Pakete, die eine Aufgabe lösen — installierbar über die Plattform."
-          />
-          <SectionTile
-            href="/marketplace/datastructures"
-            icon={Database}
-            tone="bg-primary/10 text-primary"
-            title={`${text.sidebar.nav.dataStructures} (${dataStructures.length})`}
-            hint={text.landing.dataStructuresHint}
-          />
-          <SectionTile
-            href="/marketplace/addons"
-            icon={Blocks}
-            // Orange = add-on identity (complement of the CIVITAS blue).
-            tone="bg-orange-500/10 text-orange-700 dark:text-orange-400"
-            title={`${text.landing.addonsTitle} (${catalog.addons.length})`}
-            hint={text.landing.addonsHint}
-          />
-        </section>
+        <RecentlyAdded sections={recentSections} heading={text.landing.recentHeading} />
 
         <section className="flex flex-col items-start gap-4 rounded-xl border bg-muted/30 p-6 lg:p-8 sm:flex-row sm:items-center sm:justify-between">
           <div className="max-w-2xl">
@@ -182,35 +116,5 @@ export default async function MarketplacePage() {
         <CatalogFreshness />
       </div>
     </MarketplacePageShell>
-  );
-}
-
-function SectionTile({
-  href,
-  icon: Icon,
-  tone,
-  title,
-  hint,
-}: {
-  href: string;
-  icon: typeof Blocks;
-  tone: string;
-  title: string;
-  hint: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="group flex flex-col gap-3 rounded-lg border bg-card p-5 transition-shadow hover:shadow-md"
-    >
-      <span aria-hidden className={`grid size-11 place-items-center rounded-lg ${tone}`}>
-        <Icon className="size-5" />
-      </span>
-      <span className="flex items-center gap-1.5 text-base font-semibold text-foreground">
-        {title}
-        <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-      </span>
-      <span className="text-sm leading-relaxed text-muted-foreground">{hint}</span>
-    </Link>
   );
 }

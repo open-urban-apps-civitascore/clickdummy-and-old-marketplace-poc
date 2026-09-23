@@ -23,12 +23,56 @@ export interface CatalogHighlight {
   addedAt?: string;
 }
 
+export const CATALOG_KIND_PLURALS: Record<CatalogKind, string> = {
+  "use-case": "Anwendungsfälle",
+  "data-structure": "Datenstrukturen",
+  addon: "Add-ons",
+};
+
+export const CATALOG_KIND_HREFS: Record<CatalogKind, string> = {
+  "use-case": "/marketplace/use-cases",
+  "data-structure": "/marketplace/datastructures",
+  addon: "/marketplace/addons",
+};
+
+/** One column of "Zuletzt hinzugefügt": a section and its newest entries. */
+export interface CatalogKindPreview {
+  kind: CatalogKind;
+  label: string;
+  href: string;
+  /** How many entries the section holds in total, not just the preview. */
+  total: number;
+  /** One line on what this section is — absorbed from the old nav tiles. */
+  hint?: string;
+  entries: CatalogHighlight[];
+}
+
+/**
+ * The newest entries PER SECTION (Ewa, 2026-09-23).
+ *
+ * One mixed list showed that something had happened, but not where: a burst of
+ * add-ons could bury the fact that no use case had arrived in months. Three
+ * columns make each section accountable for its own freshness, and an empty
+ * column says something true rather than being invisible.
+ */
+export function recentlyAddedByKind(
+  input: { useCases: UseCase[]; dataStructures: DataStructureEntry[]; addons: Addon[] },
+  perKind = 3,
+): CatalogKindPreview[] {
+  const all = recentlyAdded(input, Number.POSITIVE_INFINITY);
+
+  return (["use-case", "data-structure", "addon"] as const).map((kind) => ({
+    kind,
+    label: CATALOG_KIND_PLURALS[kind],
+    href: CATALOG_KIND_HREFS[kind],
+    total: all.filter((entry) => entry.kind === kind).length,
+    entries: all.filter((entry) => entry.kind === kind).slice(0, perKind),
+  }));
+}
+
 /**
  * The newest entries across all three catalog sections, mixed into one list.
- *
- * Mixed rather than three separate rails on purpose: one glance should show
- * that this marketplace has use cases AND data structures AND add-ons, and
- * that something happened here recently.
+ * Kept as the normalisation layer `recentlyAddedByKind` groups.
  *
  * Entries without `addedAt` sort last but are never dropped — otherwise the
  * section stays empty until every row is dated, and a clickdummy that looks

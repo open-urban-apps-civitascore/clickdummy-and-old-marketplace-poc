@@ -140,7 +140,7 @@ export function Panel({
   className?: string;
 }) {
   return (
-    <section className={cn("rounded-lg border bg-card p-5", className)}>
+    <section className={cn("flex flex-col rounded-lg border bg-card p-5", className)}>
       {title ? (
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
@@ -152,7 +152,7 @@ export function Panel({
       ) : null}
       {children}
       {footer ? (
-        <div className="mt-4 border-t pt-3 text-xs text-muted-foreground">{footer}</div>
+        <div className="mt-auto border-t pt-3 text-xs text-muted-foreground">{footer}</div>
       ) : null}
     </section>
   );
