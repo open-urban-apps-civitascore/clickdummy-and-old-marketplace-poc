@@ -2,8 +2,12 @@
 
 import { useMemo, useState, type ReactNode } from "react";
 
-import { CatalogFilters, type CatalogFilterState } from "@/components/catalog/catalog-filters";
+import { CatalogFilters } from "@/components/catalog/catalog-filters";
 import { UseCaseCard } from "@/components/use-cases/use-case-card";
+import { USE_CASE_FACETS } from "@/lib/catalog-facet-defs";
+import { applyCatalogFilters, type CatalogFilterState } from "@/lib/catalog-facets";
+import { buildSearchIndex } from "@/lib/catalog-search";
+import { useCaseSearchText } from "@/lib/catalog-search-text";
 import type { UseCase } from "@/types/use-cases";
 
 interface UseCaseCatalogProps {
@@ -31,33 +35,34 @@ export const UseCaseCatalog = ({
   initialSearch = "",
   initialCategory = "",
 }: UseCaseCatalogProps) => {
+  // `?kategorie=` seeds the facet of the same id — that identity is why the
+  // landing page's chips keep working without a translation table.
   const [filters, setFilters] = useState<CatalogFilterState>({
     search: initialSearch,
-    category: initialCategory,
+    // `?kategorie=Umwelt,Mobilität` seeds a multi-select facet of the same id.
+    facets: initialCategory
+      ? { kategorie: initialCategory.split(",").map((v) => v.trim()).filter(Boolean) }
+      : {},
   });
 
-  const categories = useMemo(
-    () => Array.from(new Set(useCases.flatMap((useCase) => useCase.categories))).sort(),
+  // Built once per list, not per keystroke: typing then costs one substring
+  // check per token per entry instead of a walk over nested objects.
+  const index = useMemo(
+    () => buildSearchIndex(useCases, (useCase) => useCase.id, useCaseSearchText),
     [useCases],
   );
 
-  const filtered = useMemo(() => {
-    const query = filters.search.trim().toLowerCase();
-
-    return useCases.filter((useCase) => {
-      if (query) {
-        const haystack =
-          `${useCase.title} ${useCase.summary} ${useCase.publisher} ${useCase.categories.join(" ")}`.toLowerCase();
-        if (!haystack.includes(query)) return false;
-      }
-
-      if (filters.category && !useCase.categories.includes(filters.category)) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [useCases, filters]);
+  const filtered = useMemo(
+    () =>
+      applyCatalogFilters({
+        entries: useCases,
+        facets: USE_CASE_FACETS,
+        state: filters,
+        index,
+        keyOf: (useCase) => useCase.id,
+      }),
+    [useCases, filters, index],
+  );
 
   return (
     <div className="flex flex-col gap-6">
@@ -70,7 +75,10 @@ export const UseCaseCatalog = ({
       <CatalogFilters
         value={filters}
         onChange={setFilters}
-        categories={categories}
+        facets={USE_CASE_FACETS}
+        entries={useCases}
+        searchIndex={index}
+        keyOf={(useCase) => useCase.id}
         searchPlaceholder={searchPlaceholder}
       />
 
@@ -86,7 +94,7 @@ export const UseCaseCatalog = ({
           ))}
         </div>
       ) : (
-        <div className="rounded-md border border-dashed bg-card p-12 text-center text-sm text-muted-foreground">
+        <div className="rounded-lg border border-dashed bg-card p-12 text-center text-sm text-muted-foreground">
           {noResultsLabel}
         </div>
       )}

@@ -2,15 +2,14 @@
 
 import { useMemo, useState, type ReactNode } from "react";
 
+import { ADDON_FACETS } from "@/lib/catalog-facet-defs";
+import { applyCatalogFilters, type CatalogFilterState } from "@/lib/catalog-facets";
+import { buildSearchIndex } from "@/lib/catalog-search";
+import { addonSearchText } from "@/lib/catalog-search-text";
 import type { Addon } from "@/types/addons";
 
-import { CatalogFilters, type CatalogFilterState } from "./catalog-filters";
+import { CatalogFilters } from "./catalog-filters";
 import { AddonCard } from "./addon-card";
-
-const INITIAL_FILTERS: CatalogFilterState = {
-  search: "",
-  category: "",
-};
 
 interface AddonCatalogProps {
   addons: Addon[];
@@ -32,30 +31,24 @@ export const AddonCatalog = ({
   noResultsLabel = "Keine Add-ons für die aktuelle Suche gefunden.",
   freshness,
 }: AddonCatalogProps) => {
-  const [filters, setFilters] = useState<CatalogFilterState>(INITIAL_FILTERS);
+  const [filters, setFilters] = useState<CatalogFilterState>({ search: "", facets: {} });
 
-  const categories = useMemo(
-    () => Array.from(new Set(addons.flatMap((addon) => addon.categories))).sort(),
+  const index = useMemo(
+    () => buildSearchIndex(addons, (addon) => addon.id, addonSearchText),
     [addons],
   );
 
-  const filtered = useMemo(() => {
-    const query = filters.search.trim().toLowerCase();
-
-    return addons.filter((addon) => {
-      if (query) {
-        const haystack =
-          `${addon.name} ${addon.description} ${addon.author} ${addon.categories.join(" ")}`.toLowerCase();
-        if (!haystack.includes(query)) return false;
-      }
-
-      if (filters.category && !addon.categories.includes(filters.category)) {
-        return false;
-      }
-
-      return true;
-    });
-  }, [addons, filters]);
+  const filtered = useMemo(
+    () =>
+      applyCatalogFilters({
+        entries: addons,
+        facets: ADDON_FACETS,
+        state: filters,
+        index,
+        keyOf: (addon) => addon.id,
+      }),
+    [addons, filters, index],
+  );
 
   return (
     <div className="flex flex-col gap-6">
@@ -65,11 +58,19 @@ export const AddonCatalog = ({
         {freshness ? <div className="mt-2">{freshness}</div> : null}
       </div>
 
-      <CatalogFilters value={filters} onChange={setFilters} categories={categories} />
+      <CatalogFilters
+        value={filters}
+        onChange={setFilters}
+        facets={ADDON_FACETS}
+        entries={addons}
+        searchIndex={index}
+        keyOf={(addon) => addon.id}
+        searchPlaceholder="Add-on suchen …"
+      />
 
       <p className="text-sm text-muted-foreground">
-        <span className="font-semibold text-foreground">{filtered.length}</span>{" "}
-        {countLabel} {addons.length}
+        <span className="font-semibold text-foreground">{filtered.length}</span> {countLabel}{" "}
+        {addons.length}
       </p>
 
       {filtered.length > 0 ? (
@@ -79,7 +80,7 @@ export const AddonCatalog = ({
           ))}
         </div>
       ) : (
-        <div className="rounded-md border border-dashed bg-card p-12 text-center text-sm text-muted-foreground">
+        <div className="rounded-lg border border-dashed bg-card p-12 text-center text-sm text-muted-foreground">
           {noResultsLabel}
         </div>
       )}
