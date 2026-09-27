@@ -29,3 +29,6 @@ This project is funded by the **Federal Ministry of Research, Technology and Spa
 This software is released under the **EUROPEAN UNION PUBLIC LICENCE v. 1.2 (EUPL)**. The code remains fully accessible as Free and Open-Source Software (FOSS).
 
 For more details, see the [LICENSE](./LICENSE) file.
+
+The funder logos in `logo/` are the trademarks of their owners. They are supplied
+for the funding notice and are not licensed under the EUPL.
