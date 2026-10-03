@@ -179,14 +179,14 @@ export function InstallUseCaseButton({ useCase }: { useCase: UseCase }) {
           everywhere else in the app. */}
       <Button onClick={() => setOpen(true)}>
         <Download className="size-4" />
-        Installieren
+        Nachnutzen
       </Button>
 
       <Modal open={open} onClose={close} labelledBy="install-wizard-title">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 border-b p-5">
           <h2 id="install-wizard-title" className="text-lg font-semibold text-foreground">
-            „{useCase.title}“ installieren
+            „{useCase.title}“ nachnutzen
           </h2>
           <button
             type="button"

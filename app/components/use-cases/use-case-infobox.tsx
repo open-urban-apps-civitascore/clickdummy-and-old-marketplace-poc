@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { ClipboardList, ExternalLink, Handshake } from "lucide-react";
+import { ClipboardList, ExternalLink, Handshake, PlayCircle } from "lucide-react";
 
 import {
   Eyebrow,
@@ -125,6 +125,22 @@ export function UseCaseInfobox({
           ) : (
             <span className="font-normal text-muted-foreground">
               Noch keine gemeldet
+            </span>
+          )}
+        </Field>
+
+        {/* Whether it can be tried before any own data exists (feedback
+            2026-10-03). Only the fact: what the sample data contains stays in
+            the demo-data panel, so the box does not repeat it. */}
+        <Field label="Ausprobieren">
+          {useCase.demoData ? (
+            <span className="inline-flex items-center gap-1.5">
+              <PlayCircle aria-hidden className="size-3.5 shrink-0" />
+              Kommt mit Demo-Daten
+            </span>
+          ) : (
+            <span className="font-normal text-muted-foreground">
+              Nur mit eigenen Daten
             </span>
           )}
         </Field>

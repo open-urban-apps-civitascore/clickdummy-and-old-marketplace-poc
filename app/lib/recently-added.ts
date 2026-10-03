@@ -61,7 +61,7 @@ export function recentlyAddedByKind(
 ): CatalogKindPreview[] {
   const all = recentlyAdded(input, Number.POSITIVE_INFINITY);
 
-  return (["use-case", "data-structure", "addon"] as const).map((kind) => ({
+  return (["use-case", "addon", "data-structure"] as const).map((kind) => ({
     kind,
     label: CATALOG_KIND_PLURALS[kind],
     href: CATALOG_KIND_HREFS[kind],

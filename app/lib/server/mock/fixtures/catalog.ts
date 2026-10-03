@@ -554,7 +554,7 @@ const RAW_INDEX = {
       },
       "demoData": {
         "contains": "eine Woche Zähldaten von drei Standorten",
-        "note": "Die Beispieldaten laufen über eine vorkonfigurierte Quelle — Ihre eigenen Displays binden Sie später an, ohne neu zu installieren."
+        "note": "Die Beispieldaten laufen über eine vorkonfigurierte Quelle - Ihre eigenen Displays binden Sie später an, ohne neu zu installieren."
       },
       "images": [
         {
@@ -565,15 +565,6 @@ const RAW_INDEX = {
             "Tagesspitzen morgens und nachmittags klar erkennbar",
             "Durchschnittsgeschwindigkeit je Messpunkt als zweite Kurve",
             "Diese Ansicht zeigt die Kommune dem Rat"
-          ]
-        },
-        {
-          "url": "https://placehold.co/1600x900/eef2f7/5a6b7d.png?text=Platzhalter%0AIm+CIVITAS%2FCORE-Portal",
-          "caption": "Der Anwendungsfall im Portal",
-          "highlights": [
-            "Läuft als Teil der eigenen CIVITAS/CORE-Instanz",
-            "Datensatz, Datenstrukturen und Pipeline an einer Stelle",
-            "Kein zusätzliches System, keine zweite Anmeldung"
           ]
         }
       ],

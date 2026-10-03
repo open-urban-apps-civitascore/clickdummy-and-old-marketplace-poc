@@ -32,15 +32,16 @@ export interface MarketplaceTexts {
   landing: {
     heading: string;
     subtitle: string;
-    intro: string;
     searchPlaceholder: string;
     searchButton: string;
     useCasesHeading: string;
     allUseCases: string;
     addonsTitle: string;
+    useCasesHint: string;
     addonsHint: string;
     dataStructuresHint: string;
-    benefits: { title: string; body: string }[];
+    stepsHeading: string;
+    steps: { title: string; body: string }[];
     recentHeading: string;
     contributeTitle: string;
     contributeBody: string;
@@ -146,38 +147,49 @@ const MARKETPLACE_TEXT_DE: Omit<MarketplaceTexts, "locale"> = {
     backToCatalog: "Zurück zum Katalog",
   },
   landing: {
-    heading: "Erprobte Lösungen anderer Kommunen",
+    // The title says what you do here; the lead starts from the reader's own
+    // problem or idea and says what this place is for (Ewa, 2026-10-03: more
+    // interesting than a definition, but open to any topic - two named
+    // examples made it sound like a two-item catalog); the steps say how.
+    heading: "Lösungen anderer Kommunen nachnutzen",
     subtitle:
-      "Finden, ausprobieren, produktiv nehmen - Anwendungsfälle, die in anderen Kommunen bereits laufen, installiert über die Plattform selbst.",
-    intro:
-      "Dieser Marktplatz sammelt, was Kommunen auf CIVITAS/CORE bereits gebaut haben: fertige Anwendungsfälle, die gemeinsamen Datenstrukturen dahinter und die Add-ons, die sie brauchen. Jeder Eintrag nennt, wer ihn betreibt, was er gekostet hat und was er verändert hat - damit Sie entscheiden können, statt zu recherchieren.",
+      "Sie wollen in Ihrer Kommune ein Problem lösen oder eine Idee umsetzen? Gut möglich, dass eine andere Kommune dafür schon eine Lösung auf CIVITAS/CORE gebaut hat. Die übernehmen Sie hier, statt neu zu bauen.",
     searchPlaceholder: "Was möchten Sie lösen? z. B. Verkehr rund um den Bahnhof …",
     searchButton: "Suchen",
     useCasesHeading: "Anwendungsfälle",
     allUseCases: "Alle Anwendungsfälle",
     addonsTitle: "Add-ons",
-    addonsHint:
-      "Eigenständige Werkzeuge und Anwendungen — die Installation übernimmt der Betreiber der Instanz.",
-    dataStructuresHint:
-      "Gemeinsame Datenformate — die Grundlage dafür, dass Auswertungen anderer Kommunen auf Ihre Daten passen.",
-    benefits: [
+    // One line per menu section, each saying what the thing is and how it
+    // relates to the use cases — the three sections are one system.
+    // Kept to two lines at panel width, so the three panels start their
+    // lists at the same height.
+    useCasesHint: "Fertige Lösungen für eine Aufgabe - samt der nötigen Datenstrukturen.",
+    addonsHint: "Zusätzliche Werkzeuge für Ihre Instanz - die Einrichtung übernimmt Ihr Betreiber.",
+    dataStructuresHint: "Gemeinsame Datenformate - damit Lösungen zu Ihren Daten passen.",
+    // The steps name what the reader meets later: the „Nachnutzen" button,
+    // the demo-data choice in its dialog, the switch to an own data source.
+    // Demo data is conditional on purpose — not every entry ships it.
+    stepsHeading: "So funktioniert’s",
+    steps: [
       {
-        title: "Übernehmen statt neu bauen",
-        body: "Was eine Kommune einmal gebaut hat, können andere installieren — samt Datenstrukturen, Schnittstellen und Oberflächen.",
+        title: "Finden",
+        body: "Jeder Eintrag zeigt, wer ihn betreibt, was er kostet und wo er schon im Einsatz ist.",
       },
       {
-        title: "Vorher sehen, ob es passt",
-        body: "Jeder Eintrag prüft sich gegen Ihre Instanz, und viele bringen Demo-Daten mit: erst ansehen, dann entscheiden.",
+        title: "Nachnutzen",
+        body: "Die Lösung wird in Ihrer eigenen Instanz eingerichtet. Bringt sie Demo-Daten mit, läuft sie sofort, noch ohne eigene Daten.",
       },
       {
-        title: "Nachvollziehbar geprüft",
-        body: "Das Siegel eines Eintrags sagt, wie genau er geprüft wurde - mit veröffentlichten Kriterien, nicht nach Gefühl.",
+        title: "Eigene Daten anschließen",
+        body: "Passt die Lösung, stellen Sie auf Ihre eigenen Daten um. Wenn nicht, entfernen Sie sie wieder.",
       },
     ],
     recentHeading: "Zuletzt hinzugefügt",
-    contributeTitle: "Eigenen Anwendungsfall beitragen",
+    contributeTitle: "Eigene Lösung teilen",
+    // Answers the provider's real worry (leaking secrets, local settings)
+    // instead of describing the packaging work.
     contributeBody:
-      "Läuft bei Ihnen etwas, das andere übernehmen könnten? Sie schnüren daraus ein Paket und reichen es zur Kuratierung ein.",
+      "Läuft bei Ihnen etwas, das anderen Kommunen helfen würde? Zugangsdaten und lokale Einstellungen bleiben beim Teilen automatisch bei Ihnen.",
     contributeCta: "Beitrag vorbereiten",
   },
   useCases: {
@@ -210,7 +222,7 @@ const MARKETPLACE_TEXT_DE: Omit<MarketplaceTexts, "locale"> = {
   detail: {
     createInstallPr: "Create Install PR for my cluster",
     installPrHint:
-      "Erzeugt einen Pull Request im Deployment-Repository der Instanz — die Installation führt der Betreiber aus.",
+      "Erzeugt einen Pull Request im Deployment-Repository der Instanz - die Installation führt der Betreiber aus.",
     openRepository: "Open repository",
     installPathLabel: "Installationsweg",
     addonLicense: "Add-on Lizenz",

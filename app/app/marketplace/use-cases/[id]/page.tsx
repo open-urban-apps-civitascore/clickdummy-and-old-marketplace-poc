@@ -9,8 +9,12 @@ import { DemoDataHighlight } from "@/components/use-cases/demo-data-highlight";
 import { IncludedArtifactsSpec } from "@/components/use-cases/included-artifacts-spec";
 import { InstallUseCaseButton } from "@/components/use-cases/install-use-case-button";
 import { LogicModel } from "@/components/use-cases/logic-model";
-import { EndUserSurfaces } from "@/components/use-cases/end-user-surfaces";
+// import { EndUserSurfaces } from "@/components/use-cases/end-user-surfaces";
 import { ProvidedSurfaces } from "@/components/use-cases/provided-surfaces";
+import {
+  collectRealDataRequirements,
+  RealDataRequirements,
+} from "@/components/use-cases/real-data-requirements";
 import { TechnicalFacts } from "@/components/use-cases/technical-facts";
 import { UseCaseGallery } from "@/components/use-cases/use-case-gallery";
 import { UseCaseIllustration } from "@/components/use-cases/use-case-illustration";
@@ -27,7 +31,8 @@ import { getMarketplaceText } from "@/lib/marketplace-text";
  *      the top instead of halfway down the page;
  *      The reading column carries the pitch and then the Wirkungslogik;
  *   2. a full-width SURFACES band — what you actually open, in a grid that
- *      adapts to how many surfaces the use case declares;
+ *      adapts to how many surfaces the use case declares (hidden since
+ *      2026-10-03, see below);
  *   3. a full-width TECHNICAL ZONE — interfaces, artifacts, platform needs.
  */
 export default async function UseCaseDetailPage({
@@ -120,15 +125,24 @@ export default async function UseCaseDetailPage({
               </div>
             </section>
 
+            {/* "Was dieser Anwendungsfall löst" sits directly under the
+                screenshot, where the gallery's explanation box used to be
+                (feedback 2026-10-03). */}
             <UseCaseGallery images={useCase.images} title={useCase.title} />
-
-            {useCase.demoData ? <DemoDataHighlight demoData={useCase.demoData} /> : null}
 
             <Section title={text.useCases.aboutHeading}>
               <p className="text-base leading-relaxed text-muted-foreground lg:text-lg">
                 {useCase.description}
               </p>
             </Section>
+
+            {useCase.demoData ? <DemoDataHighlight demoData={useCase.demoData} /> : null}
+
+            {/* Right under the demo data (feedback 2026-10-03): what runs at
+                once, then what real operation needs on top. */}
+            <RealDataRequirements
+              requirements={collectRealDataRequirements(useCase.includedArtifacts)}
+            />
 
             {/* Wirkung VOR den Oberflächen (Ewa, 2026-09-23): erst wofür das
                 gut ist, dann womit man es bedient. Beide in der Hauptspalte
@@ -157,22 +171,26 @@ export default async function UseCaseDetailPage({
           </div>
         </div>
 
-        {/* Über die volle Breite (Ewa, 2026-09-23): die Kacheln brauchen Platz,
+        {/* Ausgeblendet (Ewa, 2026-10-03): „Was Sie damit bekommen" wiederholte,
+            was Screenshot, „Was dieser Anwendungsfall löst" und „Schnittstellen"
+            schon zeigen. Bleibt im Code, falls es zurückkommt — dann laut
+            Feedback unter dem Wort „Visualisierungen", wie in der Plattform.
+            Über die volle Breite (Ewa, 2026-09-23): die Kacheln brauchen Platz,
             und ihre Zahl ist je Anwendungsfall verschieden — das Raster richtet
             sich danach (siehe `surfaceGridClass`). */}
-        <Section
+        {/* <Section
           title="Was Sie damit bekommen"
           lead="Oberflächen, die Menschen öffnen — Fachamt, Rat oder Öffentlichkeit."
         >
           <EndUserSurfaces surfaces={useCase.endUserSurfaces} />
-        </Section>
+        </Section> */}
 
         {/* ── Band 3: technical zone, visually separate for IT and data roles ─ */}
         <Section title={text.useCases.technicalHeading} tone="muted">
           <div className="flex flex-col gap-4">
             <ProvidedSurfaces
               surfaces={useCase.provides}
-              title="Schnittstellen dieses Anwendungsfalls"
+              title="Schnittstellen"
             />
 
             <IncludedArtifactsSpec

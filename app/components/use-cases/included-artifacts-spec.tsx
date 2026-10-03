@@ -1,4 +1,4 @@
-import { Boxes, Plug } from "lucide-react";
+import { Boxes } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Panel } from "@/components/ui/layout";
@@ -14,18 +14,18 @@ interface IncludedArtifactsSpecProps {
 
 /**
  * Technical spec of a use case: its CORE artifacts rendered as a compact,
- * scannable list — a fixed-width mono type badge, the artifact title, and the
- * version parsed out of the artifact's own URN — with the dataset URN pinned
- * below.
+ * scannable list — a fixed-width mono type badge, the artifact title and its
+ * version — with the dataset URN pinned below.
  *
- * Each artifact may declare what it additionally needs in the real world
- * (sensors, hardware, external registers). That is the honest counterpart to
- * "install and it runs": the install creates the artifact, but with productive
- * data it only fills up once those exist (Ewa, 2026-08-07).
+ * Data structures show no version. They are the shared, reusable part: the
+ * version that matters for them is the one the instance resolves, not the one
+ * this package happened to be built against (feedback 2026-10-03).
+ *
+ * What an artifact additionally needs in the real world (sensors, registers)
+ * is no longer listed here but under the demo-data panel, collected across
+ * all artifacts — see `real-data-requirements.tsx`.
  */
 export function IncludedArtifactsSpec({ title, artifacts, urn }: IncludedArtifactsSpecProps) {
-  const hasPrerequisites = artifacts.some((artifact) => artifact.requires.length > 0);
-
   return (
     <Panel
       title={title}
@@ -40,16 +40,10 @@ export function IncludedArtifactsSpec({ title, artifacts, urn }: IncludedArtifac
         </>
       }
     >
-      {hasPrerequisites ? (
-        <p className="-mt-1 mb-3 text-sm text-muted-foreground">
-          Was das Paket anlegt - und was Sie für den Betrieb mit echten Daten zusätzlich
-          brauchen.
-        </p>
-      ) : null}
-
       <ul>
         {artifacts.map((artifact) => {
           const { version, isVersioned } = parseUrn(artifact.id);
+          const showsVersion = artifact.kind !== "datastructure";
           return (
             <li key={artifact.id} className="border-b py-3 last:border-b-0">
               <div className="flex items-center gap-4">
@@ -62,42 +56,16 @@ export function IncludedArtifactsSpec({ title, artifacts, urn }: IncludedArtifac
                 <span className="min-w-0 flex-1 truncate font-medium text-foreground">
                   {artifact.title}
                 </span>
-                <span className="shrink-0 font-mono text-xs text-muted-foreground">
-                  {isVersioned ? `v${version}` : "v—"}
-                </span>
+                {showsVersion ? (
+                  <span className="shrink-0 font-mono text-xs text-muted-foreground">
+                    {isVersioned ? `v${version}` : "v—"}
+                  </span>
+                ) : null}
               </div>
               {artifact.description ? (
                 <p className="mt-1 pl-0 text-sm text-muted-foreground sm:pl-36">
                   {artifact.description}
                 </p>
-              ) : null}
-
-              {/* Amber, like the fit check's "fehlt noch" rows: across the whole
-                  technical zone amber answers one question — was müssen Sie noch
-                  beisteuern? Kept light on purpose: needing sensors is a plan
-                  item, not a defect. */}
-              {artifact.requires.length > 0 ? (
-                <div className="mt-2 sm:pl-36">
-                  <div className="rounded-md border border-l-4 border-amber-200 border-l-amber-500 bg-amber-50/60 p-3 dark:border-amber-900/60 dark:border-l-amber-600 dark:bg-amber-950/25">
-                    <p className="flex items-center gap-1.5 text-xs font-medium text-amber-900 dark:text-amber-200">
-                      <Plug aria-hidden className="size-3.5" />
-                      Für echte Daten zusätzlich nötig
-                    </p>
-                    <ul className="mt-1.5 flex flex-col gap-1">
-                      {artifact.requires.map((requirement) => (
-                        <li
-                          key={requirement.label}
-                          className="text-xs text-amber-900/75 dark:text-amber-200/75"
-                        >
-                          <span className="font-medium text-amber-950 dark:text-amber-100">
-                            {requirement.label}
-                          </span>
-                          {requirement.note ? <> — {requirement.note}</> : null}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
               ) : null}
             </li>
           );

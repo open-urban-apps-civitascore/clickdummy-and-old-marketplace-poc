@@ -49,12 +49,13 @@ describe("recentlyAddedByKind", () => {
     const sections = recentlyAddedByKind(INPUT);
     assert.deepEqual(
       sections.map((section) => section.kind),
-      ["use-case", "data-structure", "addon"],
+      // Matches the left menu: Use Cases, Add-ons, Datenstrukturen.
+      ["use-case", "addon", "data-structure"],
     );
   });
 
   test("previews at most `perKind`, newest first, but reports the real total", () => {
-    const [, , addons] = recentlyAddedByKind(INPUT, 3);
+    const [, addons] = recentlyAddedByKind(INPUT, 3);
     assert.equal(addons!.entries.length, 3, "preview is capped");
     assert.equal(addons!.total, INPUT.addons.length, "total counts the whole section");
     const dates = addons!.entries.map((entry) => entry.addedAt ?? "");

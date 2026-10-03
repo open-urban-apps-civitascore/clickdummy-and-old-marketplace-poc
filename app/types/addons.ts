@@ -55,7 +55,7 @@ export const addonSchema = z.object({
     .array(useCaseImageSchema)
     .default([])
     .describe(
-      'Screenshots with per-image caption and highlights — same submission shape as use-case screenshots'
+      'Screenshots with an optional per-image caption (used as alt text) — same shape as use-case screenshots'
     ),
   // Production references are a use-case concept: add-ons are generic platform
   // components, so "which commune runs it" is not part of their trust story.

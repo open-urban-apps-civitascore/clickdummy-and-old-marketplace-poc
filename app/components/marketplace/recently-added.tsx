@@ -16,7 +16,9 @@ import { type CatalogKind, type CatalogKindPreview } from "@/lib/recently-added"
  * Built on the shared `Panel` so the front page reads like the rest of the app
  * — an earlier borderless version drifted into a layout language used nowhere
  * else. Each row carries enough to decide whether to click: title, what it is,
- * who published it and when.
+ * who published it and when. "What it is" gets one line, not two: nine
+ * two-line summaries were most of the front page's text wall (feedback
+ * 2026-10-03), and the full text is one click away.
  */
 const KIND_ICON: Record<CatalogKind, typeof LayoutGrid> = {
   "use-case": LayoutGrid,
@@ -89,7 +91,7 @@ export function RecentlyAdded({
                           <span className="text-sm font-semibold leading-snug text-foreground group-hover:text-primary">
                             {entry.title}
                           </span>
-                          <span className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                          <span className="line-clamp-1 text-xs leading-relaxed text-muted-foreground">
                             {entry.summary}
                           </span>
                           <span className="text-xs text-muted-foreground">

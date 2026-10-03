@@ -35,7 +35,7 @@ export function DemoDataHighlight({ demoData }: { demoData: DemoData }) {
         <div className="min-w-0">
           <p className="text-sm leading-relaxed text-muted-foreground">
             Dieser Anwendungsfall bringt Beispieldaten mit. Beim Installieren können Sie wählen, ob
-            Sie damit starten — das fertige Ergebnis ist dann sofort mit Daten gefüllt, und ob Sie
+            Sie damit starten - das fertige Ergebnis ist dann sofort mit Daten gefüllt, und ob Sie
             eigene Sensoren anbinden, entscheiden Sie später.
             {demoData.contains ? (
               <>

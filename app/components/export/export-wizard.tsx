@@ -32,6 +32,7 @@ type Step = 1 | 2 | 3;
 type CatalogDraft = {
   title: string;
   summary: string;
+  description: string;
   categories: string;
   maintainer: string;
   contact: string;
@@ -40,23 +41,45 @@ type CatalogDraft = {
 };
 
 /**
- * One screenshot as the publisher submits it. `highlights` is free text with
- * one point per line — every listing image must be explained by the commune
- * that knows it; the catalog cannot invent what is on a picture.
+ * One screenshot as the publisher submits it: the image and an optional
+ * alternative text. Per-image bullet points were dropped on 2026-10-03 — the
+ * detail page shows the image alone and „Was dieser Anwendungsfall löst"
+ * carries the explanation.
  */
 type ScreenshotDraft = {
   url: string;
   caption: string;
-  highlights: string;
 };
 
-const EMPTY_SCREENSHOT: ScreenshotDraft = { url: "", caption: "", highlights: "" };
+const EMPTY_SCREENSHOT: ScreenshotDraft = { url: "", caption: "" };
 
 const MAX_SCREENSHOTS = 3;
+
+/**
+ * One line of „Für echte Daten zusätzlich nötig" as the publisher submits it:
+ * what another commune needs besides the package before real data flows —
+ * devices, access, existing registers. Only the publishing commune knows
+ * this; nothing in the bundle says it.
+ */
+type RequirementDraft = { label: string; note: string };
+
+const EMPTY_REQUIREMENT: RequirementDraft = { label: "", note: "" };
+
+const MAX_REQUIREMENTS = 5;
+
+/**
+ * Upper bound for „Was löst dieser Anwendungsfall?": about five lines in the
+ * detail page's reading column — the length of the Musterhausen example (346
+ * characters), which the feedback of 2026-10-03 named as the most it should
+ * be. Enforced here, not in the catalog schema, so entries already in the
+ * catalog keep parsing.
+ */
+const DESCRIPTION_MAX = 350;
 
 const EMPTY_DRAFT: CatalogDraft = {
   title: "",
   summary: "",
+  description: "",
   categories: "",
   maintainer: "",
   contact: "",
@@ -64,16 +87,9 @@ const EMPTY_DRAFT: CatalogDraft = {
   license: "EUPL-1.2",
 };
 
-function highlightLines(value: string): string[] {
-  return value
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
-}
-
-/** A screenshot counts as submitted once it has an image and at least one point. */
+/** A screenshot counts as submitted once it has an image. */
 function isComplete(screenshot: ScreenshotDraft): boolean {
-  return Boolean(screenshot.url.trim()) && highlightLines(screenshot.highlights).length > 0;
+  return Boolean(screenshot.url.trim());
 }
 
 export function ExportWizard({
@@ -92,6 +108,18 @@ export function ExportWizard({
 
   function updateScreenshot(index: number, patch: Partial<ScreenshotDraft>) {
     setScreenshots((current) =>
+      current.map((entry, position) => (position === index ? { ...entry, ...patch } : entry)),
+    );
+  }
+
+  const [requirements, setRequirements] = useState<RequirementDraft[]>([
+    { ...EMPTY_REQUIREMENT },
+  ]);
+  // A row counts once it names what is needed; an explanation alone says nothing.
+  const completeRequirements = requirements.filter((requirement) => requirement.label.trim());
+
+  function updateRequirement(index: number, patch: Partial<RequirementDraft>) {
+    setRequirements((current) =>
       current.map((entry, position) => (position === index ? { ...entry, ...patch } : entry)),
     );
   }
@@ -242,10 +270,32 @@ export function ExportWizard({
                 value={draft.summary}
                 onChange={(event) => setDraft({ ...draft, summary: event.target.value })}
                 rows={2}
-                placeholder="Was löst dieser Anwendungsfall — in einem Satz?"
+                placeholder="Worum geht es, in einem Satz?"
                 className="rounded-md border bg-background px-2.5 py-1.5 text-sm text-foreground"
               />
             </label>
+            {/* Fills „Was dieser Anwendungsfall löst" on the detail page. Until
+                now the form had no field for it at all. */}
+            <div className="flex flex-col gap-1 sm:col-span-2">
+              <label className="flex flex-col gap-1 text-xs text-muted-foreground">
+                Was löst dieser Anwendungsfall? *
+                <textarea
+                  value={draft.description}
+                  onChange={(event) => setDraft({ ...draft, description: event.target.value })}
+                  rows={5}
+                  maxLength={DESCRIPTION_MAX}
+                  aria-describedby="description-count"
+                  placeholder="Welches Problem löst er, für wen, und was ändert sich dadurch?"
+                  className="rounded-md border bg-background px-2.5 py-1.5 text-sm text-foreground"
+                />
+              </label>
+              <p
+                id="description-count"
+                className="self-end text-[11px] tabular-nums text-muted-foreground"
+              >
+                {draft.description.length} / {DESCRIPTION_MAX} Zeichen
+              </p>
+            </div>
             <label className="flex flex-col gap-1 text-xs text-muted-foreground">
               Kategorien
               <input
@@ -285,21 +335,17 @@ export function ExportWizard({
                 className="rounded-md border bg-background px-2.5 py-1.5 text-sm text-foreground"
               />
             </label>
-            {/* Optional by design: naming a person is personal data, so it stays
-                the publishing commune's choice — but a name is what makes a peer
-                actually pick up the phone. */}
-            {/* Every listing image must be explained by the commune that knows
-                it — the points land next to the screenshot in the catalog. */}
+            {/* Optional since 2026-10-03, and without bullet points: the detail
+                page shows the image alone. Without any, it shows a neutral
+                illustration instead. */}
             <fieldset className="flex flex-col gap-3 sm:col-span-2">
               <legend className="pb-1 text-sm font-semibold text-foreground">
-                Screenshots * <span className="font-normal text-muted-foreground">
-                  (mindestens einer)
-                </span>
+                Screenshots{" "}
+                <span className="font-normal text-muted-foreground">(optional)</span>
               </legend>
               <p className="-mt-1 text-xs text-muted-foreground">
-                Zeigen Sie das Ergebnis im Betrieb. Beschreiben Sie je Bild in Stichpunkten, was
-                darauf zu sehen ist — diese Punkte stehen im Katalog neben dem Screenshot.
-                Format 16:9, keine echten personenbezogenen Daten im Bild.
+                Zeigen Sie das Ergebnis im Betrieb. Format 16:9, keine echten personenbezogenen
+                Daten im Bild. Ohne Bild zeigt der Katalog eine neutrale Illustration.
               </p>
 
               {screenshots.map((screenshot, index) => (
@@ -322,7 +368,7 @@ export function ExportWizard({
                   </div>
 
                   <label className="flex flex-col gap-1 text-xs text-muted-foreground">
-                    Bilddatei oder URL *
+                    Bilddatei oder URL
                     <input
                       type="text"
                       value={screenshot.url}
@@ -332,38 +378,21 @@ export function ExportWizard({
                     />
                   </label>
 
+                  {/* No longer shown as a visible title; it is the image's alt
+                      text, so the label says so. */}
                   <label className="flex flex-col gap-1 text-xs text-muted-foreground">
-                    Kurztitel
+                    Alternativtext (optional)
                     <input
                       type="text"
                       value={screenshot.caption}
                       onChange={(event) => updateScreenshot(index, { caption: event.target.value })}
-                      placeholder="Das Dashboard im Betrieb"
+                      placeholder="Dashboard mit dem Wochenverlauf der Fahrzeugzahlen je Zählstelle"
                       className="rounded-md border bg-background px-2.5 py-1.5 text-sm text-foreground"
                     />
+                    <span className="text-[11px] text-muted-foreground">
+                      Wird vorgelesen, wenn jemand das Bild nicht sehen kann.
+                    </span>
                   </label>
-
-                  <label className="flex flex-col gap-1 text-xs text-muted-foreground">
-                    Was ist auf diesem Bild zu sehen? * (ein Stichpunkt pro Zeile)
-                    <textarea
-                      value={screenshot.highlights}
-                      onChange={(event) =>
-                        updateScreenshot(index, { highlights: event.target.value })
-                      }
-                      rows={4}
-                      placeholder={
-                        "Wochenverlauf der Fahrzeugzahlen je Zählstelle\nTagesspitzen morgens und nachmittags\nDiese Ansicht zeigen wir dem Rat"
-                      }
-                      className="rounded-md border bg-background px-2.5 py-1.5 text-sm text-foreground"
-                    />
-                  </label>
-
-                  {screenshot.url.trim() && highlightLines(screenshot.highlights).length === 0 ? (
-                    <p className="text-xs text-amber-700 dark:text-amber-400">
-                      Bitte mindestens einen Stichpunkt angeben — sonst steht das Bild im Katalog
-                      unerklärt.
-                    </p>
-                  ) : null}
                 </div>
               ))}
 
@@ -378,6 +407,85 @@ export function ExportWizard({
               ) : null}
             </fieldset>
 
+            {/* Where „Für echte Daten zusätzlich nötig" on the detail page comes
+                from: in the mock the text sits in the fixtures, in real
+                operation the publishing commune writes it here. Optional — some
+                use cases need nothing beyond the platform. Asked once per use
+                case, the way the page shows it; the catalog format still keeps
+                these per artifact (`includedArtifacts[].requires`), so a real
+                export has to map them onto an artifact, or the format moves
+                them up to the use case. */}
+            <fieldset className="flex flex-col gap-3 sm:col-span-2">
+              <legend className="pb-1 text-sm font-semibold text-foreground">
+                Für echte Daten zusätzlich nötig{" "}
+                <span className="font-normal text-muted-foreground">(optional)</span>
+              </legend>
+              <p className="-mt-1 text-xs text-muted-foreground">
+                Was braucht eine andere Kommune außer diesem Paket, damit echte Daten fließen? Zum
+                Beispiel Geräte, Zugänge oder vorhandene Listen.
+              </p>
+
+              {requirements.map((requirement, index) => (
+                <div key={index} className="flex flex-col gap-2 rounded-md border p-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-medium text-foreground">
+                      Voraussetzung {index + 1}
+                    </span>
+                    {requirements.length > 1 ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setRequirements((current) =>
+                            current.filter((_, position) => position !== index),
+                          )
+                        }
+                        className="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                      >
+                        Entfernen
+                      </button>
+                    ) : null}
+                  </div>
+
+                  <label className="flex flex-col gap-1 text-xs text-muted-foreground">
+                    Was wird gebraucht?
+                    <input
+                      type="text"
+                      value={requirement.label}
+                      onChange={(event) => updateRequirement(index, { label: event.target.value })}
+                      placeholder="Dialog-Displays mit Datenausgang"
+                      className="rounded-md border bg-background px-2.5 py-1.5 text-sm text-foreground"
+                    />
+                  </label>
+
+                  <label className="flex flex-col gap-1 text-xs text-muted-foreground">
+                    Erläuterung (optional)
+                    <input
+                      type="text"
+                      value={requirement.note}
+                      onChange={(event) => updateRequirement(index, { note: event.target.value })}
+                      placeholder="Smiley-Tafeln, die Zählwerte per MQTT melden können"
+                      className="rounded-md border bg-background px-2.5 py-1.5 text-sm text-foreground"
+                    />
+                  </label>
+                </div>
+              ))}
+
+              {requirements.length < MAX_REQUIREMENTS ? (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setRequirements((current) => [...current, { ...EMPTY_REQUIREMENT }])
+                  }
+                  className="w-fit rounded-md border border-dashed px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  Weitere Voraussetzung hinzufügen
+                </button>
+              ) : null}
+            </fieldset>
+
+            {/* Optional by design: naming a person is personal data, so it stays
+                the publishing commune's choice — but a name is what makes a peer
+                actually pick up the phone. */}
             <label className="flex flex-col gap-1 text-xs text-muted-foreground sm:col-span-2">
               Ansprechperson (optional)
               <input
@@ -404,18 +512,13 @@ export function ExportWizard({
               disabled={
                 !draft.title.trim() ||
                 !draft.summary.trim() ||
-                !draft.maintainer.trim() ||
-                completeScreenshots.length === 0
+                !draft.description.trim() ||
+                !draft.maintainer.trim()
               }
             >
               Vorschau
               <ArrowRight className="size-4" />
             </Button>
-            {completeScreenshots.length === 0 ? (
-              <p className="text-xs text-muted-foreground">
-                Mindestens ein Screenshot mit Beschreibung wird benötigt.
-              </p>
-            ) : null}
           </div>
         </div>
       ) : null}
@@ -431,6 +534,12 @@ export function ExportWizard({
               </h2>
             </div>
             <p className="mt-2 text-sm text-muted-foreground">{draft.summary}</p>
+            <p className="mt-3 text-xs font-medium text-foreground">
+              Was dieser Anwendungsfall löst
+            </p>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              {draft.description}
+            </p>
             <p className="mt-2 text-xs text-muted-foreground">
               Pflegestelle: <span className="font-medium text-foreground">{draft.maintainer}</span>
               {draft.license ? (
@@ -444,28 +553,34 @@ export function ExportWizard({
             {completeScreenshots.length > 0 ? (
               <div className="mt-4 rounded-md border border-dashed p-3">
                 <p className="text-xs font-medium text-foreground">
-                  Screenshots ({completeScreenshots.length}) — so erscheinen sie im Katalog
+                  Screenshots ({completeScreenshots.length})
                 </p>
-                <div className="mt-2 flex flex-col gap-3">
+                <ul className="mt-2 flex list-none flex-col gap-1 text-xs">
                   {completeScreenshots.map((screenshot, index) => (
-                    <div key={index} className="text-xs">
-                      <p className="font-medium text-foreground">
-                        {screenshot.caption.trim() || `Bild ${index + 1}`}
-                      </p>
-                      <ul className="mt-1 flex list-none flex-col gap-1">
-                        {highlightLines(screenshot.highlights).map((line) => (
-                          <li key={line} className="flex items-start gap-2 text-muted-foreground">
-                            <span
-                              aria-hidden
-                              className="mt-1.5 size-1 shrink-0 rounded-full bg-border"
-                            />
-                            <span className="min-w-0">{line}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    <li key={index} className="text-muted-foreground">
+                      <span className="font-medium text-foreground">Bild {index + 1}</span>
+                      {screenshot.caption.trim() ? `: ${screenshot.caption.trim()}` : null}
+                    </li>
                   ))}
-                </div>
+                </ul>
+              </div>
+            ) : null}
+
+            {completeRequirements.length > 0 ? (
+              <div className="mt-4 rounded-md border border-dashed p-3">
+                <p className="text-xs font-medium text-foreground">
+                  Für echte Daten zusätzlich nötig ({completeRequirements.length})
+                </p>
+                <ul className="mt-2 flex list-none flex-col gap-1 text-xs">
+                  {completeRequirements.map((requirement, index) => (
+                    <li key={index} className="text-muted-foreground">
+                      <span className="font-medium text-foreground">
+                        {requirement.label.trim()}
+                      </span>
+                      {requirement.note.trim() ? <> — {requirement.note.trim()}</> : null}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ) : null}
 

@@ -36,7 +36,8 @@ export const includedArtifactSchema = z.object({
    * What this artifact needs from the real world to work with productive data
    * — sensors, hardware, external services, existing registers. NOT part of the
    * bundle: the install creates the artifact, but it stays empty until these
-   * exist. Shown per artifact in the technical zone.
+   * exist. Shown on the detail page directly under the demo-data panel,
+   * collected across all artifacts (`real-data-requirements.tsx`).
    */
   requires: z
     .array(
@@ -101,12 +102,14 @@ export const requiredBuildingBlockSchema = z.union([
  */
 export const useCaseImageSchema = z.object({
   url: z.string(),
-  /** Short title of this screenshot, e.g. "Wochenverlauf je Zählstelle". */
+  /**
+   * Short description of this screenshot, e.g. "Wochenverlauf je Zählstelle".
+   * Used as the image's alt text; not shown as visible text since 2026-10-03.
+   */
   caption: z.string().optional(),
   /**
-   * What is visible in THIS screenshot, as short points — filled in per image
-   * by the publishing commune when submitting (Ewa, 2026-08-10). Unique per
-   * image: the reader gets the picture explained, not a generic blurb.
+   * Per-image bullet points (Ewa, 2026-08-10). No longer shown or asked for
+   * since 2026-10-03; kept so catalog rows that carry them still parse.
    */
   highlights: z.array(z.string()).default([]),
 });
@@ -458,7 +461,7 @@ export const INCLUDED_ARTIFACT_KIND_LABELS: Record<
   string
 > = {
   dataset: "Dataset",
-  datastructure: "Datastructure",
+  datastructure: "Data Structure",
   datasource: "Data Source",
   pipeline: "Pipeline",
 };

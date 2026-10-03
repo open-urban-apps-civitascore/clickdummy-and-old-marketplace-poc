@@ -8,12 +8,16 @@ import { cn } from "@/lib/utils";
 import type { UseCaseImage } from "@/types/use-cases";
 
 /**
- * Screenshot band under the hero: the image takes two thirds, the remaining
- * third explains what is on it (Ewa, 2026-08-07) — the caption list doubles as
- * navigation, so a reader who only skims still learns what the listing looks
- * like in operation. Renders nothing without screenshots; the hero then
- * carries a decorative illustration banner instead. Shared by use-case and
- * add-on detail pages (both submit the same screenshot shape).
+ * Screenshot band under the hero: the image alone. Renders nothing without
+ * screenshots; the hero then carries a decorative illustration banner instead.
+ * Shared by use-case and add-on detail pages (both submit the same screenshot
+ * shape).
+ *
+ * There used to be an explanation box under the image — a caption plus
+ * bullet points per screenshot (Ewa, 2026-08-07). It went on 2026-10-03 on
+ * both pages: on the use-case page "Was dieser Anwendungsfall löst" takes its
+ * place, and the submission form no longer asks for bullet points. The
+ * caption survives as the image's alt text.
  *
  * Framing is applied uniformly by the UI; uploads should be raw 16:9 UI
  * screenshots without browser chrome (per app-store submission practice).
@@ -80,41 +84,16 @@ export function UseCaseGallery({ images, title }: { images: UseCaseImage[]; titl
             </>
           ) : null}
         </div>
-      </figure>
 
-      {/* Explains THIS screenshot — the points come per image from the
-          publisher's submission form, not from generic listing copy. The
-          caption IS the heading here: a separate "Was Sie hier sehen" label
-          only repeated what the section already is (Ewa, 2026-09-22). */}
-      <div aria-live="polite" className="rounded-lg border bg-card p-5">
-        {current.caption ? (
-          <p className="text-sm font-semibold text-foreground">{current.caption}</p>
-        ) : null}
-
-        {current.highlights.length > 0 ? (
-          <ul className="mt-2.5 flex list-none flex-col gap-2.5">
-            {current.highlights.map((highlight) => (
-              <li
-                key={highlight}
-                className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground"
-              >
-                <span aria-hidden className="mt-1.5 size-1.5 shrink-0 rounded-full bg-border" />
-                <span className="min-w-0">{highlight}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="mt-3 text-xs text-muted-foreground">
-            Für dieses Bild wurde noch keine Beschreibung eingereicht.
-          </p>
-        )}
-
+        {/* The visible "Bild 2 von 3" lived in the explanation box. Screen
+            readers still get the position and the caption when paging. */}
         {images.length > 1 ? (
-          <p className="mt-4 border-t pt-3 text-[11px] text-muted-foreground">
+          <p aria-live="polite" className="sr-only">
             Bild {safeIndex + 1} von {images.length}
+            {current.caption ? `: ${current.caption}` : ""}
           </p>
         ) : null}
-      </div>
+      </figure>
     </section>
   );
 }
