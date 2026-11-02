@@ -1,0 +1,25 @@
+# Clickdummy address on the dev cluster; apply together with clickdummy.yaml.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: clickdummy
+  namespace: clickdummy
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - clickdummy.dev.openurbanapps.org
+      secretName: clickdummy-tls
+  rules:
+    - host: clickdummy.dev.openurbanapps.org
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: clickdummy
+                port:
+                  name: http

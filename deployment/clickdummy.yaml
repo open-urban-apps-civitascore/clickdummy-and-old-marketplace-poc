@@ -1,4 +1,4 @@
-# Clickdummy — the mock-mode marketplace UI at clickdummy.dev.openurbanapps.org.
+# Clickdummy — the mock-mode marketplace UI at clickdummy.<cluster domain>.
 #
 # Deliberately NOT wired through the CIVITAS add-on mechanism: in mock mode the
 # app is fully self-contained (no Keycloak — page-shell.tsx skips the sign-in
@@ -9,11 +9,13 @@
 # file drop.
 #
 # Prerequisites already in place on the cluster:
-#   - wildcard *.dev.openurbanapps.org → ingress LB (Cloudflare, DNS only)
+#   - wildcard DNS for the cluster domain → ingress LB (Cloudflare, DNS only)
 #   - nginx ingress class + cert-manager cluster issuer 'letsencrypt'
 #     (same pair the platform's own APISIX ingress uses)
 #
-# Deploy:  kubectl apply -f deployment/clickdummy.yaml
+# The address is per cluster, so the Ingress lives in its own file:
+# Deploy (demo): kubectl apply -f deployment/clickdummy.yaml -f deployment/clickdummy-ingress-demo.yaml
+# Deploy (dev):  kubectl apply -f deployment/clickdummy.yaml -f deployment/clickdummy-ingress-dev.yaml
 # Image:   docker buildx build --platform linux/amd64 \
 #            -t ghcr.io/open-urban-apps-civitascore/clickdummy:v0.5.0 \
 #            app --push
@@ -88,28 +90,3 @@ spec:
       # The addon app listens on 3001 (the real marketplace uses 3000) — the
       # mismatch that would otherwise surface as a 502.
       targetPort: 3001
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: clickdummy
-  namespace: clickdummy
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
-spec:
-  ingressClassName: nginx
-  tls:
-    - hosts:
-        - clickdummy.dev.openurbanapps.org
-      secretName: clickdummy-tls
-  rules:
-    - host: clickdummy.dev.openurbanapps.org
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: clickdummy
-                port:
-                  name: http
