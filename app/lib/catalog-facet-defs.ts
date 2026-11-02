@@ -4,16 +4,19 @@ import { addonCurationTier, type Addon } from "@/types/addons";
 import {
   CURATION_TIER_LABELS,
   INSTALL_PATH_LABELS,
+  installPathSchema,
   type CurationTier,
   type InstallPath,
 } from "@/types/curation-tier";
 import {
+  collaborationLabel,
   COST_BAND_LABELS,
   COST_BAND_ORDER,
   EFFORT_BAND_LABELS,
   EFFORT_BAND_ORDER,
   USE_CASE_STATUS_LABELS,
   USE_CASE_STATUS_ORDER,
+  USE_CASE_THEMES,
   type CostBand,
   type EffortBand,
   type UseCaseStatus,
@@ -26,12 +29,16 @@ import type { UseCase } from "@/types/use-cases";
  *
  * MODE PER FACET (audited 2026-09-23). The mode follows the data, not taste:
  *   - categorical, an entry may carry several, people ask "A or B"  → `multi`
- *     Themengebiet, Siegel, Status, Herausgeber, CivitasCore-Version
+ *     Themengebiet, Siegel, Status, Herausgeber, CivitasCore-Version,
+ *     Nachnutzer, Kooperationsbedarf
  *   - an ordered scale where a choice means "at most this"          → `ordinal`
  *     Aufbaukosten, laufende Kosten, Ressourceneinsatz — the labels already
  *     say „unter 10.000 €", so an entry under 1.000 € has to match
  *   - a yes/no property with a single option                        → `toggle`
- *     Kooperationsbedarf
+ *     none at the moment
+ *
+ * A facet with `options` lists its whole vocabulary, empty options greyed out;
+ * Herausgeber, Nachnutzer and Core-Version are open sets and list what exists.
  *
  * Kept in `lib/` rather than next to the components so they stay unit-testable
  * — the test glob is `lib/**​/*.test.ts`.
@@ -48,6 +55,7 @@ export const USE_CASE_FACETS: FacetDef<UseCase>[] = [
     label: "Themengebiet",
     mode: "multi",
     valuesOf: (useCase) => useCase.categories,
+    options: USE_CASE_THEMES,
   },
   {
     id: "siegel",
@@ -114,6 +122,7 @@ export const USE_CASE_FACETS: FacetDef<UseCase>[] = [
     label: "Installationsweg",
     mode: "multi",
     valuesOf: (useCase) => [useCase.installPath],
+    options: installPathSchema.options,
     labelOf: (value) => INSTALL_PATH_LABELS[value as InstallPath],
     group: "more",
   },
@@ -126,12 +135,22 @@ export const USE_CASE_FACETS: FacetDef<UseCase>[] = [
     group: "more",
   },
   {
+    id: "nachnutzer",
+    label: "Nachnutzende",
+    mode: "multi",
+    valuesOf: (useCase) => useCase.adopters.map((adopter) => adopter.name),
+    group: "more",
+  },
+  {
     id: "kooperation",
     label: "Kooperationsbedarf",
-    mode: "toggle",
-    valuesOf: (useCase) => (useCase.implementation?.collaboration?.wanted ? ["ja"] : []),
-    options: ["ja"] as const,
-    labelOf: () => "Sucht Mitstreiter",
+    mode: "multi",
+    // Saying nothing about partners counts as "not explicitly sought".
+    valuesOf: (useCase) => [
+      useCase.implementation?.collaboration?.wanted ? "gesucht" : "nicht-gesucht",
+    ],
+    options: ["gesucht", "nicht-gesucht"] as const,
+    labelOf: (value) => collaborationLabel(value === "gesucht"),
     group: "more",
   },
 ];

@@ -25,7 +25,8 @@ export interface FacetDef<T> {
   /** Display label for a raw value, e.g. a band code → "M — unter 10.000 €". */
   labelOf?: (value: string) => string;
   /**
-   * Fixed option order; derived and sorted when absent.
+   * The full vocabulary in its order, offered in full: options no entry
+   * carries show 0 and render greyed out. Derived and sorted when absent.
    * REQUIRED for `ordinal`, where the order IS the scale (low → high).
    */
   options?: readonly string[];
@@ -46,14 +47,17 @@ export const EMPTY_FILTER_STATE: CatalogFilterState = { search: "", facets: {} }
 
 export const facetMode = <T,>(def: FacetDef<T>): FacetMode => def.mode ?? "multi";
 
-/** The options offered for a facet: the declared order, or derived and sorted. */
+/** The options offered for a facet: the whole declared vocabulary, or derived and sorted. */
 export function facetOptions<T>(def: FacetDef<T>, entries: T[]): string[] {
-  if (def.options) {
-    // Keep the declared order, but only offer what the data contains — a band
-    // nobody used is a dead end in the UI.
-    const present = new Set(entries.flatMap((entry) => def.valuesOf(entry)));
-    return def.options.filter((option) => present.has(option));
-  }
+  const present = presentOptions(def, entries);
+  if (!def.options) return present;
+  const declared = def.options;
+  // A value outside the vocabulary (a live row) is appended, not dropped.
+  return [...declared, ...present.filter((value) => !declared.includes(value))];
+}
+
+/** Only the values some entry actually carries, sorted. */
+function presentOptions<T>(def: FacetDef<T>, entries: T[]): string[] {
   return Array.from(new Set(entries.flatMap((entry) => def.valuesOf(entry)))).sort((a, b) =>
     a.localeCompare(b, "de"),
   );
@@ -103,10 +107,10 @@ export const activeFacetCount = (selection: FacetSelection): number =>
  *
  * The second condition is NOT redundant: a single option still narrows when
  * some entries lack the value entirely, so only the all-entries-share-it case
- * is suppressed.
+ * is suppressed. Judged on the values present, not the declared vocabulary.
  */
 export function isUsefulFacet<T>(def: FacetDef<T>, entries: T[]): boolean {
-  const options = facetOptions(def, entries);
+  const options = presentOptions(def, entries);
   if (options.length === 0) return false;
   if (options.length > 1) return true;
   return entries.filter((entry) => def.valuesOf(entry).includes(options[0]!)).length < entries.length;

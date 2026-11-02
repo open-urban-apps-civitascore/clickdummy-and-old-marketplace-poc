@@ -27,6 +27,7 @@ const USE_CASE: UseCase = {
   provides: [],
   endUserSurfaces: [],
   roles: [],
+  adopters: [],
   curationTier: "experimental",
   installPath: "portal",
   compatibility: ["core-v2"],

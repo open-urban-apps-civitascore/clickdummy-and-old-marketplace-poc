@@ -2,12 +2,13 @@
 
 import { useMemo, useState, type ReactNode } from "react";
 
-import { CatalogFilters } from "@/components/catalog/catalog-filters";
+import { CatalogFilters, SortDropdown } from "@/components/catalog/catalog-filters";
 import { UseCaseCard } from "@/components/use-cases/use-case-card";
 import { USE_CASE_FACETS } from "@/lib/catalog-facet-defs";
 import { applyCatalogFilters, type CatalogFilterState } from "@/lib/catalog-facets";
 import { buildSearchIndex } from "@/lib/catalog-search";
 import { useCaseSearchText } from "@/lib/catalog-search-text";
+import { findSort, USE_CASE_SORTS } from "@/lib/catalog-sort";
 import type { UseCase } from "@/types/use-cases";
 
 interface UseCaseCatalogProps {
@@ -39,9 +40,11 @@ export const UseCaseCatalog = ({
   // landing page's chips keep working without a translation table.
   const [filters, setFilters] = useState<CatalogFilterState>({
     search: initialSearch,
-    // `?kategorie=Umwelt,Mobilität` seeds a multi-select facet of the same id.
+    // `?kategorie=Umwelt & Klima,Energie & Netze` seeds a multi-select facet of
+    // the same id. Only a comma WITHOUT a following space separates: one topic
+    // is „Planen, Bauen & Immobilien".
     facets: initialCategory
-      ? { kategorie: initialCategory.split(",").map((v) => v.trim()).filter(Boolean) }
+      ? { kategorie: initialCategory.split(/,(?!\s)/).map((v) => v.trim()).filter(Boolean) }
       : {},
   });
 
@@ -64,6 +67,14 @@ export const UseCaseCatalog = ({
     [useCases, filters, index],
   );
 
+  const [sortId, setSortId] = useState(USE_CASE_SORTS[0]!.id);
+  // On a copy: sorting in place would reorder the memoised `filtered` behind
+  // React's back.
+  const sorted = useMemo(
+    () => [...filtered].sort(findSort(USE_CASE_SORTS, sortId).compare),
+    [filtered, sortId],
+  );
+
   return (
     <div className="flex flex-col gap-6">
       <div className="max-w-3xl">
@@ -82,14 +93,18 @@ export const UseCaseCatalog = ({
         searchPlaceholder={searchPlaceholder}
       />
 
-      <p className="text-sm text-muted-foreground">
-        <span className="font-semibold text-foreground">{filtered.length}</span> {countLabel}{" "}
-        {useCases.length}
-      </p>
+      {/* The order applies to the results, so it sits with them, not among the filters. */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="text-sm text-muted-foreground">
+          <span className="font-semibold text-foreground">{filtered.length}</span> {countLabel}{" "}
+          {useCases.length}
+        </p>
+        <SortDropdown sorts={USE_CASE_SORTS} value={sortId} onChange={setSortId} />
+      </div>
 
-      {filtered.length > 0 ? (
+      {sorted.length > 0 ? (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((useCase) => (
+          {sorted.map((useCase) => (
             <UseCaseCard key={useCase.id} useCase={useCase} />
           ))}
         </div>

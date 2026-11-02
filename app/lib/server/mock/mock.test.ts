@@ -72,6 +72,19 @@ describe("mock mode — fixtures", () => {
         useCase.implementation?.logicModel?.outcome,
         `use case '${useCase.id}' has no logic model`,
       );
+      // Without one, „Wer dahintersteht" shows no e-mail.
+      assert.ok(
+        useCase.trust?.contactPerson?.email,
+        `use case '${useCase.id}' has no contact e-mail`,
+      );
+      // The publisher running its own use case is not a re-use.
+      for (const adopter of useCase.adopters) {
+        assert.notEqual(
+          adopter.name,
+          useCase.implementation?.operator ?? useCase.publisher,
+          `use case '${useCase.id}' lists its own operator as Nachnutzer`,
+        );
+      }
     }
     for (const useCase of mockRepoListIndex.useCases) {
       // Every catalog use case must carry a pin AND a matching fixture: an

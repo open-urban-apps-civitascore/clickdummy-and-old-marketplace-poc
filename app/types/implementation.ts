@@ -15,6 +15,20 @@ import { z } from "zod";
  * addition — see `implementationResourcesSchema`.
  */
 
+// ── Themengebiete ───────────────────────────────────────────────────────────
+// The closed topic list of the live catalog (`civitas-marketplace/lib/catalog/
+// vocabulary.ts`), stored as the label itself because `categories` are strings.
+export const USE_CASE_THEMES = [
+  "Umwelt & Klima",
+  "Mobilität & Verkehr",
+  "Planen, Bauen & Immobilien",
+  "Tourismus & Kultur",
+  "Verwaltung & Bürgerservices",
+  "Katastrophenschutz & Sicherheit",
+  "Energie & Netze",
+  "Inklusion & Barrierefreiheit",
+] as const;
+
 // ── Cost and effort bands ───────────────────────────────────────────────────
 // The vocabulary of the public CIVITAS Connect submission form, kept verbatim
 // so entries stay comparable with the catalog our readers already know. Bands
@@ -82,8 +96,10 @@ export const implementationResourcesSchema = z.object({
 });
 
 /**
- * Reifegrad der Umsetzung IN DER BETREIBENDEN KOMMUNE — das Vokabular des
- * öffentlichen CIVITAS-Connect-Formulars, unverändert übernommen.
+ * Reifegrad der Umsetzung IN DER BETREIBENDEN KOMMUNE — die Stufen des
+ * öffentlichen CIVITAS-Connect-Formulars. Die gespeicherten Werte sind dort
+ * unverändert übernommen, damit Einträge von dort 1:1 passen; nur EIN Label
+ * weicht ab, siehe `entwurf` in `USE_CASE_STATUS_LABELS`.
  *
  * NICHT zu verwechseln mit `curationTier`: die Kurationsstufe sagt, wie genau
  * WIR den Eintrag geprüft haben, der Status sagt, wie weit die Umsetzung vor
@@ -112,7 +128,9 @@ export const USE_CASE_STATUS_ORDER = [
 
 export const USE_CASE_STATUS_LABELS: Record<UseCaseStatus, string> = {
   idee: "Idee",
-  entwurf: "Entwurf",
+  // CIVITAS Connect sagt „Entwurf" — hier schon der Zustand eines frisch
+  // installierten Datensatzes. Der gespeicherte Wert bleibt `entwurf`.
+  entwurf: "In Konzeption",
   "in-entwicklung": "In Entwicklung",
   prototyp: "Prototyp",
   produktiv: "Produktiv",
@@ -123,7 +141,7 @@ export const USE_CASE_STATUS_LABELS: Record<UseCaseStatus, string> = {
 /** Der erklärende Halbsatz, den das Formular mitliefert. */
 export const USE_CASE_STATUS_HINTS: Record<UseCaseStatus, string> = {
   idee: "Die Idee ist beschrieben, aber noch nicht ausgearbeitet.",
-  entwurf: "Ein Konzept liegt vor, die Umsetzung hat noch nicht begonnen.",
+  entwurf: "Ein Konzept wird erarbeitet oder liegt vor, die Umsetzung hat noch nicht begonnen.",
   "in-entwicklung": "Die Umsetzung läuft.",
   prototyp: "Die erste Entwicklung ist umgesetzt und wird getestet.",
   produktiv: "Im Regelbetrieb und dauerhaft in Nutzung.",
@@ -192,6 +210,15 @@ export const IMPLEMENTATION_LABELS = {
   collaboration: "Kooperationsbedarf",
   reference: "Ausführliche Beschreibung",
 } as const;
+
+/** In Worten statt „Ja"/„Nein"; die zweite Formulierung gilt auch für „keine Angabe". */
+export const COLLABORATION_LABELS = {
+  sought: "Suche Mitstreiter",
+  notSought: "Keine Mitstreiter explizit gesucht",
+} as const;
+
+export const collaborationLabel = (wanted: boolean | undefined): string =>
+  wanted ? COLLABORATION_LABELS.sought : COLLABORATION_LABELS.notSought;
 
 /**
  * Die Wirkungslogik in Lesereihenfolge: Input → Output → Outcome → Impact.

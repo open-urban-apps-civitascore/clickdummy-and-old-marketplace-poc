@@ -137,8 +137,28 @@ Rules:
   what?"; the active tint already says it is on.
 - **A facet that cannot narrow anything is not rendered.** If every entry
   shares one value, the control is a lie about the data.
+- **A fixed vocabulary shows all its options.** Themengebiet, Siegel, Status,
+  the cost and effort bands, Installationsweg and Kooperationsbedarf list
+  every option, also those no entry carries yet, greyed out at 0: the list
+  tells the reader what the catalog takes (ideas too, not only finished
+  solutions) before the first such entry exists (feedback 2026-11-02). Open
+  sets (Herausgeber, Nachnutzende, Core-Version) list what exists. Whether a
+  facet appears at all still follows the data, per the rule above.
 - The result count sits directly under the bar, so filtering visibly *does*
   something.
+
+### Sorting is not a filter
+
+A sort changes the *order* of the results, never which entries are in them —
+so it does not sit among the facets. It sits on the result-count row, at the
+right, and it is the one dropdown whose button **names its current value**
+(„Sortieren: Eintrag aktualisiert"): an order the reader cannot see is an
+order they have no reason to trust.
+
+Every option sorts **newest first** (feedback 2026-10-12): Eintrag
+aktualisiert (the default), Letztes Software-Update, Neu im Katalog. An entry
+without the date sorts last; when no entry has it, the catalog keeps its own
+order instead of shuffling.
 
 ### The mode follows the data
 
@@ -148,9 +168,15 @@ call:
 
 | Mode | When | Behaviour | Here |
 |---|---|---|---|
-| `multi` | categorical; an entry may carry several; people ask "A **or** B" | OR within the facet, AND across facets | Themengebiet, Siegel, Status, Herausgeber, Core-Version |
+| `multi` | categorical; an entry may carry several; people ask "A **or** B" | OR within the facet, AND across facets | Themengebiet, Siegel, Status, Herausgeber, Core-Version, Nachnutzende, Kooperationsbedarf |
 | `ordinal` | an ordered scale | choosing a step means **at most** that step | Aufbaukosten, laufende Kosten, Ressourceneinsatz |
-| `toggle` | a yes/no property | one option, on or off | Demo-Daten, Kooperationsbedarf |
+| `toggle` | a yes/no property | one option, on or off | none at the moment |
+
+Kooperationsbedarf was a toggle („Sucht Mitstreiter") until 2026-10-12. It
+now offers two worded options, „Suche Mitstreiter" and „Keine Mitstreiter
+explizit gesucht", and every entry falls under exactly one: the second wording
+is true of an entry that said no AND of one that said nothing, so it can hold
+both without putting a refusal in anyone's mouth.
 
 Two failures this fixed, both found by reading the screen rather than the code
 (Ewa, 2026-09-23):
@@ -233,6 +259,27 @@ as the other.
 
 `bg-primary text-primary-foreground` is the one primary action on a surface.
 One per surface. Everything else is a link or a neutral button.
+
+### 4.4 Meldungen — one container, four tones
+
+Written 2026-10-13 for the live marketplace's share page, where about ten
+message recipes had grown: yellow and pink body text, good news in amber, the
+same message once as a box at the top and once as bare text further down. The
+marketplace implements this as `components/ui/notice.tsx`.
+
+| Tone | Icon | When |
+|---|---|---|
+| neutral | `Info` | a fact or a limit, or a task for someone else: no right to share, sharing not set up (the operator does that), a merge request that is already open |
+| success | `CircleCheck` | an action finished or a check passed |
+| warn | `TriangleAlert` | something is missing that the person on this page can add, here or in the portal |
+| error | `CircleX` | an action failed or was refused |
+
+- Only the icon, the border and the tint carry the tone. Text stays black or
+  grey: the status tokens are bright, and coloured body text on a pale tint is
+  hard to read.
+- No blue info tone: blue is the Community tier (§4.1).
+- Good news is never amber.
+- A result appears where the action was taken, not at the foot of the page.
 
 ### What is *not* a colour job
 

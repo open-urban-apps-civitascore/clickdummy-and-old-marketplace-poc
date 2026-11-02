@@ -13,6 +13,7 @@ import {
   type CatalogFilterState,
   type FacetDef,
 } from "@/lib/catalog-facets";
+import { findSort, type CatalogSort } from "@/lib/catalog-sort";
 import { cn } from "@/lib/utils";
 
 export type { CatalogFilterState } from "@/lib/catalog-facets";
@@ -135,28 +136,8 @@ function FacetDropdown<T>({
   /** `close` is false for multi-select, so several values can be picked. */
   onChangeValues: (next: string[], close: boolean) => void;
 }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
+  const { containerRef, triggerRef } = useDismiss(open, onOpenChange);
   const panelId = useId();
-
-  useEffect(() => {
-    if (!open) return;
-    const onPointerDown = (event: MouseEvent) => {
-      if (!containerRef.current?.contains(event.target as Node)) onOpenChange(false);
-    };
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onOpenChange(false);
-        triggerRef.current?.focus();
-      }
-    };
-    document.addEventListener("mousedown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("mousedown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [open, onOpenChange]);
 
   const mode = facetMode(facet);
   const selected = state.facets[facet.id] ?? [];
@@ -291,6 +272,104 @@ function FacetDropdown<T>({
       ) : null}
     </div>
   );
+}
+
+/**
+ * The order of the results, as a dropdown on the result-count row.
+ *
+ * Unlike a facet button, this one names the CURRENT choice: a facet button
+ * that turned into its value made the bar hard to scan, but an order the
+ * reader cannot see is an order they cannot trust. One choice at a time, and
+ * there is no "Alle" — something always decides the order.
+ */
+export function SortDropdown<T>({
+  sorts,
+  value,
+  onChange,
+}: {
+  sorts: CatalogSort<T>[];
+  value: string;
+  onChange: (id: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const { containerRef, triggerRef } = useDismiss(open, setOpen);
+  const panelId = useId();
+  const current = findSort(sorts, value);
+
+  return (
+    <div ref={containerRef} className="relative shrink-0">
+      <button
+        ref={triggerRef}
+        type="button"
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        aria-controls={open ? panelId : undefined}
+        onClick={() => setOpen(!open)}
+        className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border bg-card px-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <span className="max-w-[18rem] truncate">
+          Sortieren: <span className="font-medium text-foreground">{current.label}</span>
+        </span>
+        <ChevronDown
+          aria-hidden
+          className={cn("size-4 transition-transform", open && "rotate-180")}
+        />
+      </button>
+
+      {open ? (
+        <div
+          id={panelId}
+          role="listbox"
+          aria-label="Sortierung"
+          // Right-aligned: the button sits at the right end of its row.
+          className="absolute right-0 top-full z-20 mt-1.5 min-w-60 rounded-lg border bg-card p-1 shadow-lg"
+        >
+          <p className="px-2.5 pb-1 pt-2 text-[11px] uppercase tracking-wide text-muted-foreground">
+            Neueste zuerst
+          </p>
+          {sorts.map((sort) => (
+            <Option
+              key={sort.id}
+              selected={sort.id === current.id}
+              onSelect={() => {
+                onChange(sort.id);
+                setOpen(false);
+              }}
+            >
+              {sort.label}
+            </Option>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+/** Close an open dropdown on a click outside it or on Escape. */
+function useDismiss(open: boolean, onOpenChange: (open: boolean) => void) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (event: MouseEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) onOpenChange(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onOpenChange(false);
+        triggerRef.current?.focus();
+      }
+    };
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open, onOpenChange]);
+
+  return { containerRef, triggerRef };
 }
 
 function Option({

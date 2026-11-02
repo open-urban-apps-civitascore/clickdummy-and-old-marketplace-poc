@@ -54,8 +54,25 @@ describe("facetOptions", () => {
     assert.deepEqual(facetOptions(TAGS, ROWS), ["Grünflächen", "Mobilität", "Umwelt", "Verkehr"]);
   });
 
-  test("declared options keep their order but only offer what the data has", () => {
-    assert.deepEqual(facetOptions(BAND, ROWS), ["s", "l"]);
+  test("declared options are offered in full and in order, absent ones included", () => {
+    assert.deepEqual(facetOptions(BAND, ROWS), ["s", "m", "l", "xl"]);
+    // The absent ones count 0, which is what renders them greyed out.
+    const multi: FacetDef<Row> = { ...BAND, mode: "multi" };
+    const counts = facetOptionCounts(multi, ROWS, facetOptions(multi, ROWS));
+    assert.equal(counts.get("m"), 0);
+    assert.equal(counts.get("xl"), 0);
+    assert.equal(counts.get("s"), 1);
+  });
+
+  test("a value outside the declared vocabulary is appended, not dropped", () => {
+    const topics: FacetDef<Row> = { ...TAGS, options: ["Umwelt", "Energie"] };
+    assert.deepEqual(facetOptions(topics, ROWS), [
+      "Umwelt",
+      "Energie",
+      "Grünflächen",
+      "Mobilität",
+      "Verkehr",
+    ]);
   });
 });
 
@@ -187,6 +204,19 @@ describe("isUsefulFacet", () => {
   test("keeps multi-option facets and drops empty ones", () => {
     assert.equal(isUsefulFacet(TAGS, ROWS), true);
     assert.equal(isUsefulFacet({ id: "x", label: "X", valuesOf: () => [] }, ROWS), false);
+  });
+
+  test("judges a declared vocabulary by the values present, not its length", () => {
+    // Four declared steps, but every row on the same one: a control that
+    // changes nothing.
+    const sameStep: FacetDef<Row> = {
+      id: "status",
+      label: "Status",
+      valuesOf: () => ["prototyp"],
+      options: ["idee", "entwurf", "prototyp", "produktiv"] as const,
+    };
+    assert.equal(isUsefulFacet(sameStep, ROWS), false);
+    assert.equal(isUsefulFacet(BAND, ROWS), true);
   });
 });
 

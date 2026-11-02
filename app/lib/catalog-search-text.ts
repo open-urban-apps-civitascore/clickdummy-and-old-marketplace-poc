@@ -62,6 +62,8 @@ export function useCaseSearchText(useCase: UseCase): string {
     useCase.trust?.contactPerson?.name,
     useCase.trust?.contactPerson?.role,
     useCase.trust?.productionReferences.map((reference) => reference.municipality).join(" "),
+    // Typing an adopter's name finds every use case it reports using.
+    useCase.adopters.map((adopter) => adopter.name).join(" "),
     useCase.trust?.curatedBy,
     useCase.trust?.license,
 

@@ -8,15 +8,18 @@ import { repoListIndexSchema, type RepoListIndex } from "@/types/repo-list";
  * the schema, the app fails loudly, not subtly.
  *
  * The enrichment is the optional blocks `trust`, `requirements`, `provides`,
- * `roles`, `implementation` and `addedAt`, the whole `dataStructures` section,
+ * `roles`, `implementation`, `adopters`, `addedAt`, `updatedAt` and
+ * `softwareUpdatedAt`, the whole `dataStructures` section,
  * plus the trust vocabulary `curationTier` / `deprecated` — see
  * `types/use-cases.ts`, `types/implementation.ts` and `types/curation-tier.ts`.
  * They are NOT in the published index.json yet, because nothing authors or
  * curates them so far.
  *
- * `implementation` (Kosten, Aufwand, Wirkungslogik, Beteiligte) is INVENTED,
- * like the municipalities it describes — Musterstadt and Musterhausen do not
- * exist. Nothing here may be read as a claim about a real commune.
+ * `implementation` (Kosten, Aufwand, Wirkungslogik, Beteiligte) and `adopters`
+ * (Nachnutzer) are INVENTED, like the municipalities they describe —
+ * Musterstadt, Musterhausen, Musterbach, Beispielhausen and Exempeldorf do not
+ * exist. Nothing here may be read as a claim about a real commune; the
+ * contact addresses use the reserved `.example` domain for the same reason.
  * Everything else here is verbatim (incl. the legacy `maturity` /
  * `installability` fields, which the schema still accepts and normalizes).
  *
@@ -318,6 +321,8 @@ const RAW_INDEX = {
     {
       "id": "tree-register-starter",
       "addedAt": "2026-08-28",
+      "updatedAt": "2026-09-02",
+      "softwareUpdatedAt": "2026-09-30",
       "implementation": {
         "status": "prototyp",
         "operator": "Stadt Musterstadt",
@@ -358,9 +363,7 @@ const RAW_INDEX = {
       "description": "Dieser Demo-Anwendungsfall installiert einen einfachen CORE-Datensatz inklusive einer Datenstruktur für Baumeinträge über das CivitasCore Portal-Backend. Er dient als prototypischer Installationsfluss im Marketplace Add-on.",
       "publisher": "Stadt Musterstadt",
       "categories": [
-        "Umwelt",
-        "Grünflächen",
-        "Kataster"
+        "Umwelt & Klima"
       ],
       "curationTier": "experimental",
       "maturity": "prototype",
@@ -407,7 +410,11 @@ const RAW_INDEX = {
       },
       "trust": {
         "maintainer": { "name": "Stadt Musterstadt" },
-        "productionReferences": [],
+        "contactPerson": {
+          "name": "Team Smart City",
+          "role": "Stadt Musterstadt",
+          "email": "smartcity@musterstadt.example"
+        },
         "license": "EUPL-1.2"
       },
       "requirements": {
@@ -456,6 +463,13 @@ const RAW_INDEX = {
     {
       "id": "musterhausen-trafficcounter",
       "addedAt": "2026-07-02",
+      "updatedAt": "2026-09-18",
+      "softwareUpdatedAt": "2026-10-08",
+      "adopters": [
+        { "name": "Gemeinde Musterbach", "stage": "produktiv", "since": "2026" },
+        { "name": "Stadt Beispielhausen", "stage": "pilot", "since": "2026" },
+        { "name": "Stadtwerke Exempeldorf", "stage": "pilot", "since": "2026" }
+      ],
       "implementation": {
         "status": "produktiv",
         "operator": "Stadt Musterhausen",
@@ -500,8 +514,7 @@ const RAW_INDEX = {
       "description": "Die Stadt Musterhausen erfasst mit Dialog-Displays (Smiley-Tafeln) Fahrzeugzahlen und Durchschnittsgeschwindigkeiten. Dieser Use-Case installiert die Datenstrukturen und den Datensatz dafür über das CivitasCore Portal-Backend. Die Artefakt-Quelle liegt in einem eigenen Git-Repo (siehe source); der Marketplace installiert direkt aus diesem Repo.",
       "publisher": "Stadt Musterhausen",
       "categories": [
-        "Mobilität",
-        "Verkehr"
+        "Mobilität & Verkehr"
       ],
       "curationTier": "verified",
       "maturity": "prototype",
@@ -578,10 +591,6 @@ const RAW_INDEX = {
           "role": "Amt für Digitalisierung",
           "email": "s.becker@musterhausen.example"
         },
-        "productionReferences": [
-          { "municipality": "Stadt Musterhausen", "since": "2026" },
-          { "municipality": "Gemeinde Musterbach", "since": "2026" }
-        ],
         "curatedBy": "Civitas Connect e. V.",
         "curatedAt": "2026-07-19",
         "license": "EUPL-1.2"
@@ -658,6 +667,11 @@ const RAW_INDEX = {
     {
       "id": "musterhausen-feinstaub",
       "addedAt": "2026-05-20",
+      "updatedAt": "2026-10-06",
+      "softwareUpdatedAt": "2026-06-03",
+      "adopters": [
+        { "name": "Stadt Beispielhausen", "stage": "produktiv", "since": "2026" }
+      ],
       "implementation": {
         "status": "produktiv",
         "operator": "Stadt Musterhausen",
@@ -695,12 +709,11 @@ const RAW_INDEX = {
         }
       },
       "title": "Feinstaub Musterhausen",
-      "summary": "Feinstaub-Messwerte (PM2.5/PM10) je Messstation als wiederverwendbares Use-Case-Paket.",
+      "summary": "Luftqualität im Blick: Feinstaub-Messwerte (PM2.5/PM10) je Messstation als wiederverwendbares Use-Case-Paket.",
       "description": "Die Stadt Musterhausen erfasst Feinstaub (PM2.5/PM10) an Messstationen. Beim Installieren wird der Inhalt direkt aus dem Artefakt-Repo (Tag v1.0.0) geladen und über das CivitasCore Portal-Backend angelegt — der Marketplace liefert nichts davon mit.",
       "publisher": "Stadt Musterhausen",
       "categories": [
-        "Umwelt",
-        "Luftqualität"
+        "Umwelt & Klima"
       ],
       "curationTier": "community",
       "maturity": "prototype",
@@ -746,7 +759,9 @@ const RAW_INDEX = {
       },
       "trust": {
         "maintainer": { "name": "Stadt Musterhausen" },
-        "productionReferences": [{ "municipality": "Stadt Musterhausen", "since": "2026" }],
+        "contactPerson": {
+          "email": "j.wagner@musterhausen.example"
+        },
         "curatedBy": "Civitas Connect e. V.",
         "curatedAt": "2026-07-12",
         "license": "EUPL-1.2"

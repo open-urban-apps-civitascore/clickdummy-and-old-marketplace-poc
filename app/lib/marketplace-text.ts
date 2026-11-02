@@ -151,9 +151,10 @@ const MARKETPLACE_TEXT_DE: Omit<MarketplaceTexts, "locale"> = {
     // problem or idea and says what this place is for (Ewa, 2026-10-03: more
     // interesting than a definition, but open to any topic - two named
     // examples made it sound like a two-item catalog); the steps say how.
-    heading: "Lösungen anderer Kommunen nachnutzen",
+    // Not only communes: utilities and water boards adopt solutions too.
+    heading: "Lösungen aus der Community nachnutzen",
     subtitle:
-      "Sie wollen in Ihrer Kommune ein Problem lösen oder eine Idee umsetzen? Gut möglich, dass eine andere Kommune dafür schon eine Lösung auf CIVITAS/CORE gebaut hat. Die übernehmen Sie hier, statt neu zu bauen.",
+      "Sie wollen ein Problem lösen oder eine Idee umsetzen? Gut möglich, dass eine Kommune, ein Stadtwerk oder ein Wasserverband dafür schon eine Lösung auf CIVITAS/CORE gebaut hat. Die übernehmen Sie hier als Nachnutzende, statt neu zu bauen.",
     searchPlaceholder: "Was möchten Sie lösen? z. B. Verkehr rund um den Bahnhof …",
     searchButton: "Suchen",
     useCasesHeading: "Anwendungsfälle",
@@ -189,7 +190,7 @@ const MARKETPLACE_TEXT_DE: Omit<MarketplaceTexts, "locale"> = {
     // Answers the provider's real worry (leaking secrets, local settings)
     // instead of describing the packaging work.
     contributeBody:
-      "Läuft bei Ihnen etwas, das anderen Kommunen helfen würde? Zugangsdaten und lokale Einstellungen bleiben beim Teilen automatisch bei Ihnen.",
+      "Läuft bei Ihnen etwas, das anderen helfen würde? Zugangsdaten und lokale Einstellungen bleiben beim Teilen automatisch bei Ihnen.",
     contributeCta: "Beitrag vorbereiten",
   },
   useCases: {

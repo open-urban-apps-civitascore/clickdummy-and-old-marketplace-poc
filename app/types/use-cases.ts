@@ -134,18 +134,19 @@ export const trustMetadataSchema = z.object({
     })
     .optional(),
   /**
-   * A named person another commune can actually call. Optional by design:
-   * naming a person is personal data, so it stays the publisher's choice.
+   * Someone another organisation can actually contact. Optional by design:
+   * naming a person is personal data, so it stays the publisher's choice. An
+   * e-mail alone is enough.
    */
   contactPerson: z
     .object({
-      name: z.string(),
+      name: z.string().optional(),
       role: z.string().optional(),
       email: z.string().optional(),
       phone: z.string().optional(),
     })
     .optional(),
-  /** Communes running this in production. Clickable when the reference is public. */
+  /** Legacy: still parsed, but the page shows `adopters` instead. */
   productionReferences: z
     .array(
       z.object({
@@ -158,6 +159,23 @@ export const trustMetadataSchema = z.object({
   curatedBy: z.string().optional(),
   curatedAt: z.string().optional(),
   license: z.string().optional(),
+});
+
+/**
+ * A Nachnutzende: an organisation (commune, utility, association) that took
+ * this use case over. Self-reported, not install telemetry — a test install is
+ * not a use. The publisher itself is not listed.
+ */
+export const adopterSchema = z.object({
+  name: z.string(),
+  /** Logo URL, only with consent; without one the page shows a monogram. */
+  logo: z.string().optional(),
+  /** A year or a date. */
+  since: z.string().optional(),
+  /** Trying it out, or in regular operation. */
+  stage: z.enum(["pilot", "produktiv"]).optional(),
+  /** A public page about their use of it. */
+  url: z.string().url().optional(),
 });
 
 /**
@@ -299,6 +317,8 @@ const useCaseObjectSchema = z.object({
    * needs to install it. See `types/implementation.ts`.
    */
   implementation: implementationSchema.optional(),
+  /** Nachnutzende, see `adopterSchema`. */
+  adopters: z.array(adopterSchema).default([]),
   /**
    * When the entry was taken into the catalog — a plain `YYYY-MM-DD`, not a
    * timestamp: the index is hand-authored and reviewed as a diff, and a human
@@ -307,6 +327,13 @@ const useCaseObjectSchema = z.object({
    * an entry sorts last and shows nothing, rather than a fabricated default.
    */
   addedAt: z.iso.date().optional(),
+  /** When the ENTRY last changed; meant to be stamped by the catalog CI on merge. */
+  updatedAt: z.iso.date().optional(),
+  /**
+   * Last push to the use case's code repository — readable automatically for
+   * open source. May be newer than the pinned commit that installs.
+   */
+  softwareUpdatedAt: z.iso.date().optional(),
 });
 
 // Normalizes the two legacy scales into the single trust vocabulary. An entry
@@ -416,6 +443,7 @@ export type ProvisioningStep = z.infer<typeof provisioningStepSchema>;
 export type ProvisioningTrace = z.infer<typeof provisioningTraceSchema>;
 export type ProvisionedResources = z.infer<typeof provisionedResourcesSchema>;
 export type TrustMetadata = z.infer<typeof trustMetadataSchema>;
+export type Adopter = z.infer<typeof adopterSchema>;
 export type UseCaseImage = z.infer<typeof useCaseImageSchema>;
 export type DemoData = z.infer<typeof demoDataSchema>;
 export type ProvidedSurface = z.infer<typeof providedSurfaceSchema>;
@@ -429,6 +457,11 @@ export const END_USER_SURFACE_KIND_LABELS: Record<EndUserSurface["kind"], string
   grafana: "Monitoring",
   app: "Web-App",
   chatbot: "Assistent",
+};
+
+export const ADOPTER_STAGE_LABELS: Record<NonNullable<Adopter["stage"]>, string> = {
+  pilot: "Pilot",
+  produktiv: "Produktiv",
 };
 
 export const PROVIDED_SURFACE_KIND_LABELS: Record<ProvidedSurface["kind"], string> = {

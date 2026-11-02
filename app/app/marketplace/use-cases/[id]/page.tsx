@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { Section } from "@/components/ui/layout";
 import { MarketplacePageShell } from "@/components/marketplace/page-shell";
+import { AdoptersSection } from "@/components/use-cases/adopters";
 import { DemoDataHighlight } from "@/components/use-cases/demo-data-highlight";
 // import { FitCheck } from "@/components/use-cases/fit-check";
 import { IncludedArtifactsSpec } from "@/components/use-cases/included-artifacts-spec";
@@ -29,7 +30,8 @@ import { getMarketplaceText } from "@/lib/marketplace-text";
  *   1. a two-column READING ZONE — the pitch on the left, a Wikipedia-style
  *      Steckbrief in a right rail, so the facts that decide a listing sit at
  *      the top instead of halfway down the page;
- *      The reading column carries the pitch and then the Wirkungslogik;
+ *      The reading column carries the pitch, then the Wirkungslogik, then
+ *      who else uses it (Nachnutzer);
  *   2. a full-width SURFACES band — what you actually open, in a grid that
  *      adapts to how many surfaces the use case declares (hidden since
  *      2026-10-03, see below);
@@ -149,6 +151,9 @@ export default async function UseCaseDetailPage({
                 statt über die volle Breite, damit neben dem Steckbrief keine
                 leere Fläche stehen bleibt (Ewa, 2026-09-23). */}
             <LogicModel useCase={useCase} />
+
+            {/* Last part of the organisational half: who already took it over. */}
+            <AdoptersSection adopters={useCase.adopters} />
           </div>
 
           {/* Sticky, uncapped, no inner scrollbar.

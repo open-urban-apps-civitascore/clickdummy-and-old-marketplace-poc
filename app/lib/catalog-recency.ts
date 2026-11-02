@@ -1,18 +1,24 @@
 /**
- * "Zuletzt hinzugefügt" — sorting and formatting for the per-entry `addedAt`
- * date that use cases, add-ons and data structures carry.
+ * Recency — sorting and formatting for the per-entry catalog dates:
+ * `addedAt` ("Zuletzt hinzugefügt", carried by use cases, add-ons and data
+ * structures) and, on use cases, `updatedAt` and `softwareUpdatedAt`.
  */
 
-export type DatedEntry = { addedAt?: string };
+export type DatedEntry = { addedAt?: string; updatedAt?: string; softwareUpdatedAt?: string };
 
 /**
- * Newest first. `addedAt` is an ISO `YYYY-MM-DD`, which sorts lexicographically
- * exactly as it sorts chronologically — no `Date` parsing needed. Entries
- * without a date fall back to `""` and therefore sort last, which is the
- * intended reading: unknown is not "very old", it just cannot claim a place.
+ * Newest first by one date field. The dates are ISO `YYYY-MM-DD`, which sorts
+ * lexicographically exactly as it sorts chronologically — no `Date` parsing
+ * needed. Entries without the date fall back to `""` and therefore sort last,
+ * which is the intended reading: unknown is not "very old", it just cannot
+ * claim a place.
  */
-export const byAddedAtDesc = (a: DatedEntry, b: DatedEntry): number =>
-  (b.addedAt ?? "").localeCompare(a.addedAt ?? "");
+export const byDateDesc =
+  (field: keyof DatedEntry) =>
+  (a: DatedEntry, b: DatedEntry): number =>
+    (b[field] ?? "").localeCompare(a[field] ?? "");
+
+export const byAddedAtDesc = byDateDesc("addedAt");
 
 /**
  * German medium date, or `undefined` when nothing is on record.

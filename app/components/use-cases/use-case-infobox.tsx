@@ -7,8 +7,12 @@ import {
   FieldList,
   NeutralBadge,
 } from "@/components/ui/layout";
+import { AdopterSummary } from "@/components/use-cases/adopters";
 import { TierExplainer } from "@/components/use-cases/tier-explainer";
+import { formatCatalogDate } from "@/lib/catalog-recency";
+import { cn } from "@/lib/utils";
 import {
+  collaborationLabel,
   COST_BAND_LABELS,
   COST_BAND_SHORT,
   EFFORT_BAND_LABELS,
@@ -30,11 +34,13 @@ import { type UseCase } from "@/types/use-cases";
  *   - Themengebiet → already a badge above the title
  *   - Lizenz, Quelle, catalog date, curation → "Technische Details"
  *
- * Split into three groups (Ewa, 2026-09-23) so the box can be skimmed rather
- * than read; each group answers ONE question: how sound is this, who stands
- * behind it, what does it cost. The group labels are `Eyebrow`s, not headings —
- * they label a region without competing with the box's own title (see §1 of
- * `docs/communication-design-system.md`).
+ * Split into groups (Ewa, 2026-09-23) so the box can be skimmed rather than
+ * read; each group answers ONE question: how sound is this, who stands behind
+ * it, what does it cost, how current is it. The group labels are `Eyebrow`s,
+ * not headings — they label a region without competing with the box's own
+ * title (see §1 of `docs/communication-design-system.md`).
+ *
+ * „Nachnutzende" replaced „Produktiv im Einsatz": both named who runs it.
  *
  * No actions here: the install button stays in the hero, where it is still
  * near the top on a phone (this column drops below the content under `lg`).
@@ -49,9 +55,8 @@ export function UseCaseInfobox({
   useCase: UseCase;
   className?: string;
 }) {
-  const { trust, implementation } = useCase;
+  const { trust, implementation, adopters } = useCase;
   const resources = implementation?.resources;
-  const references = trust?.productionReferences ?? [];
   const status = implementation?.status;
   // A group with no content should not get a heading either.
   const hasResources = Boolean(
@@ -60,6 +65,7 @@ export function UseCaseInfobox({
     resources?.effortBand ||
     resources?.funding,
   );
+  const hasDates = Boolean(useCase.softwareUpdatedAt || useCase.updatedAt);
 
   return (
     <aside
@@ -96,32 +102,13 @@ export function UseCaseInfobox({
           </Field>
         ) : null}
 
-        <Field label="Produktiv im Einsatz">
-          {references.length > 0 ? (
-            <ul className="flex flex-col gap-0.5">
-              {references.map((reference) => (
-                <li key={reference.municipality}>
-                  {reference.url ? (
-                    <a
-                      href={reference.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1 underline-offset-2 hover:underline"
-                    >
-                      {reference.municipality}
-                      <ExternalLink className="size-3" />
-                    </a>
-                  ) : (
-                    reference.municipality
-                  )}
-                  {reference.since ? (
-                    <span className="ml-1 text-xs font-normal text-muted-foreground">
-                      seit {reference.since}
-                    </span>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
+        {/* Stage and since-when stay in the section below. */}
+        <Field
+          label="Nachnutzende"
+          hint={adopters.length > 0 ? "Nach eigener Angabe" : undefined}
+        >
+          {adopters.length > 0 ? (
+            <AdopterSummary adopters={adopters} />
           ) : (
             <span className="font-normal text-muted-foreground">
               Noch keine gemeldet
@@ -147,7 +134,7 @@ export function UseCaseInfobox({
       </Group>
 
       {/* Group 2 — who do you call if you want to rebuild it? */}
-      <Group label="Wer dahintersteht" last={!hasResources}>
+      <Group label="Wer dahintersteht" last={!hasResources && !hasDates}>
         <Field label={IMPLEMENTATION_LABELS.operator}>
           {implementation?.operator ?? useCase.publisher}
         </Field>
@@ -163,12 +150,15 @@ export function UseCaseInfobox({
 
         {/* Omitted entirely when nothing is on record (Ewa, 2026-09-23) — a row
             reading „keine Ansprechperson benannt" spends a line to say nothing.
-            Falls back from a named person to the maintainer's public contact. */}
+            Falls back from a named person to the maintainer's public contact.
+            An e-mail alone is enough: the name is often in it. */}
         {trust?.contactPerson || trust?.maintainer?.contactUrl ? (
           <Field label="Kontakt">
             {trust.contactPerson ? (
               <>
-                <span className="block">{trust.contactPerson.name}</span>
+                {trust.contactPerson.name ? (
+                  <span className="block">{trust.contactPerson.name}</span>
+                ) : null}
                 {trust.contactPerson.role ? (
                   <span className="block text-xs font-normal text-muted-foreground">
                     {trust.contactPerson.role}
@@ -177,7 +167,10 @@ export function UseCaseInfobox({
                 {trust.contactPerson.email ? (
                   <a
                     href={`mailto:${trust.contactPerson.email}`}
-                    className="block text-xs font-normal text-primary underline-offset-2 hover:underline"
+                    className={cn(
+                      "block break-all font-normal text-primary underline-offset-2 hover:underline",
+                      trust.contactPerson.name && "text-xs",
+                    )}
                   >
                     {trust.contactPerson.email}
                   </a>
@@ -206,7 +199,7 @@ export function UseCaseInfobox({
       {/* Group 3 — build and run costs kept apart: a project budget can invest
           once, but the running cost has to be carried by the regular budget. */}
       {hasResources ? (
-        <Group label="Kosten und Aufwand" last>
+        <Group label="Kosten und Aufwand" last={!hasDates}>
           {resources?.setupCost ? (
             <Field label={IMPLEMENTATION_LABELS.setupCost}>
               <NeutralBadge short={COST_BAND_SHORT[resources.setupCost]}>
@@ -236,13 +229,32 @@ export function UseCaseInfobox({
         </Group>
       ) : null}
 
+      {/* Group 4 — is this still alive? Two dates: the software can move
+          while the entry sleeps, and the other way round. */}
+      {hasDates ? (
+        <Group label="Aktualität" last>
+          {useCase.softwareUpdatedAt ? (
+            <Field label="Letztes Software-Update" hint="Letzte Änderung im Code-Repository">
+              {formatCatalogDate(useCase.softwareUpdatedAt)}
+            </Field>
+          ) : null}
+          {useCase.updatedAt ? (
+            <Field label="Eintrag aktualisiert">
+              {formatCatalogDate(useCase.updatedAt)}
+            </Field>
+          ) : null}
+        </Group>
+      ) : null}
+
       {/* Structured rather than free text, so "looking for partners" is a filter. */}
       {implementation?.collaboration ? (
         <div className="border-t bg-muted/40 px-5 py-3">
-          <p className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-            <Handshake aria-hidden className="size-3.5" />
-            {IMPLEMENTATION_LABELS.collaboration}:{" "}
-            {implementation.collaboration.wanted ? "Ja" : "Nein"}
+          <p className="flex items-start gap-1.5 text-xs font-semibold text-foreground">
+            <Handshake aria-hidden className="mt-px size-3.5 shrink-0" />
+            <span>
+              {IMPLEMENTATION_LABELS.collaboration}:{" "}
+              {collaborationLabel(implementation.collaboration.wanted)}
+            </span>
           </p>
           {implementation.collaboration.wanted &&
           implementation.collaboration.seeking ? (
