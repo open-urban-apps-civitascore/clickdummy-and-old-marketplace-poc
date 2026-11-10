@@ -154,6 +154,8 @@ export const implementationSchema = z.object({
   status: useCaseStatusSchema.optional(),
   /** Die Stelle, die es betreibt — das stärkste Glaubwürdigkeitssignal. */
   operator: z.string().optional(),
+  /** Permanent code of the organisation behind `operator`; the text may also name a department. */
+  operatorOrg: z.string().optional(),
   parties: z
     .object({
       /** Ämter, Werke, Verbände. */

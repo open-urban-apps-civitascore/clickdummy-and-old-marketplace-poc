@@ -21,7 +21,6 @@ import { DeprecatedNotice, TierBadge } from "@/components/use-cases/use-case-sta
 import { fetchAddonReadme } from "@/lib/server/addon-readme";
 import { getCatalog } from "@/lib/getCatalog";
 import { getMarketplaceText } from "@/lib/marketplace-text";
-import { publisherSlug } from "@/lib/slug";
 import { addonCurationTier } from "@/types/addons";
 
 // Generic explainer of how every add-on attaches to the platform (SSO + REST) —
@@ -136,12 +135,9 @@ export default async function AddonDetailPage({
                   <Building2 className="size-4" />
                 </span>
                 <span className="flex flex-col leading-tight">
-                  <Link
-                    href={`/marketplace/publishers/${publisherSlug(addon.author)}`}
-                    className="font-mono text-sm font-medium text-foreground underline-offset-2 hover:underline"
-                  >
+                  <span className="font-mono text-sm font-medium text-foreground">
                     {addon.author}
-                  </Link>
+                  </span>
                   <span className="text-xs text-muted-foreground">{text.detail.publisher}</span>
                 </span>
               </span>

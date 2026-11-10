@@ -9,7 +9,7 @@ import { repoListIndexSchema, type RepoListIndex } from "@/types/repo-list";
  *
  * The enrichment is the optional blocks `trust`, `requirements`, `provides`,
  * `roles`, `implementation`, `adopters`, `addedAt`, `updatedAt` and
- * `softwareUpdatedAt`, the whole `dataStructures` section,
+ * `softwareUpdatedAt`, the whole `dataStructures` and `organisations` sections,
  * plus the trust vocabulary `curationTier` / `deprecated` — see
  * `types/use-cases.ts`, `types/implementation.ts` and `types/curation-tier.ts`.
  * They are NOT in the published index.json yet, because nothing authors or
@@ -326,6 +326,7 @@ const RAW_INDEX = {
       "implementation": {
         "status": "prototyp",
         "operator": "Stadt Musterstadt",
+        "operatorOrg": "musterstadt",
         "parties": {
           "stakeholders": [
             "Grünflächenamt Musterstadt",
@@ -473,6 +474,7 @@ const RAW_INDEX = {
       "implementation": {
         "status": "produktiv",
         "operator": "Stadt Musterhausen",
+        "operatorOrg": "musterhausen",
         "parties": {
           "stakeholders": [
             "Tiefbauamt Musterhausen",
@@ -675,6 +677,7 @@ const RAW_INDEX = {
       "implementation": {
         "status": "produktiv",
         "operator": "Stadt Musterhausen",
+        "operatorOrg": "musterhausen",
         "parties": {
           "stakeholders": [
             "Umweltamt Musterhausen"
@@ -886,6 +889,22 @@ const RAW_INDEX = {
       ],
       "domain": "Umwelt",
       "addedAt": "2026-08-28"
+    }
+  ],
+  "organisations": [
+    {
+      "id": "musterhausen",
+      "name": "Stadt Musterhausen",
+      "website": "https://musterhausen.example",
+      "contact": {
+        "name": "Digitalisierung und Smart City",
+        "email": "digital@musterhausen.example"
+      }
+    },
+    {
+      "id": "musterstadt",
+      "name": "Stadt Musterstadt",
+      "website": "https://musterstadt.example"
     }
   ]
 };

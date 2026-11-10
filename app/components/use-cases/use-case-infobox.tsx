@@ -1,6 +1,8 @@
+import Link from "next/link";
 import { type ReactNode } from "react";
-import { ClipboardList, ExternalLink, Handshake, PlayCircle } from "lucide-react";
+import { ChevronRight, ClipboardList, ExternalLink, Handshake, PlayCircle } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import {
   Eyebrow,
   Field,
@@ -58,6 +60,7 @@ export function UseCaseInfobox({
   const { trust, implementation, adopters } = useCase;
   const resources = implementation?.resources;
   const status = implementation?.status;
+  const operatorName = implementation?.operator ?? useCase.publisher;
   // A group with no content should not get a heading either.
   const hasResources = Boolean(
     resources?.setupCost ||
@@ -136,7 +139,21 @@ export function UseCaseInfobox({
       {/* Group 2 — who do you call if you want to rebuild it? */}
       <Group label="Wer dahintersteht" last={!hasResources && !hasDates}>
         <Field label={IMPLEMENTATION_LABELS.operator}>
-          {implementation?.operator ?? useCase.publisher}
+          {implementation?.operatorOrg ? (
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="h-auto min-h-8 max-w-full whitespace-normal py-1.5 text-left"
+            >
+              <Link href={`/marketplace/organisationen/${implementation.operatorOrg}`}>
+                {operatorName}
+                <ChevronRight aria-hidden />
+              </Link>
+            </Button>
+          ) : (
+            operatorName
+          )}
         </Field>
 
         <List

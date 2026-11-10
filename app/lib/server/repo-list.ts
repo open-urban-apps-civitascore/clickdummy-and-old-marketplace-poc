@@ -4,6 +4,7 @@ import { type Addon } from "@/types/addons";
 import {
   repoListIndexSchema,
   type DataStructureEntry,
+  type Organisation,
   type RepoListIndex,
 } from "@/types/repo-list";
 import { type UseCase } from "@/types/use-cases";
@@ -41,6 +42,7 @@ const EMPTY_INDEX: RepoListIndex = {
   addons: [],
   useCases: [],
   dataStructures: [],
+  organisations: [],
 };
 
 const DEFAULT_TTL_SECONDS = 900;
@@ -146,4 +148,8 @@ export async function getRepoListUseCases(): Promise<UseCase[]> {
 /** Listable data structures (revoked entries are hidden — tombstone convention). */
 export async function getRepoListDataStructures(): Promise<DataStructureEntry[]> {
   return (await loadIndex()).index.dataStructures.filter((entry) => !entry.revoked);
+}
+
+export async function getRepoListOrganisation(id: string): Promise<Organisation | undefined> {
+  return (await loadIndex()).index.organisations.find((organisation) => organisation.id === id);
 }

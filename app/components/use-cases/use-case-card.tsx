@@ -4,7 +4,13 @@ import { UseCaseIllustration } from "@/components/use-cases/use-case-illustratio
 import { DeprecatedStatus, TierStatus } from "@/components/use-cases/use-case-status";
 import { type UseCase } from "@/types/use-cases";
 
-export function UseCaseCard({ useCase }: { useCase: UseCase }) {
+export function UseCaseCard({
+  useCase,
+  hidePublisher = false,
+}: {
+  useCase: UseCase;
+  hidePublisher?: boolean;
+}) {
   const category = useCase.categories[0];
 
   return (
@@ -30,7 +36,9 @@ export function UseCaseCard({ useCase }: { useCase: UseCase }) {
 
           <div className="mt-4 flex items-center justify-between gap-3 border-t pt-4">
             {useCase.deprecated ? <DeprecatedStatus /> : <TierStatus tier={useCase.curationTier} />}
-            <span className="truncate text-sm text-muted-foreground">{useCase.publisher}</span>
+            {hidePublisher ? null : (
+              <span className="truncate text-sm text-muted-foreground">{useCase.publisher}</span>
+            )}
           </div>
         </div>
       </article>

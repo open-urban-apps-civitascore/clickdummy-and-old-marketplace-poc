@@ -357,3 +357,13 @@ describe("mock mode — the real orchestrator against the mock backend", () => {
     assert.equal(await deps.store.get("musterhausen-trafficcounter"), null);
   });
 });
+
+describe("mock organisations", () => {
+  test("every operatorOrg has a page to open", () => {
+    const codes = new Set(mockRepoListIndex.organisations.map((organisation) => organisation.id));
+    for (const useCase of mockRepoListIndex.useCases) {
+      const code = useCase.implementation?.operatorOrg;
+      if (code) assert.ok(codes.has(code), `${useCase.id} points to unknown organisation '${code}'`);
+    }
+  });
+});

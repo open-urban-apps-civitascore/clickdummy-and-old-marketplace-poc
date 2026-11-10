@@ -47,6 +47,23 @@ export const dataStructureEntrySchema = z.object({
   revokedReason: z.string().optional(),
 });
 
+/**
+ * An organisation behind catalogue entries. `id` is its permanent code and page
+ * address: name, website and contact can change, the code never does.
+ */
+export const organisationSchema = z.object({
+  id: z.string().regex(/^[a-z0-9]{2,40}$/),
+  name: z.string().min(1),
+  website: z.string().url().optional(),
+  /** Functional address only, never a person: the list is mirrored through git. */
+  contact: z
+    .object({
+      name: z.string().optional(),
+      email: z.string().email(),
+    })
+    .optional(),
+});
+
 export const repoListIndexSchema = z.object({
   // Optional pointer to index.schema.json so editors validate index.json inline
   // as it is authored. Ignored at runtime; present only for author DX.
@@ -58,8 +75,11 @@ export const repoListIndexSchema = z.object({
   // Absent in format v2 indexes, so default rather than require — an older
   // catalog must still parse.
   dataStructures: z.array(dataStructureEntrySchema).default([]),
+  organisations: z.array(organisationSchema).default([]),
 });
 
 export type DataStructureEntry = z.infer<typeof dataStructureEntrySchema>;
+
+export type Organisation = z.infer<typeof organisationSchema>;
 
 export type RepoListIndex = z.infer<typeof repoListIndexSchema>;

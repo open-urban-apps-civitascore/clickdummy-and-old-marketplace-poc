@@ -27,6 +27,7 @@ function monogram(name: string): string {
 const LOGO_SIZES = {
   sm: { box: "size-6 text-[10px]", px: 24 },
   md: { box: "size-10 text-xs", px: 40 },
+  lg: { box: "size-14 text-base", px: 56 },
 } as const;
 
 /**
