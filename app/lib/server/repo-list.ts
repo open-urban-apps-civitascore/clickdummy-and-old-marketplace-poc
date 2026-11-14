@@ -150,6 +150,10 @@ export async function getRepoListDataStructures(): Promise<DataStructureEntry[]>
   return (await loadIndex()).index.dataStructures.filter((entry) => !entry.revoked);
 }
 
+export async function getRepoListOrganisations(): Promise<Organisation[]> {
+  return (await loadIndex()).index.organisations;
+}
+
 export async function getRepoListOrganisation(id: string): Promise<Organisation | undefined> {
   return (await loadIndex()).index.organisations.find((organisation) => organisation.id === id);
 }

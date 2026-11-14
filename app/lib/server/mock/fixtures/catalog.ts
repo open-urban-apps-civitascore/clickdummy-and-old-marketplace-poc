@@ -905,6 +905,20 @@ const RAW_INDEX = {
       "id": "musterstadt",
       "name": "Stadt Musterstadt",
       "website": "https://musterstadt.example"
+    },
+    {
+      "id": "musterbach",
+      "name": "Gemeinde Musterbach"
+    },
+    {
+      "id": "openurbanapps",
+      "name": "Open Urban Apps",
+      "website": "https://openurbanapps.org"
+    },
+    {
+      "id": "civitasconnect",
+      "name": "Civitas Connect e. V.",
+      "website": "https://civitasconnect.digital"
     }
   ]
 };
