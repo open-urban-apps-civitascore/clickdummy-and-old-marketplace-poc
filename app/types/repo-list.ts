@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { addonCatalogSchema } from "./addons";
-import { deploymentRefSchema, useCaseCatalogSchema } from "./use-cases";
+import { deploymentRefSchema, entryLinkSchema, useCaseCatalogSchema } from "./use-cases";
 
 /**
  * The repo-list index: one git-hosted `index.json` with two sections and one
@@ -64,6 +64,44 @@ export const organisationSchema = z.object({
     .optional(),
 });
 
+/** One entry of a group: a use case listed in this catalogue, by its id. */
+export const groupMemberSchema = z.object({
+  id: z.string().min(3),
+  optional: z.boolean().default(false),
+  /** Why it belongs to the group, in one sentence. */
+  note: z.string().optional(),
+});
+
+/**
+ * Several use cases that belong together, e.g. a commune's Smart-City project.
+ * Catalogue only: it names its members and installs nothing itself, so it has
+ * no package, version or seal of its own.
+ */
+export const useCaseGroupSchema = z.object({
+  id: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+  title: z.string().min(3),
+  summary: z.string(),
+  description: z.string().default(""),
+  publisher: z.string(),
+  publisherOrg: z.string().optional(),
+  categories: z.array(z.string()).default([]),
+  /** List order is the suggested order when `ordered` is set. */
+  members: z.array(groupMemberSchema).min(2),
+  ordered: z.boolean().default(false),
+  story: z
+    .object({
+      problem: z.string().optional(),
+      goal: z.string().optional(),
+      next: z.string().optional(),
+    })
+    .optional(),
+  /** Shown under „Worum es geht“. */
+  links: z.array(entryLinkSchema).max(8).default([]),
+  contact: z.object({ name: z.string().optional(), email: z.string().email() }).optional(),
+  addedAt: z.iso.date().optional(),
+  updatedAt: z.iso.date().optional(),
+});
+
 export const repoListIndexSchema = z.object({
   // Optional pointer to index.schema.json so editors validate index.json inline
   // as it is authored. Ignored at runtime; present only for author DX.
@@ -76,9 +114,14 @@ export const repoListIndexSchema = z.object({
   // catalog must still parse.
   dataStructures: z.array(dataStructureEntrySchema).default([]),
   organisations: z.array(organisationSchema).default([]),
+  groups: z.array(useCaseGroupSchema).default([]),
 });
 
 export type DataStructureEntry = z.infer<typeof dataStructureEntrySchema>;
+
+export type GroupMember = z.infer<typeof groupMemberSchema>;
+
+export type UseCaseGroup = z.infer<typeof useCaseGroupSchema>;
 
 export type Organisation = z.infer<typeof organisationSchema>;
 

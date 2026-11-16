@@ -24,6 +24,7 @@ const USE_CASE: UseCase = {
   publisher: "Stadt Musterstadt",
   categories: [],
   images: [],
+  links: [],
   provides: [],
   endUserSurfaces: [],
   roles: [],

@@ -1,5 +1,7 @@
 import { getUseCases } from "@/lib/getUseCases";
+import { groupListings } from "@/lib/groups";
 import { getMarketplaceText } from "@/lib/marketplace-text";
+import { getRepoListGroups } from "@/lib/server/repo-list";
 import { CatalogFreshness } from "@/components/catalog/catalog-freshness";
 import { MarketplacePageShell } from "@/components/marketplace/page-shell";
 import { UseCaseCatalog } from "@/components/use-cases/use-case-catalog";
@@ -10,7 +12,7 @@ export default async function MarketplaceUseCasesPage({
   searchParams: Promise<{ q?: string; kategorie?: string }>;
 }) {
   const text = getMarketplaceText();
-  const [useCases, { q, kategorie }] = await Promise.all([getUseCases(), searchParams]);
+  const [useCases, groups, { q, kategorie }] = await Promise.all([getUseCases(), getRepoListGroups(), searchParams]);
 
   return (
     <MarketplacePageShell
@@ -19,6 +21,7 @@ export default async function MarketplaceUseCasesPage({
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-6">
         <UseCaseCatalog
           useCases={useCases}
+          groups={groupListings(groups, useCases)}
           heading={text.useCases.heading}
           subtitle={text.useCases.subtitle}
           countLabel={text.useCases.countLabel}

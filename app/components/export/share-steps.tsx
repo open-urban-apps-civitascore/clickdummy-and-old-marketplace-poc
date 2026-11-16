@@ -8,12 +8,18 @@ import { Panel } from "@/components/ui/layout";
 import { InlineNotice } from "@/components/ui/notice";
 import { cn } from "@/lib/utils";
 
-const STAGES = [
+export interface ShareStage {
+  key: string;
+  title: string;
+  who: string;
+}
+
+const PACKAGE_STAGES: readonly ShareStage[] = [
   { key: "propose", title: "Paket einreichen", who: "Du" },
   { key: "review", title: "Paket-Prüfung", who: "Das Katalog-Team" },
   { key: "catalog", title: "Katalog-Eintrag vorschlagen", who: "Du" },
   { key: "listing", title: "Eintrags-Prüfung", who: "Das Katalog-Team" },
-] as const;
+];
 
 type StageState = "current" | "done" | "waiting" | "later";
 
@@ -57,21 +63,32 @@ export function ShareSteps({
   blocker,
   onPropose,
   onCheck,
+  stages = PACKAGE_STAGES,
+  intro = "Vier Schritte bis in den Katalog - den ersten machst du hier.",
+  subject = "das Paket",
+  leaveNote = "Du kannst diese Seite jetzt verlassen. Du findest das Paket jederzeit unter „Teilen“ › „In Arbeit“ - dort geht es nach der Prüfung weiter.",
 }: {
   submitted: boolean;
   pending?: "propose" | "check";
   blocker?: string;
   onPropose: () => void;
   onCheck: () => void;
+  stages?: readonly ShareStage[];
+  intro?: string;
+  /** What the catalogue team reviews, with its article. */
+  subject?: string;
+  leaveNote?: string;
 }) {
-  const states: StageState[] = submitted ? ["done", "waiting", "later", "later"] : ["current", "later", "later", "later"];
+  const states: StageState[] = stages.map((_, index) =>
+    submitted ? (index === 0 ? "done" : index === 1 ? "waiting" : "later") : index === 0 ? "current" : "later",
+  );
   return (
     <Panel title="So geht es weiter">
-      {!submitted ? <p className="mb-4 text-sm text-muted-foreground">Vier Schritte bis in den Katalog - den ersten machst du hier.</p> : null}
+      {!submitted ? <p className="mb-4 text-sm text-muted-foreground">{intro}</p> : null}
       <ol className="flex flex-col">
-        {STAGES.map((stage, index) => {
+        {stages.map((stage, index) => {
           const state = states[index];
-          const last = index === STAGES.length - 1;
+          const last = index === stages.length - 1;
           const who =
             state === "done" ? `${stage.who} - erledigt` : state === "waiting" ? WAITING_FOR_TEAM : state === "current" ? "Du bist dran" : stage.who;
           return (
@@ -115,17 +132,12 @@ export function ShareSteps({
 
       <Disclosure summary="Was ist ein Merge Request?" className="mt-4">
         <p className="text-xs leading-relaxed text-muted-foreground">
-          So heißt bei GitLab ein Änderungsvorschlag - hier kurz „Vorschlag“. Das Katalog-Team sieht sich das Paket dort an und nimmt es
+          So heißt bei GitLab ein Änderungsvorschlag - hier kurz „Vorschlag“. Das Katalog-Team sieht sich {subject} dort an und nimmt es
           an („Merge“) oder nicht. Hat es vorher eine Frage, steht sie im Vorschlag bei GitLab - schau dort nach, wenn es länger dauert.
         </p>
       </Disclosure>
 
-      {submitted ? (
-        <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-          Du kannst diese Seite jetzt verlassen. Du findest das Paket jederzeit unter „Teilen“ › „In Arbeit“ - dort geht es nach der
-          Prüfung weiter.
-        </p>
-      ) : null}
+      {submitted ? <p className="mt-4 text-xs leading-relaxed text-muted-foreground">{leaveNote}</p> : null}
     </Panel>
   );
 }

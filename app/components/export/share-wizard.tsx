@@ -4,15 +4,19 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Eye } from "lucide-react";
 
 import { inputClass } from "@/components/export/fields";
+import { LinksField } from "@/components/export/links-field";
 import { MetadataForm } from "@/components/export/metadata-form";
 import { OrganisationField } from "@/components/export/organisation-field";
 import { demoIds, PackageContents } from "@/components/export/package-contents";
 import { ShareSteps } from "@/components/export/share-steps";
+import { StepList } from "@/components/export/step-list";
 import { Button } from "@/components/ui/button";
 import { Disclosure } from "@/components/ui/disclosure";
 import { Section } from "@/components/ui/layout";
 import { InlineNotice, Notice, Pending } from "@/components/ui/notice";
+import { EntryLinks } from "@/components/use-cases/entry-links";
 import type { ShareDataset } from "@/lib/share/datasets";
+import { cleanLinks, linksProblem, type LinkDraft } from "@/lib/share/links";
 import { emptyMetadata, filledFields, LEAD_CODE_PATH, LEAD_PATH, type MetadataDraft } from "@/lib/share/metadata";
 import { withLeadDefault } from "@/lib/share/organisations";
 import { buildPreview, IDENTITY_KINDS, type PackagePreview } from "@/lib/share/preview";
@@ -47,23 +51,6 @@ const ADDRESS_FIELDS: { key: "publisher" | "slug" | "domain"; label: string; hin
   },
 ];
 
-function Steps({ current }: { current: Step }) {
-  return (
-    <ol aria-label="Fortschritt" className="grid gap-2 sm:grid-cols-3">
-      {STEPS.map((label, index) => (
-        <li
-          key={label}
-          aria-current={current === index + 1 ? "step" : undefined}
-          className={`rounded-lg border px-3 py-3 text-sm ${current === index + 1 ? "border-primary bg-primary/5 font-semibold text-primary" : "text-muted-foreground"}`}
-        >
-          <span className="mr-2">{index + 1}.</span>
-          {label}
-        </li>
-      ))}
-    </ol>
-  );
-}
-
 /**
  * „Neues Paket teilen“ as the marketplace has it (rc.13): choose a dataset,
  * complete the Steckbrief, check the preview and submit. Played in the
@@ -85,7 +72,7 @@ export function ShareWizard({
 
   return (
     <div className="flex flex-col gap-6">
-      <Steps current={dataset ? step : 1} />
+      <StepList labels={STEPS} current={dataset ? step : 1} />
       {step === 1 || !dataset ? (
         <Section title="Welchen Datensatz möchtest du teilen?">
           <label className="flex flex-col gap-2 text-sm">
@@ -140,6 +127,9 @@ function ShareEditor({
   const [basics, setBasics] = useState<SteckbriefBasics>(() => startingBasics(dataset, own));
   const [metadata, setMetadata] = useState<MetadataDraft>(() => emptyMetadata(dataset.catalog?.themes));
   const [proposals, setProposals] = useState<Organisation[]>([]);
+  const [links, setLinks] = useState<LinkDraft[]>(() =>
+    (dataset.catalog?.links ?? []).map((link) => ({ ...link, description: link.description ?? "" })),
+  );
   const [excluded, setExcluded] = useState<ReadonlySet<string>>(new Set());
   const [problem, setProblem] = useState<string>();
   const [preview, setPreview] = useState<PackagePreview>();
@@ -178,7 +168,7 @@ function ShareEditor({
 
   const makePreview = (event: FormEvent) => {
     event.preventDefault();
-    const found = steckbriefProblem(dataset, basics, metadata, known);
+    const found = steckbriefProblem(dataset, basics, metadata, known) ?? linksProblem(links);
     setProblem(found);
     if (found) return;
     setMaking(true);
@@ -293,6 +283,13 @@ function ShareEditor({
               <textarea rows={4} className={inputClass} value={basics.description} required onChange={(event) => edit("description", event.target.value)} />
             </label>
           </section>
+          <section className="rounded-xl border bg-card p-5">
+            <LinksField
+              value={links}
+              onChange={setLinks}
+              hint="Erscheinen auf der Seite des Anwendungsfalls unter „Was dieser Anwendungsfall löst“, zum Beispiel eine Projektseite, eine Anleitung oder offene Daten."
+            />
+          </section>
           <MetadataForm value={metadata} onChange={setMetadata} organisations={{ ...options, publisher }} />
           <section className="grid gap-4 rounded-xl border bg-card p-5 md:grid-cols-2">
             <h3 className="font-semibold md:col-span-2">Adresse und Version im Katalog</h3>
@@ -393,6 +390,7 @@ function ShareEditor({
                     </div>
                   ))}
                 </dl>
+                <EntryLinks links={cleanLinks(links)} className="mt-5" />
                 <div className="mt-5">
                   <MetadataReview metadata={sent} />
                 </div>

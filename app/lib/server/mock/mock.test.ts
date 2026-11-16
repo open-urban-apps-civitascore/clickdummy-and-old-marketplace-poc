@@ -46,10 +46,10 @@ function testDeps(): InstallDeps {
 }
 
 describe("mock mode — fixtures", () => {
-  test("catalog fixture carries the three use cases and their bundles", () => {
+  test("catalog fixture carries the six use cases and the bundles of the pinned ones", () => {
     // The index parsed through the real zod schema at import (else this file
     // would not even load). Assert content + that every use case has a bundle.
-    assert.equal(mockRepoListIndex.useCases.length, 3);
+    assert.equal(mockRepoListIndex.useCases.length, 6);
     assert.ok(mockRepoListIndex.addons.length > 0, "addons fixture is empty");
     assert.equal(mockRepoListIndex.dataStructures.length, 4);
     // Every row carries a catalog date, else "zuletzt hinzugefügt" silently
@@ -87,10 +87,12 @@ describe("mock mode — fixtures", () => {
       }
     }
     for (const useCase of mockRepoListIndex.useCases) {
-      // Every catalog use case must carry a pin AND a matching fixture: an
-      // entry without a pinned commit is not installable at all (v3), so a
-      // fixture catalog that lost one would fail late instead of here.
-      assert.ok(useCase.deploymentRef, `catalog use case '${useCase.id}' has no deploymentRef`);
+      // A pin needs a matching fixture, else the install fails late instead of
+      // here. Without a pin an entry is only described and must say where.
+      if (!useCase.deploymentRef) {
+        assert.ok(useCase.implementation?.reference, `catalog use case '${useCase.id}' has neither a pin nor a reference`);
+        continue;
+      }
       assert.ok(
         mockBundlesByRepoUrl[useCase.deploymentRef.url],
         `no bundle fixture for catalog use case '${useCase.id}' (${useCase.deploymentRef.url})`,

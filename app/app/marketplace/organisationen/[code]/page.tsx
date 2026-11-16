@@ -4,10 +4,12 @@ import { ArrowLeft, ExternalLink, Mail } from "lucide-react";
 
 import { MarketplacePageShell } from "@/components/marketplace/page-shell";
 import { PageHeader, Section } from "@/components/ui/layout";
+import { GroupCard } from "@/components/groups/group-card";
 import { AdopterLogo } from "@/components/use-cases/adopters";
 import { UseCaseCard } from "@/components/use-cases/use-case-card";
+import { GROUP_TEXT, groupListings } from "@/lib/groups";
 import { getMarketplaceText } from "@/lib/marketplace-text";
-import { getRepoListOrganisation, getRepoListUseCases } from "@/lib/server/repo-list";
+import { getRepoListGroups, getRepoListOrganisation, getRepoListUseCases } from "@/lib/server/repo-list";
 
 const LINK_CLASS = "text-primary underline-offset-2 hover:underline";
 
@@ -18,13 +20,18 @@ export default async function OrganisationPage({
 }) {
   const { code } = await params;
 
-  const [organisation, allUseCases] = await Promise.all([
+  const [organisation, allUseCases, allGroups] = await Promise.all([
     getRepoListOrganisation(code),
     getRepoListUseCases(),
+    getRepoListGroups(),
   ]);
   if (!organisation) notFound();
 
   const useCases = allUseCases.filter((useCase) => useCase.implementation?.operatorOrg === code);
+  const groups = groupListings(
+    allGroups.filter((group) => group.publisherOrg === code),
+    allUseCases,
+  );
   const { name, website, contact } = organisation;
   const text = getMarketplaceText();
 
@@ -74,6 +81,16 @@ export default async function OrganisationPage({
             }
           />
         </div>
+
+        {groups.length ? (
+          <Section tone="bare" title={`${GROUP_TEXT.many} (${groups.length})`}>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {groups.map(({ group, members }) => (
+                <GroupCard key={group.id} group={group} members={members} hidePublisher />
+              ))}
+            </div>
+          </Section>
+        ) : null}
 
         <Section tone="bare" title={`Anwendungsfälle (${useCases.length})`}>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">

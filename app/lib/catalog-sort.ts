@@ -1,5 +1,4 @@
-import { byDateDesc } from "@/lib/catalog-recency";
-import type { UseCase } from "@/types/use-cases";
+import { byDateDesc, type DatedEntry } from "@/lib/catalog-recency";
 
 /** One way to order a catalog — not a facet, see §3 of the design system. */
 export interface CatalogSort<T> {
@@ -12,9 +11,9 @@ export interface CatalogSort<T> {
 
 /**
  * All newest first; the first is the default. Entries without the date sort
- * last in catalog order (`sort` is stable).
+ * last in catalog order (`sort` is stable). Groups sort among use cases by the same dates.
  */
-export const USE_CASE_SORTS: CatalogSort<UseCase>[] = [
+export const USE_CASE_SORTS: CatalogSort<DatedEntry>[] = [
   { id: "eintrag", label: "Eintrag aktualisiert", compare: byDateDesc("updatedAt") },
   { id: "software", label: "Letztes Software-Update", compare: byDateDesc("softwareUpdatedAt") },
   { id: "neu", label: "Neu im Katalog", compare: byDateDesc("addedAt") },

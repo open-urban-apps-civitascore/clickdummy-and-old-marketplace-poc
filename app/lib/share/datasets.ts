@@ -6,6 +6,8 @@
  * from the structure plus a map, and a dataset without its own structure.
  */
 
+import type { EntryLink } from "@/types/use-cases";
+
 export type PartKind = "source" | "mapping" | "structure" | "pipeline" | "sink" | "api" | "layer" | "style";
 
 export interface PackagePart {
@@ -48,6 +50,8 @@ export interface CatalogLink {
   publisher: string;
   slug: string;
   domain: string;
+  /** The listed row's links: the next version starts from them. */
+  links?: EntryLink[];
 }
 
 export interface ShareDataset {
@@ -145,6 +149,13 @@ const DATASETS: ShareDataset[] = [
       publisher: "musterstadt",
       slug: "baumkataster-starter",
       domain: "environment",
+      links: [
+        {
+          title: "Feldbeschreibung Baumkataster",
+          url: "https://musterstadt.example/smart-city/baumkataster/felder",
+          description: "Welche Angaben ein Baumeintrag hat und woher sie im Grünflächenamt kommen.",
+        },
+      ],
     },
   },
   {

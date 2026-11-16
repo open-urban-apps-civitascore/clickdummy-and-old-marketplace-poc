@@ -6,6 +6,7 @@ import {
   type DataStructureEntry,
   type Organisation,
   type RepoListIndex,
+  type UseCaseGroup,
 } from "@/types/repo-list";
 import { type UseCase } from "@/types/use-cases";
 
@@ -43,6 +44,7 @@ const EMPTY_INDEX: RepoListIndex = {
   useCases: [],
   dataStructures: [],
   organisations: [],
+  groups: [],
 };
 
 const DEFAULT_TTL_SECONDS = 900;
@@ -152,6 +154,10 @@ export async function getRepoListDataStructures(): Promise<DataStructureEntry[]>
 
 export async function getRepoListOrganisations(): Promise<Organisation[]> {
   return (await loadIndex()).index.organisations;
+}
+
+export async function getRepoListGroups(): Promise<UseCaseGroup[]> {
+  return (await loadIndex()).index.groups;
 }
 
 export async function getRepoListOrganisation(id: string): Promise<Organisation | undefined> {

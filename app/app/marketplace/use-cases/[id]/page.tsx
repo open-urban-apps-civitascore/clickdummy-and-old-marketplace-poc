@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
 
+import { PartOfGroups } from "@/components/groups/part-of-groups";
+import { Button } from "@/components/ui/button";
 import { Section } from "@/components/ui/layout";
+import { InlineNotice } from "@/components/ui/notice";
 import { MarketplacePageShell } from "@/components/marketplace/page-shell";
 import { AdoptersSection } from "@/components/use-cases/adopters";
 import { DemoDataHighlight } from "@/components/use-cases/demo-data-highlight";
@@ -20,9 +23,12 @@ import { TechnicalFacts } from "@/components/use-cases/technical-facts";
 import { UseCaseGallery } from "@/components/use-cases/use-case-gallery";
 import { UseCaseIllustration } from "@/components/use-cases/use-case-illustration";
 import { UseCaseInfobox } from "@/components/use-cases/use-case-infobox";
+import { EntryLinks } from "@/components/use-cases/entry-links";
 import { DeprecatedNotice, TierBadge } from "@/components/use-cases/use-case-status";
 import { getUseCaseById } from "@/lib/getUseCases";
+import { groupsContaining, isInstallable } from "@/lib/groups";
 import { getMarketplaceText } from "@/lib/marketplace-text";
+import { getRepoListGroups } from "@/lib/server/repo-list";
 
 /**
  * The use-case detail page reads in three bands (redesign 2026-09-22):
@@ -54,6 +60,8 @@ export default async function UseCaseDetailPage({
   const successor = useCase.deprecated?.successorId
     ? await getUseCaseById(useCase.deprecated.successorId)
     : undefined;
+  const groups = groupsContaining(useCase.id, await getRepoListGroups());
+  const reference = useCase.implementation?.reference;
 
   return (
     <MarketplacePageShell
@@ -114,16 +122,35 @@ export default async function UseCaseDetailPage({
                   <TierBadge tier={useCase.curationTier} />
                 </div>
                 <p className="text-lg leading-relaxed text-muted-foreground">{useCase.summary}</p>
+                <PartOfGroups groups={groups} />
 
                 {/* The install action stays in the hero, not in the rail: the
                     rail collapses below `lg`, and the primary CTA must not
                     land at the bottom of a phone screen. */}
-                <div className="mt-1 flex w-full flex-col items-start gap-1.5">
-                  <InstallUseCaseButton useCase={useCase} />
-                  <p className="text-xs text-muted-foreground">
-                    {text.useCases.installDescription}
-                  </p>
-                </div>
+                {isInstallable(useCase) ? (
+                  <div className="mt-1 flex w-full flex-col items-start gap-1.5">
+                    <InstallUseCaseButton useCase={useCase} />
+                    <p className="text-xs text-muted-foreground">
+                      {text.useCases.installDescription}
+                    </p>
+                  </div>
+                ) : (
+                  // A described entry: it runs elsewhere and has no package to install.
+                  <div className="mt-1 flex w-full flex-col items-start gap-3">
+                    <InlineNotice tone="neutral">
+                      Nur beschrieben: läuft bei {useCase.implementation?.operator ?? useCase.publisher}, ein
+                      installierbares Paket gibt es noch nicht.
+                    </InlineNotice>
+                    {reference ? (
+                      <Button asChild variant="outline" size="sm">
+                        <a href={reference.url} target="_blank" rel="noreferrer">
+                          <ExternalLink aria-hidden />
+                          {reference.source ?? "Zur ausführlichen Beschreibung"}
+                        </a>
+                      </Button>
+                    ) : null}
+                  </div>
+                )}
               </div>
             </section>
 
@@ -136,6 +163,7 @@ export default async function UseCaseDetailPage({
               <p className="text-base leading-relaxed text-muted-foreground lg:text-lg">
                 {useCase.description}
               </p>
+              <EntryLinks links={useCase.links} className="mt-6" />
             </Section>
 
             {useCase.demoData ? <DemoDataHighlight demoData={useCase.demoData} /> : null}

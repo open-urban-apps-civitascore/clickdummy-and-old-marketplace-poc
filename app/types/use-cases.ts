@@ -100,6 +100,15 @@ export const requiredBuildingBlockSchema = z.union([
  * commune on submission). Empty is a first-class state: the UI then shows an
  * honestly-labeled category illustration, never a fabricated screenshot.
  */
+/** A page worth reading beside the entry: what it is called, where it is, and why. */
+export const entryLinkSchema = z.object({
+  title: z.string().min(1),
+  url: z.string().url(),
+  description: z.string().optional(),
+});
+
+export type EntryLink = z.infer<typeof entryLinkSchema>;
+
 export const useCaseImageSchema = z.object({
   url: z.string(),
   /**
@@ -303,6 +312,8 @@ const useCaseObjectSchema = z.object({
 
   // Optional demo-relevant metadata — see the block above.
   images: z.array(useCaseImageSchema).default([]),
+  /** Shown under „Was dieser Anwendungsfall löst“. */
+  links: z.array(entryLinkSchema).max(8).default([]),
   demoData: demoDataSchema.optional(),
   trust: trustMetadataSchema.optional(),
   provides: z.array(providedSurfaceSchema).default([]),

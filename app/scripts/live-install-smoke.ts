@@ -36,6 +36,7 @@ const USE_CASE: UseCase = {
   publisher: "Marketplace Smoke Test",
   categories: [],
   images: [],
+  links: [],
   provides: [],
   endUserSurfaces: [],
   roles: [],

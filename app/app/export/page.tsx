@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { GalleryVerticalEnd } from "lucide-react";
+
 import { ShareWizard } from "@/components/export/share-wizard";
 import { MarketplacePageShell } from "@/components/marketplace/page-shell";
 import { PageHeader } from "@/components/ui/layout";
@@ -21,6 +24,15 @@ export default async function ExportPage() {
         <PageHeader
           title="Neues Paket teilen"
           lead="Aus einem Datensatz dieser Instanz wird ein Paket. Nach zwei Prüfungen durch das Katalog-Team steht es im Katalog als Anwendungsfall. Die Daten selbst bleiben hier."
+          meta={
+            <Link
+              href="/export/projekt"
+              className="inline-flex items-center gap-1.5 text-sm text-primary underline-offset-2 hover:underline"
+            >
+              <GalleryVerticalEnd aria-hidden className="size-4" />
+              Mehrere Anwendungsfälle gehören zusammen? Als Projekt zusammenstellen
+            </Link>
+          }
         />
         <ShareWizard datasets={getShareDatasets()} organisations={organisations} own={own} />
       </div>

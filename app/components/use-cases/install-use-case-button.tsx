@@ -93,7 +93,14 @@ const STEP_HINTS: Record<StepId, string> = {
   review: "Alles auf einen Blick - erst nach Ihrer Bestätigung wird etwas angelegt.",
 };
 
-export function InstallUseCaseButton({ useCase }: { useCase: UseCase }) {
+export function InstallUseCaseButton({
+  useCase,
+  variant = "default",
+}: {
+  useCase: UseCase;
+  /** `outline` where several of these share a surface, e.g. a project's members. */
+  variant?: "default" | "outline";
+}) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [acknowledged, setAcknowledged] = useState(false);
@@ -177,7 +184,7 @@ export function InstallUseCaseButton({ useCase }: { useCase: UseCase }) {
       {/* Download, not Sparkles: installing is a deterministic provisioning
           sequence, not magic. Sparkles is the Assistent's glyph and means "AI"
           everywhere else in the app. */}
-      <Button onClick={() => setOpen(true)}>
+      <Button variant={variant} onClick={() => setOpen(true)}>
         <Download className="size-4" />
         Nachnutzen
       </Button>

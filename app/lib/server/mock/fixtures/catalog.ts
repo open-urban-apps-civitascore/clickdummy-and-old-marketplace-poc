@@ -9,7 +9,8 @@ import { repoListIndexSchema, type RepoListIndex } from "@/types/repo-list";
  *
  * The enrichment is the optional blocks `trust`, `requirements`, `provides`,
  * `roles`, `implementation`, `adopters`, `addedAt`, `updatedAt` and
- * `softwareUpdatedAt`, the whole `dataStructures` and `organisations` sections,
+ * `softwareUpdatedAt`, the whole `dataStructures`, `organisations` and `groups`
+ * sections, three invented described-only use cases (no package),
  * plus the trust vocabulary `curationTier` / `deprecated` — see
  * `types/use-cases.ts`, `types/implementation.ts` and `types/curation-tier.ts`.
  * They are NOT in the published index.json yet, because nothing authors or
@@ -359,6 +360,13 @@ const RAW_INDEX = {
           "seeking": "Kommunen, die ihren Baumbestand nach demselben Schema erfassen wollen - gemeinsame Weiterentwicklung der Datenstruktur."
         }
       },
+      "links": [
+        {
+          "title": "Feldbeschreibung Baumkataster",
+          "url": "https://musterstadt.example/smart-city/baumkataster/felder",
+          "description": "Welche Angaben ein Baumeintrag hat und woher sie im Grünflächenamt kommen."
+        }
+      ],
       "title": "Baumkataster Starter App",
       "summary": "Ein kleines, wiederverwendbares Starterpaket für einen kommunalen Baumkataster-Datensatz.",
       "description": "Dieser Demo-Anwendungsfall installiert einen einfachen CORE-Datensatz inklusive einer Datenstruktur für Baumeinträge über das CivitasCore Portal-Backend. Er dient als prototypischer Installationsfluss im Marketplace Add-on.",
@@ -674,6 +682,18 @@ const RAW_INDEX = {
       "adopters": [
         { "name": "Stadt Beispielhausen", "stage": "produktiv", "since": "2026" }
       ],
+      "links": [
+        {
+          "title": "Messwerte als offene Daten",
+          "url": "https://opendata.musterhausen.example/feinstaub",
+          "description": "Alle Messwerte seit 2025 zum Herunterladen, stündlich aktualisiert."
+        },
+        {
+          "title": "Bauanleitung für die Sensoren",
+          "url": "https://musterhausen.example/digitales/feinstaub/bauanleitung",
+          "description": "Teile, Kosten und Aufbau der Messstationen, wie das Umweltamt sie nutzt."
+        }
+      ],
       "implementation": {
         "status": "produktiv",
         "operator": "Stadt Musterhausen",
@@ -823,6 +843,111 @@ const RAW_INDEX = {
         "datasetId": "urn:core:platform:civitas:dataset:common:Feinstaub-Musterhausen:1.0.0",
         "note": "Beim Installieren wird das Bundle aus dem Artefakt-Repo (Tag v1.0.0) geholt und über das CivitasCore Portal-Backend angelegt. GeoPoint wird wiederverwendet, falls es bereits existiert."
       }
+    },
+    {
+      "id": "musterstadt-hitzeinseln",
+      "addedAt": "2026-10-20",
+      "updatedAt": "2026-11-04",
+      "implementation": {
+        "status": "prototyp",
+        "operator": "Stadt Musterstadt",
+        "operatorOrg": "musterstadt",
+        "parties": { "stakeholders": ["Umweltamt Musterstadt", "Schulamt Musterstadt"] },
+        "resources": { "costBand": "m", "setupCost": "m", "runningCost": "s", "effortBand": "m", "funding": "Smart-City-Fördermittel der Stadt Musterstadt" },
+        "logicModel": {
+          "input": "Zwölf Temperaturfühler, ein Sommer Messung, Abstimmung mit Umwelt- und Schulamt.",
+          "output": "Eine Karte der heißesten Orte am Nachmittag.",
+          "outcome": "Schattenplätze und Trinkbrunnen entstehen dort, wo es am heißesten wird.",
+          "impact": "Weniger Hitzebelastung für Kinder und ältere Menschen in der Innenstadt."
+        },
+        "reference": {
+          "url": "https://musterstadt.example/smart-city/hitzeinseln",
+          "source": "Projektseite der Stadt Musterstadt"
+        }
+      },
+      "title": "Hitzeinseln Musterstadt",
+      "summary": "Temperaturmessung auf Plätzen und Schulhöfen, damit Hitzeschutz dort ansetzt, wo es am heißesten wird.",
+      "description": "Zwölf Temperaturfühler messen im Sommer an Plätzen, Haltestellen und Schulhöfen. Eine Karte zeigt, wo es nachmittags am heißesten wird, und das Umweltamt plant danach Schattenplätze und Trinkbrunnen. Läuft in Musterstadt; ein installierbares Paket gibt es noch nicht.",
+      "publisher": "Stadt Musterstadt",
+      "categories": ["Umwelt & Klima"],
+      "curationTier": "experimental",
+      "compatibility": ["2.0"],
+      "trust": {
+        "contactPerson": { "name": "Team Smart City", "role": "Stadt Musterstadt", "email": "smartcity@musterstadt.example" }
+      },
+      "modelForge": {
+        "datasetId": "urn:core:platform:civitas:dataset:common:Hitzeinseln-Musterstadt:1.0.0"
+      }
+    },
+    {
+      "id": "musterstadt-giesspatenschaften",
+      "addedAt": "2026-10-28",
+      "updatedAt": "2026-11-04",
+      "implementation": {
+        "status": "in-entwicklung",
+        "operator": "Stadt Musterstadt",
+        "operatorOrg": "musterstadt",
+        "parties": { "stakeholders": ["Grünflächenamt Musterstadt", "Bürgerverein Altstadt"] },
+        "resources": { "costBand": "s", "setupCost": "s", "runningCost": "s", "effortBand": "m", "funding": "Haushaltsmittel der Stadt Musterstadt" },
+        "logicModel": {
+          "input": "Das Baumkataster, eine Kartenansicht und ein Aufruf über den Bürgerverein.",
+          "output": "Eine Karte der Patenbäume mit ihrem Wasserbedarf.",
+          "outcome": "Der Bauhof gießt gezielt die Bäume, die keine Paten haben.",
+          "impact": "Mehr junge Straßenbäume überstehen ihre ersten Sommer."
+        },
+        "reference": {
+          "url": "https://musterstadt.example/smart-city/giesspatenschaften",
+          "source": "Projektseite der Stadt Musterstadt"
+        }
+      },
+      "title": "Gießpatenschaften Musterstadt",
+      "summary": "Anwohnende übernehmen das Gießen junger Straßenbäume und sehen auf einer Karte, welcher Baum Wasser braucht.",
+      "description": "Die Karte zeigt junge Bäume aus dem Baumkataster mit ihrem Wasserbedarf. Wer eine Patenschaft übernimmt, trägt das Gießen ein; der Bauhof plant seine Touren um die versorgten Bäume herum. In Entwicklung in Musterstadt; ein installierbares Paket gibt es noch nicht.",
+      "publisher": "Stadt Musterstadt",
+      "categories": ["Umwelt & Klima", "Verwaltung & Bürgerservices"],
+      "curationTier": "experimental",
+      "compatibility": ["2.0"],
+      "trust": {
+        "contactPerson": { "name": "Team Smart City", "role": "Stadt Musterstadt", "email": "smartcity@musterstadt.example" }
+      },
+      "modelForge": {
+        "datasetId": "urn:core:platform:civitas:dataset:common:Giesspatenschaften-Musterstadt:1.0.0"
+      }
+    },
+    {
+      "id": "musterhausen-laermmessung",
+      "addedAt": "2026-10-12",
+      "updatedAt": "2026-10-30",
+      "implementation": {
+        "status": "idee",
+        "operator": "Stadt Musterhausen",
+        "operatorOrg": "musterhausen",
+        "parties": { "stakeholders": ["Umweltamt Musterhausen"] },
+        "resources": { "costBand": "m", "setupCost": "m", "runningCost": "s", "effortBand": "s", "funding": "Noch offen" },
+        "logicModel": {
+          "input": "Vier Lärmsensoren an den Standorten der Zählstellen.",
+          "output": "Lärmpegel neben Verkehrszählung und Feinstaubwerten.",
+          "outcome": "Der Stadtrat sieht, ob Tempo 30 Lärm und Luft zugleich verbessert.",
+          "impact": "Ruhigere und gesündere Wohnstraßen an der Hauptstraße."
+        },
+        "reference": {
+          "url": "https://musterhausen.example/digitales/laermmessung",
+          "source": "Projektseite der Stadt Musterhausen"
+        }
+      },
+      "title": "Lärmmessung Hauptstraße",
+      "summary": "Lärmpegel an der Hauptstraße, abgeglichen mit Verkehrszählung und Luftwerten.",
+      "description": "Geplant: vier Lärmsensoren an der Hauptstraße, deren Werte neben der Verkehrszählung und den Feinstaubwerten stehen. So lässt sich zeigen, ob eine Tempo-30-Strecke Lärm und Luft zugleich verbessert. Noch eine Idee; ein installierbares Paket gibt es noch nicht.",
+      "publisher": "Stadt Musterhausen",
+      "categories": ["Umwelt & Klima", "Mobilität & Verkehr"],
+      "curationTier": "experimental",
+      "compatibility": ["2.0"],
+      "trust": {
+        "contactPerson": { "name": "Digitalisierung und Smart City", "role": "Stadt Musterhausen", "email": "digital@musterhausen.example" }
+      },
+      "modelForge": {
+        "datasetId": "urn:core:platform:civitas:dataset:common:Laermmessung-Musterhausen:1.0.0"
+      }
     }
   ],
   "dataStructures":   [
@@ -919,6 +1044,96 @@ const RAW_INDEX = {
       "id": "civitasconnect",
       "name": "Civitas Connect e. V.",
       "website": "https://civitasconnect.digital"
+    }
+  ],
+  "groups": [
+    {
+      "id": "saubere-luft-hauptstrasse",
+      "title": "Saubere Luft an der Hauptstraße",
+      "summary": "Verkehr, Feinstaub und bald Lärm an einer Straße gemeinsam messen, um Tempo 30 zu begründen.",
+      "description": "Musterhausen misst an der Hauptstraße, was der Verkehr dort bewirkt. Die Verkehrszählung zeigt, wie viele Fahrzeuge wie schnell fahren, die Feinstaubmessung, was in der Luft ankommt. Beide nutzen dieselben Standorte, deshalb lassen sich die Werte nebeneinanderlegen.",
+      "publisher": "Stadt Musterhausen",
+      "publisherOrg": "musterhausen",
+      "categories": ["Mobilität & Verkehr", "Umwelt & Klima"],
+      "ordered": true,
+      "members": [
+        {
+          "id": "musterhausen-trafficcounter",
+          "note": "Zuerst: die Zählstellen legen die Standorte fest, an denen auch gemessen wird."
+        },
+        {
+          "id": "musterhausen-feinstaub",
+          "note": "Misst an denselben Standorten wie die Zählstellen."
+        },
+        {
+          "id": "musterhausen-laermmessung",
+          "optional": true,
+          "note": "Geplant, noch kein Paket."
+        }
+      ],
+      "story": {
+        "problem": "An der Hauptstraße werden die Feinstaub-Grenzwerte an heißen Tagen überschritten, und Anwohnende klagen über Lärm. Ob Tempo 30 hilft, war bisher Meinung gegen Meinung.",
+        "goal": "Verkehr, Luft und Lärm an denselben Punkten messen, damit der Stadtrat über Tempo 30 mit Zahlen entscheiden kann.",
+        "next": "2027 kommen Lärmsensoren dazu. Danach ein halbes Jahr Tempo 30 zur Probe, mit Messung davor und danach."
+      },
+      "links": [
+        {
+          "title": "Ratsbeschluss: Tempo 30 zur Probe",
+          "url": "https://musterhausen.example/rat/beschluesse/2026-041",
+          "description": "Der Beschluss, der die Messung vor und nach der Probephase verlangt."
+        },
+        {
+          "title": "Messwerte als offene Daten",
+          "url": "https://opendata.musterhausen.example/hauptstrasse",
+          "description": "Verkehrszählung und Feinstaub an der Hauptstraße zum Herunterladen."
+        }
+      ],
+      "contact": { "name": "Digitalisierung und Smart City", "email": "digital@musterhausen.example" },
+      "addedAt": "2026-11-02",
+      "updatedAt": "2026-11-10"
+    },
+    {
+      "id": "klimaresilienz-musterstadt",
+      "title": "Klimaresilienz Musterstadt",
+      "summary": "Stadtbäume, Hitzeinseln und Gießpatenschaften aus dem Smart-City-Projekt der Stadt Musterstadt.",
+      "description": "Im Smart-City-Projekt bündelt Musterstadt, was gegen Hitze in der Innenstadt hilft: ein gemeinsamer Baumbestand, eine Karte der heißesten Orte und Anwohnende, die junge Bäume gießen. Jeder Teil läuft für sich; zusammen zeigen sie, wo Schatten fehlt und wer sich kümmert.",
+      "publisher": "Stadt Musterstadt",
+      "publisherOrg": "musterstadt",
+      "categories": ["Umwelt & Klima"],
+      "members": [
+        {
+          "id": "tree-register-starter",
+          "note": "Die gemeinsame Grundlage: welcher Baum wo steht."
+        },
+        {
+          "id": "musterstadt-hitzeinseln",
+          "note": "Zeigt, wo Schatten am dringendsten fehlt."
+        },
+        {
+          "id": "musterstadt-giesspatenschaften",
+          "note": "Nutzt das Baumkataster für die Karte der Patenbäume."
+        },
+        {
+          "id": "musterhausen-feinstaub",
+          "optional": true,
+          "note": "Von Musterhausen übernommen: misst an den Hitzefühlern auch die Luft."
+        }
+      ],
+      "story": {
+        "problem": "Die Innenstadt heizt sich im Sommer stark auf, und viele junge Straßenbäume vertrocknen in ihren ersten Jahren.",
+        "goal": "Sehen, wo es am heißesten ist, die Bäume dort erhalten und Anwohnende beim Gießen einbinden.",
+        "next": "2027 sollen Hitzeinseln und Gießpatenschaften als installierbare Pakete folgen."
+      },
+      "links": [
+        {
+          "title": "Smart-City-Strategie der Stadt Musterstadt",
+          "url": "https://musterstadt.example/smart-city/strategie",
+          "description": "Wo das Projekt herkommt: das Handlungsfeld Klima und seine Maßnahmen."
+        }
+      ],
+      "contact": { "name": "Team Smart City", "email": "smartcity@musterstadt.example" },
+      "addedAt": "2026-11-12",
+      "updatedAt": "2026-11-12"
     }
   ]
 };

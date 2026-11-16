@@ -3,16 +3,19 @@
 import { useMemo, useState, type ReactNode } from "react";
 
 import { CatalogFilters, SortDropdown } from "@/components/catalog/catalog-filters";
+import { GroupCard } from "@/components/groups/group-card";
 import { UseCaseCard } from "@/components/use-cases/use-case-card";
 import { USE_CASE_FACETS } from "@/lib/catalog-facet-defs";
-import { applyCatalogFilters, type CatalogFilterState } from "@/lib/catalog-facets";
+import { activeFacetCount, applyCatalogFilters, type CatalogFilterState } from "@/lib/catalog-facets";
 import { buildSearchIndex } from "@/lib/catalog-search";
 import { useCaseSearchText } from "@/lib/catalog-search-text";
 import { findSort, USE_CASE_SORTS } from "@/lib/catalog-sort";
+import { GROUP_TEXT, groupDates, isGroupVisible, type GroupListing } from "@/lib/groups";
 import type { UseCase } from "@/types/use-cases";
 
 interface UseCaseCatalogProps {
   useCases: UseCase[];
+  groups?: GroupListing[];
   heading: string;
   subtitle: string;
   countLabel: string;
@@ -27,6 +30,7 @@ interface UseCaseCatalogProps {
 
 export const UseCaseCatalog = ({
   useCases,
+  groups = [],
   heading,
   subtitle,
   countLabel,
@@ -67,13 +71,27 @@ export const UseCaseCatalog = ({
     [useCases, filters, index],
   );
 
+  const shownGroups = useMemo(() => {
+    const shownIds = new Set(filtered.map((useCase) => useCase.id));
+    const facetsActive = activeFacetCount(filters.facets) > 0;
+    return groups.filter(({ group }) => isGroupVisible(group, shownIds, filters.search, facetsActive));
+  }, [groups, filtered, filters]);
+
   const [sortId, setSortId] = useState(USE_CASE_SORTS[0]!.id);
-  // On a copy: sorting in place would reorder the memoised `filtered` behind
-  // React's back.
-  const sorted = useMemo(
-    () => [...filtered].sort(findSort(USE_CASE_SORTS, sortId).compare),
-    [filtered, sortId],
-  );
+  // Groups sort among the use cases, as decks in the same grid.
+  const sorted = useMemo(() => {
+    const items = [
+      ...filtered.map((useCase) => ({ kind: "usecase" as const, key: useCase.id, dates: useCase, useCase })),
+      ...shownGroups.map((listing) => ({
+        kind: "group" as const,
+        key: `group:${listing.group.id}`,
+        dates: groupDates(listing.group, listing.members),
+        listing,
+      })),
+    ];
+    const { compare } = findSort(USE_CASE_SORTS, sortId);
+    return items.sort((a, b) => compare(a.dates, b.dates));
+  }, [filtered, shownGroups, sortId]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -98,15 +116,20 @@ export const UseCaseCatalog = ({
         <p className="text-sm text-muted-foreground">
           <span className="font-semibold text-foreground">{filtered.length}</span> {countLabel}{" "}
           {useCases.length}
+          {shownGroups.length ? ` · ${shownGroups.length} ${shownGroups.length === 1 ? GROUP_TEXT.one : GROUP_TEXT.many}` : null}
         </p>
         <SortDropdown sorts={USE_CASE_SORTS} value={sortId} onChange={setSortId} />
       </div>
 
       {sorted.length > 0 ? (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {sorted.map((useCase) => (
-            <UseCaseCard key={useCase.id} useCase={useCase} />
-          ))}
+          {sorted.map((item) =>
+            item.kind === "group" ? (
+              <GroupCard key={item.key} group={item.listing.group} members={item.listing.members} />
+            ) : (
+              <UseCaseCard key={item.key} useCase={item.useCase} />
+            ),
+          )}
         </div>
       ) : (
         <div className="rounded-lg border border-dashed bg-card p-12 text-center text-sm text-muted-foreground">
