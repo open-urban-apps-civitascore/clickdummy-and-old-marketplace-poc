@@ -6,11 +6,11 @@ import { CatalogFilters, SortDropdown } from "@/components/catalog/catalog-filte
 import { GroupCard } from "@/components/groups/group-card";
 import { UseCaseCard } from "@/components/use-cases/use-case-card";
 import { USE_CASE_FACETS } from "@/lib/catalog-facet-defs";
-import { activeFacetCount, applyCatalogFilters, type CatalogFilterState } from "@/lib/catalog-facets";
+import { applyCatalogFilters, type CatalogFilterState } from "@/lib/catalog-facets";
 import { buildSearchIndex } from "@/lib/catalog-search";
 import { useCaseSearchText } from "@/lib/catalog-search-text";
 import { findSort, USE_CASE_SORTS } from "@/lib/catalog-sort";
-import { GROUP_TEXT, groupDates, isGroupVisible, type GroupListing } from "@/lib/groups";
+import { GROUP_TEXT, groupDates, matchGroup, type GroupListing } from "@/lib/groups";
 import type { UseCase } from "@/types/use-cases";
 
 interface UseCaseCatalogProps {
@@ -71,11 +71,13 @@ export const UseCaseCatalog = ({
     [useCases, filters, index],
   );
 
-  const shownGroups = useMemo(() => {
-    const shownIds = new Set(filtered.map((useCase) => useCase.id));
-    const facetsActive = activeFacetCount(filters.facets) > 0;
-    return groups.filter(({ group }) => isGroupVisible(group, shownIds, filters.search, facetsActive));
-  }, [groups, filtered, filters]);
+  const shownGroups = useMemo(
+    () =>
+      groups
+        .map((listing) => ({ ...listing, match: matchGroup(listing, filters, USE_CASE_FACETS, (useCase) => index.get(useCase.id) ?? "") }))
+        .filter((listing) => listing.match.visible),
+    [groups, filters, index],
+  );
 
   const [sortId, setSortId] = useState(USE_CASE_SORTS[0]!.id);
   // Groups sort among the use cases, as decks in the same grid.
@@ -125,7 +127,7 @@ export const UseCaseCatalog = ({
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {sorted.map((item) =>
             item.kind === "group" ? (
-              <GroupCard key={item.key} group={item.listing.group} members={item.listing.members} />
+              <GroupCard key={item.key} group={item.listing.group} members={item.listing.members} match={item.listing.match} />
             ) : (
               <UseCaseCard key={item.key} useCase={item.useCase} />
             ),

@@ -1,3 +1,4 @@
+import { matchesFacet, type CatalogFilterState, type FacetDef } from "@/lib/catalog-facets";
 import { matchesQuery, foldGerman, searchText } from "@/lib/catalog-search";
 import type { DatedEntry } from "@/lib/catalog-recency";
 import { cleanLinks, linksProblem, type LinkDraft } from "@/lib/share/links";
@@ -80,18 +81,58 @@ export function groupDates(group: UseCaseGroup, members: readonly UseCase[]): Da
 export const groupSearchText = (group: UseCaseGroup): string =>
   foldGerman(searchText(group.title, group.summary, group.description, group.publisher, ...group.categories));
 
+/** Filters a group answers with its own details; every other filter looks at its members. */
+const OWN_FACETS: Record<string, (listing: GroupListing) => string[]> = {
+  kategorie: ({ group, members }) => groupCategories(group, members),
+  herausgeber: ({ group }) => [group.publisher],
+};
+
+export interface GroupMatch {
+  visible: boolean;
+  /** Members that pass; all of them when nothing was asked about members. */
+  matching: ReadonlySet<string>;
+  /** What the members were checked against, if anything: the card says „1 von 3 passt …“. */
+  checkedBy?: "filter" | "search" | "both";
+}
+
 /**
- * A group shows in the filtered list when one of its members does, or when the
- * search alone names it. Facets describe use cases, so they never pick a group by itself.
+ * A group shows when its own details pass Themengebiet and Herausgeber and at
+ * least one member passes the other filters. The search counts for all members
+ * when it names the group itself, else each member must match it.
  */
-export function isGroupVisible(
-  group: UseCaseGroup,
-  shownUseCaseIds: ReadonlySet<string>,
-  search: string,
-  facetsActive: boolean,
-): boolean {
-  if (group.members.some((member) => shownUseCaseIds.has(member.id))) return true;
-  return !facetsActive && search.trim() !== "" && matchesQuery(groupSearchText(group), search);
+export function matchGroup(
+  listing: GroupListing,
+  state: CatalogFilterState,
+  facets: readonly FacetDef<UseCase>[],
+  memberText: (useCase: UseCase) => string,
+): GroupMatch {
+  const selected = (id: string) => state.facets[id] ?? [];
+  const ownPass = Object.entries(OWN_FACETS).every(([id, valuesOf]) => {
+    const chosen = selected(id);
+    return chosen.length === 0 || chosen.some((value) => valuesOf(listing).includes(value));
+  });
+  const memberFacets = facets.filter((def) => !(def.id in OWN_FACETS) && selected(def.id).length > 0);
+  const query = state.search.trim();
+  const searchOnMembers = query !== "" && !matchesQuery(groupSearchText(listing.group), query);
+
+  const matching = new Set(
+    listing.members
+      .filter(
+        (useCase) =>
+          memberFacets.every((def) => matchesFacet(def, useCase, selected(def.id))) &&
+          (!searchOnMembers || matchesQuery(memberText(useCase), query)),
+      )
+      .map((useCase) => useCase.id),
+  );
+  const checkedBy =
+    memberFacets.length && searchOnMembers ? "both" : memberFacets.length ? "filter" : searchOnMembers ? "search" : undefined;
+  return { visible: ownPass && matching.size > 0, matching, checkedBy };
+}
+
+/** „1 von 3 passt zu den Filtern“. */
+export function matchLine(count: number, total: number, by: NonNullable<GroupMatch["checkedBy"]>): string {
+  const what = by === "search" ? "zur Suche" : by === "both" ? "zu Suche und Filtern" : "zu den Filtern";
+  return `${count} von ${total} ${count === 1 ? "passt" : "passen"} ${what}`;
 }
 
 // ── Proposing a group ─────────────────────────────────────────────────────────

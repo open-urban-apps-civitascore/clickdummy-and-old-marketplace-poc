@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { GalleryVerticalEnd } from "lucide-react";
+import { Check, GalleryVerticalEnd } from "lucide-react";
 
 import { GroupIllustration } from "@/components/groups/group-illustration";
-import { GROUP_TEXT, groupCategories, isInstallable, countUseCases } from "@/lib/groups";
+import { countUseCases, GROUP_TEXT, groupCategories, isInstallable, matchLine, type GroupMatch } from "@/lib/groups";
 import type { UseCaseGroup } from "@/types/repo-list";
 import type { UseCase } from "@/types/use-cases";
 
@@ -17,6 +17,7 @@ export function GroupCard({
   members,
   hidePublisher = false,
   preview = false,
+  match,
 }: {
   group: UseCaseGroup;
   /** The members still listed, in the group's order. */
@@ -24,8 +25,14 @@ export function GroupCard({
   hidePublisher?: boolean;
   /** Not yet in the catalogue: shown, but not a link. */
   preview?: boolean;
+  /** From the catalogue's filters: which members fit. */
+  match?: GroupMatch;
 }) {
-  const shown = members.slice(0, SHOWN_MEMBERS);
+  const checked = match?.checkedBy ? match : undefined;
+  const fits = (useCase: UseCase) => !checked || checked.matching.has(useCase.id);
+  // While filtering, the fitting members come first, so the card shows what was found.
+  const ordered = checked ? [...members.filter(fits), ...members.filter((useCase) => !fits(useCase))] : members;
+  const shown = ordered.slice(0, SHOWN_MEMBERS);
   const more = members.length - shown.length;
   const described = members.filter((useCase) => !isInstallable(useCase)).length;
   const frame = "group block h-full rounded-lg";
@@ -55,13 +62,30 @@ export function GroupCard({
           <h3 className="hyphens-auto break-words text-lg font-semibold leading-tight text-foreground">{group.title}</h3>
           <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-muted-foreground">{group.summary}</p>
 
-          <ul className="mt-3 flex flex-col gap-1 text-xs text-muted-foreground">
-            {shown.map((useCase) => (
-              <li key={useCase.id} className="flex min-w-0 items-center gap-2">
-                <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-emerald-600/70" />
-                <span className="truncate text-foreground">{useCase.title}</span>
-              </li>
-            ))}
+          {checked?.checkedBy ? (
+            <p className="mt-3 text-xs font-medium text-foreground">
+              {matchLine(checked.matching.size, members.length, checked.checkedBy)}
+            </p>
+          ) : null}
+          <ul className={`${checked ? "mt-1.5" : "mt-3"} flex flex-col gap-1 text-xs text-muted-foreground`}>
+            {shown.map((useCase) =>
+              checked ? (
+                <li key={useCase.id} className="flex min-w-0 items-center gap-2">
+                  {fits(useCase) ? (
+                    <Check aria-hidden className="size-3.5 shrink-0 text-foreground" strokeWidth={3} />
+                  ) : (
+                    <span aria-hidden className="mx-1 size-1.5 shrink-0 rounded-full border border-muted-foreground/60" />
+                  )}
+                  <span className={`truncate ${fits(useCase) ? "font-medium text-foreground" : ""}`}>{useCase.title}</span>
+                  <span className="sr-only">{fits(useCase) ? "(passt)" : "(passt nicht)"}</span>
+                </li>
+              ) : (
+                <li key={useCase.id} className="flex min-w-0 items-center gap-2">
+                  <span aria-hidden className="size-1.5 shrink-0 rounded-full bg-emerald-600/70" />
+                  <span className="truncate text-foreground">{useCase.title}</span>
+                </li>
+              ),
+            )}
             {more > 0 ? <li className="pl-3.5">und {more} weitere</li> : null}
           </ul>
 

@@ -8,14 +8,19 @@ import {
   groupFromDraft,
   groupListings,
   groupsContaining,
-  isGroupVisible,
   joinGerman,
+  matchGroup,
+  matchLine,
   moveMember,
   resolveMembers,
   selectionProblem,
   sharedStructures,
 } from "@/lib/groups";
+import { USE_CASE_FACETS } from "@/lib/catalog-facet-defs";
+import { foldGerman } from "@/lib/catalog-search";
+import { useCaseSearchText as searchTextOf } from "@/lib/catalog-search-text";
 import { mockRepoListIndex } from "@/lib/server/mock/fixtures/catalog";
+import type { UseCase } from "@/types/use-cases";
 
 const { groups, useCases, organisations } = mockRepoListIndex;
 const group = (id: string) => groups.find((entry) => entry.id === id)!;
@@ -56,16 +61,49 @@ describe("groups in the mock catalogue", () => {
 });
 
 describe("a group in the filtered list", () => {
-  const luft = group("saubere-luft-hauptstrasse");
+  const listings = groupListings(groups, useCases);
+  const text = (useCase: UseCase) => foldGerman(searchTextOf(useCase));
+  const run = (search: string, facets: Record<string, string[]>) =>
+    Object.fromEntries(
+      listings.map((listing) => {
+        const match = matchGroup(listing, { search, facets }, USE_CASE_FACETS, text);
+        return [listing.group.id, match.visible ? { matching: [...match.matching], by: match.checkedBy } : "hidden"];
+      }),
+    );
 
-  it("shows when one of its members does", () => {
-    assert.equal(isGroupVisible(luft, new Set(["musterhausen-feinstaub"]), "", true), true);
-    assert.equal(isGroupVisible(luft, new Set(["tree-register-starter"]), "", true), false);
+  it("shows when one member passes a member filter, and names the ones that do", () => {
+    assert.deepEqual(run("", { siegel: ["verified"] }), {
+      "saubere-luft-hauptstrasse": { matching: ["musterhausen-trafficcounter"], by: "filter" },
+      "klimaresilienz-musterstadt": "hidden",
+    });
+    assert.equal(matchLine(1, 3, "filter"), "1 von 3 passt zu den Filtern");
+    assert.equal(matchLine(2, 4, "search"), "2 von 4 passen zur Suche");
   });
 
-  it("shows for a search that names the group, unless a facet is set", () => {
-    assert.equal(isGroupVisible(luft, new Set(), "tempo 30", false), true);
-    assert.equal(isGroupVisible(luft, new Set(), "tempo 30", true), false);
+  it("answers Herausgeber and Themengebiet with its own details", () => {
+    assert.deepEqual(run("", { herausgeber: ["Stadt Musterhausen"] }), {
+      "saubere-luft-hauptstrasse": {
+        matching: ["musterhausen-trafficcounter", "musterhausen-feinstaub", "musterhausen-laermmessung"],
+        by: undefined,
+      },
+      "klimaresilienz-musterstadt": "hidden",
+    });
+    // Gießpatenschaften carries the theme, the project does not.
+    assert.equal(run("", { kategorie: ["Verwaltung & Bürgerservices"] })["klimaresilienz-musterstadt"], "hidden");
+  });
+
+  it("keeps a group the search names when a filter is set too", () => {
+    assert.deepEqual(run("tempo 30", { siegel: ["verified"] })["saubere-luft-hauptstrasse"], {
+      matching: ["musterhausen-trafficcounter"],
+      by: "filter",
+    });
+  });
+
+  it("checks each member against a search that does not name the group", () => {
+    assert.deepEqual(run("baumkataster", {})["klimaresilienz-musterstadt"], {
+      matching: ["tree-register-starter", "musterstadt-giesspatenschaften"],
+      by: "search",
+    });
   });
 });
 
