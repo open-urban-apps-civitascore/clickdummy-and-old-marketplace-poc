@@ -75,6 +75,7 @@ describe("a group in the filtered list", () => {
     assert.deepEqual(run("", { siegel: ["verified"] }), {
       "saubere-luft-hauptstrasse": { matching: ["musterhausen-trafficcounter"], by: "filter" },
       "klimaresilienz-musterstadt": "hidden",
+      "kreisbeschreibung-musterland": { matching: ["musterhausen-trafficcounter"], by: "filter" },
     });
     assert.equal(matchLine(1, 3, "filter"), "1 von 3 passt zu den Filtern");
     assert.equal(matchLine(2, 4, "search"), "2 von 4 passen zur Suche");
@@ -87,6 +88,8 @@ describe("a group in the filtered list", () => {
         by: undefined,
       },
       "klimaresilienz-musterstadt": "hidden",
+      // It includes Musterhausen's traffic counter, but the project is Musterland's.
+      "kreisbeschreibung-musterland": "hidden",
     });
     // Gießpatenschaften carries the theme, the project does not.
     assert.equal(run("", { kategorie: ["Verwaltung & Bürgerservices"] })["klimaresilienz-musterstadt"], "hidden");

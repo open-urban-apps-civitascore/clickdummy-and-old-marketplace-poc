@@ -10,7 +10,7 @@ import { applyCatalogFilters, type CatalogFilterState } from "@/lib/catalog-face
 import { buildSearchIndex } from "@/lib/catalog-search";
 import { useCaseSearchText } from "@/lib/catalog-search-text";
 import { findSort, USE_CASE_SORTS } from "@/lib/catalog-sort";
-import { GROUP_TEXT, groupDates, matchGroup, type GroupListing } from "@/lib/groups";
+import { GROUP_TEXT, groupDates, groupsContaining, matchGroup, type GroupListing } from "@/lib/groups";
 import type { UseCase } from "@/types/use-cases";
 
 interface UseCaseCatalogProps {
@@ -79,6 +79,9 @@ export const UseCaseCatalog = ({
     [groups, filters, index],
   );
 
+  // Membership is a fact whatever the filters show, so it comes from every group.
+  const allGroups = useMemo(() => groups.map((listing) => listing.group), [groups]);
+
   const [sortId, setSortId] = useState(USE_CASE_SORTS[0]!.id);
   // Groups sort among the use cases, as decks in the same grid.
   const sorted = useMemo(() => {
@@ -129,7 +132,7 @@ export const UseCaseCatalog = ({
             item.kind === "group" ? (
               <GroupCard key={item.key} group={item.listing.group} members={item.listing.members} match={item.listing.match} />
             ) : (
-              <UseCaseCard key={item.key} useCase={item.useCase} />
+              <UseCaseCard key={item.key} useCase={item.useCase} partOf={groupsContaining(item.useCase.id, allGroups)} />
             ),
           )}
         </div>

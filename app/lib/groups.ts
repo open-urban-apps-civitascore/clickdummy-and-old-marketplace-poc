@@ -10,6 +10,7 @@ export const GROUP_TEXT = {
   one: "Projekt",
   many: "Projekte",
   partOf: "Teil des Projekts",
+  partOfMany: "Teil der Projekte",
   explain: "Ein Projekt fasst Anwendungsfälle zusammen, die zusammengehören. Installiert wird jeder Anwendungsfall einzeln.",
 } as const;
 

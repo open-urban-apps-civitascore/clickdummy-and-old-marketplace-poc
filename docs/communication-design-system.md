@@ -344,6 +344,7 @@ One glyph, one meaning, app-wide.
 | `ShieldCheck` / `Users` / `FlaskConical` | Verifiziert / Community / Experimentell | `use-case-status.tsx` |
 | `PackagePlus` | contribute | sidebar, contribute CTA |
 | `PackageCheck` | installed | sidebar |
+| `GalleryVerticalEnd` | a project (group of use cases): „Teil des Projekts …“ on the use-case page and card | `components/groups/part-of-groups.tsx` |
 | `CircleHelp` | „?“: an explanation of the term next to it — nothing else | `components/ui/explanation.tsx` |
 | `CircleDashed` | not checkable automatically | fit check („Passt zu dieser Instanz?“) |
 | `CopyCheck` / `Scissors` / `Lightbulb` | Übertragbarkeit: Direkt übertragbar / Mit eigenem Zuschnitt / Zur Inspiration | use-case Steckbrief |

@@ -2,7 +2,8 @@ import { BundleError, type UseCaseBundle } from "@/lib/server/bundle";
 import type { UseCase } from "@/types/use-cases";
 
 /**
- * Mock bundle fixtures — the real CORE-IR content of the three artifact repos,
+ * Mock bundle fixtures — the real CORE-IR content of the three artifact repos
+ * (plus two invented ones for the Kreisbeschreibung project, at the end),
  * embedded so the mock install needs no network. Faithful to reality on
  * 2026-07-18: only the trafficcounter ships `core-ir/pipeline.json`, so its mock
  * install reaches AVAILABLE while the other two send the empty placeholder model
@@ -398,10 +399,129 @@ const FEINSTAUB_BUNDLE: UseCaseBundle = {
   },
 };
 
+// Invented for the Kreisbeschreibung project: both share CriticalFacility,
+// the fields every register in the BBK template asks for.
+const CRITICAL_FACILITY_ELEMENT = {
+  ref: "urn:core:platform:civitas:datastructure:safety:CriticalFacility:1.0.0",
+  schema: {
+    $schema: "https://json-schema.org/draft/2020-12/schema",
+    $id: "urn:core:platform:civitas:datastructure:safety:CriticalFacility:1.0.0",
+    title: "CriticalFacility",
+    type: "object",
+    required: ["facilityId", "name", "kind", "location"],
+    properties: {
+      facilityId: { type: "string", description: "Kennung der Einrichtung im Kreis." },
+      name: { type: "string" },
+      kind: { type: "string", description: "Art der Einrichtung, z. B. Krankenhaus oder Schule." },
+      location: {
+        type: "object",
+        required: ["lat", "lon"],
+        properties: { lat: { type: "number" }, lon: { type: "number" } },
+      },
+      emergencyPower: {
+        type: "object",
+        properties: {
+          available: { type: "boolean" },
+          hours: { type: "number", description: "Wie lange die Notstromversorgung reicht." },
+        },
+      },
+      contact24h: {
+        type: "object",
+        description: "Rund um die Uhr erreichbar.",
+        properties: { phone: { type: "string" }, email: { type: "string" } },
+      },
+    },
+  },
+};
+
+const KRANKENHAUS_BUNDLE: UseCaseBundle = {
+  dataset: {
+    id: "urn:core:platform:civitas:dataset:common:Krankenhauskapazitaeten-Musterland:1.0.0",
+    title: "Krankenhauskapazitäten Musterland",
+    description: "Als Entwurf installierter Datensatz für die täglichen Bettenmeldungen der Krankenhäuser.",
+    version: "1.0",
+    dataStructureRefs: [
+      "urn:core:platform:civitas:datastructure:safety:CriticalFacility:1.0.0",
+      "urn:core:platform:civitas:datastructure:health:HospitalCapacity:1.0.0",
+    ],
+  },
+  elements: [
+    CRITICAL_FACILITY_ELEMENT,
+    {
+      ref: "urn:core:platform:civitas:datastructure:health:HospitalCapacity:1.0.0",
+      schema: {
+        $schema: "https://json-schema.org/draft/2020-12/schema",
+        $id: "urn:core:platform:civitas:datastructure:health:HospitalCapacity:1.0.0",
+        title: "HospitalCapacity",
+        type: "object",
+        required: ["facilityId", "reportedAt", "bedsTotal", "bedsFree"],
+        properties: {
+          facilityId: { type: "string" },
+          reportedAt: { type: "string", format: "date-time" },
+          bedsTotal: { type: "integer" },
+          bedsFree: { type: "integer" },
+          icuTotal: { type: "integer" },
+          icuFree: { type: "integer" },
+          burnBedsFree: { type: "integer" },
+          helipad: { type: "boolean" },
+        },
+      },
+    },
+  ],
+  deploymentRef: {
+    url: "https://gitlab.example/landkreis-musterland/kreisbeschreibung-krankenhaeuser",
+    ref: "1ac2e6001387cb39948adb922742e0921b587f70",
+    releaseTag: "v1.0.0",
+    path: ".",
+  },
+};
+
+const NOTUNTERKUENFTE_BUNDLE: UseCaseBundle = {
+  dataset: {
+    id: "urn:core:platform:civitas:dataset:common:Notunterkuenfte-Musterland:1.0.0",
+    title: "Notunterkünfte Musterland",
+    description: "Als Entwurf installierter Datensatz für die Notunterkünfte des Kreises.",
+    version: "1.0",
+    dataStructureRefs: [
+      "urn:core:platform:civitas:datastructure:safety:CriticalFacility:1.0.0",
+      "urn:core:platform:civitas:datastructure:safety:ShelterCapacity:1.0.0",
+    ],
+  },
+  elements: [
+    CRITICAL_FACILITY_ELEMENT,
+    {
+      ref: "urn:core:platform:civitas:datastructure:safety:ShelterCapacity:1.0.0",
+      schema: {
+        $schema: "https://json-schema.org/draft/2020-12/schema",
+        $id: "urn:core:platform:civitas:datastructure:safety:ShelterCapacity:1.0.0",
+        title: "ShelterCapacity",
+        type: "object",
+        required: ["facilityId", "shelterKind", "places"],
+        properties: {
+          facilityId: { type: "string" },
+          shelterKind: { type: "string", enum: ["schule", "versammlungsraum", "hotel", "sonstiges"] },
+          places: { type: "integer" },
+          placesFree: { type: "integer" },
+          kitchen: { type: "boolean" },
+          barrierFree: { type: "boolean" },
+        },
+      },
+    },
+  ],
+  deploymentRef: {
+    url: "https://gitlab.example/landkreis-musterland/kreisbeschreibung-notunterkuenfte",
+    ref: "4c3386387f04f1863ff6137afab15563cc4397a0",
+    releaseTag: "v1.0.0",
+    path: ".",
+  },
+};
+
 export const mockBundlesByRepoUrl: Record<string, UseCaseBundle> = {
   [TRAFFICCOUNTER_BUNDLE.deploymentRef.url]: TRAFFICCOUNTER_BUNDLE,
   [BAUMKATASTER_BUNDLE.deploymentRef.url]: BAUMKATASTER_BUNDLE,
   [FEINSTAUB_BUNDLE.deploymentRef.url]: FEINSTAUB_BUNDLE,
+  [KRANKENHAUS_BUNDLE.deploymentRef.url]: KRANKENHAUS_BUNDLE,
+  [NOTUNTERKUENFTE_BUNDLE.deploymentRef.url]: NOTUNTERKUENFTE_BUNDLE,
 };
 
 /** Drop-in for `fetchUseCaseBundle` in mock mode — resolves from the fixtures above. */

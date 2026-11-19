@@ -954,6 +954,833 @@ const RAW_INDEX = {
       "modelForge": {
         "datasetId": "urn:core:platform:civitas:dataset:common:Laermmessung-Musterhausen:1.0.0"
       }
+    },
+    {
+      "id": "musterland-tag-nacht-bevoelkerung",
+      "addedAt": "2026-11-19",
+      "updatedAt": "2026-11-19",
+      "softwareUpdatedAt": "2026-11-05",
+      "transferability": "tailored",
+      "adopters": [
+        {
+          "name": "Landkreis Beispielkreis",
+          "since": "2026",
+          "stage": "pilot"
+        }
+      ],
+      "implementation": {
+        "status": "prototyp",
+        "operator": "Landkreis Musterland",
+        "operatorOrg": "musterland",
+        "parties": {
+          "stakeholders": [
+            "Stabsstelle Bevölkerungsschutz",
+            "Statistikstelle des Kreises",
+            "Meldebehörden der Gemeinden"
+          ],
+          "serviceProviders": [
+            "Kommunales Rechenzentrum (Auswertung)"
+          ]
+        },
+        "stack": [
+          "CivitasCore Portal-Backend",
+          "PostGIS",
+          "Superset",
+          "SQL-Anbindung an das Melderegister"
+        ],
+        "resources": {
+          "cost": "S, unter 1.000 Euro",
+          "effort": "M, unter 50 Tage",
+          "costBand": "s",
+          "setupCost": "s",
+          "runningCost": "s",
+          "effortBand": "m",
+          "funding": "Haushaltsmittel des Landkreises Musterland",
+          "note": "Der Aufwand steckt in den Absprachen mit den Meldebehörden und der Pendlerstatistik, nicht in der Technik."
+        },
+        "logicModel": {
+          "input": "Melderegister, Pendlerstatistik des Landesamts und gemeldete Hotelübernachtungen.",
+          "output": "Tag- und Nachtbevölkerung je Gemeinde, monatlich, als Tabelle und Karte.",
+          "outcome": "Evakuierung und Betreuung werden mit den Menschen geplant, die tatsächlich vor Ort sind.",
+          "impact": "Im Ereignisfall gehen Kräfte dorthin, wo die meisten Menschen sind."
+        },
+        "collaboration": {
+          "wanted": true,
+          "seeking": "Kreise, die Tag- und Nachtbevölkerung nach demselben Verfahren schätzen - damit Nachbarkreise ihre Zahlen zusammenlegen können."
+        },
+        "reference": {
+          "url": "https://musterland.example/bevoelkerungsschutz/tag-nacht",
+          "source": "Seite des Landkreises Musterland"
+        }
+      },
+      "title": "Tag- und Nachtbevölkerung Musterland",
+      "summary": "Wie viele Menschen sich tagsüber und nachts in jeder Gemeinde aufhalten - aus Melderegister, Pendlerstatistik und Übernachtungen.",
+      "description": "Für eine Evakuierung zählt nicht, wer gemeldet ist, sondern wer gerade da ist. Der Kreis führt je Gemeinde die Tag- und Nachtbevölkerung, monatlich aus Melderegister, Pendlerzahlen und Hotelübernachtungen gerechnet. Läuft im Landkreis Musterland; ein installierbares Paket gibt es noch nicht.",
+      "publisher": "Landkreis Musterland",
+      "categories": [
+        "Katastrophenschutz & Sicherheit"
+      ],
+      "curationTier": "experimental",
+      "compatibility": [
+        "2.0"
+      ],
+      "images": [
+        {
+          "url": "/dashboard-platzhalter.png",
+          "caption": "Tag- und Nachtbevölkerung je Gemeinde"
+        }
+      ],
+      "links": [
+        {
+          "title": "Verfahren: Tag- und Nachtbevölkerung schätzen",
+          "url": "https://musterland.example/bevoelkerungsschutz/tag-nacht/verfahren",
+          "description": "Wie Melderegister, Pendler und Übernachtungen verrechnet werden, Schritt für Schritt."
+        }
+      ],
+      "trust": {
+        "maintainer": {
+          "name": "Landkreis Musterland",
+          "contactUrl": "https://musterland.example/bevoelkerungsschutz"
+        },
+        "contactPerson": {
+          "name": "Stabsstelle Bevölkerungsschutz",
+          "role": "Landkreis Musterland",
+          "email": "bevoelkerungsschutz@musterland.example"
+        },
+        "curatedBy": "Open Urban Apps",
+        "curatedAt": "2026-11-19",
+        "license": "EUPL-1.2"
+      },
+      "requirements": {
+        "coreVersions": [
+          "2.0"
+        ],
+        "components": [
+          "PORTAL_BACKEND",
+          "POSTGIS",
+          "SUPERSET"
+        ],
+        "connectors": [
+          "SQL"
+        ]
+      },
+      "modelForge": {
+        "datasetId": "urn:core:platform:civitas:dataset:common:TagNachtBevoelkerung-Musterland:1.0.0"
+      }
+    },
+    {
+      "id": "musterland-loeschwasser",
+      "addedAt": "2026-11-19",
+      "updatedAt": "2026-11-19",
+      "softwareUpdatedAt": "2026-10-28",
+      "transferability": "tailored",
+      "adopters": [
+        {
+          "name": "Gemeinde Musterbach",
+          "since": "2026",
+          "stage": "pilot"
+        }
+      ],
+      "implementation": {
+        "status": "in-entwicklung",
+        "operator": "Landkreis Musterland",
+        "operatorOrg": "musterland",
+        "parties": {
+          "stakeholders": [
+            "Kreisbrandmeister",
+            "Freiwillige Feuerwehren des Kreises"
+          ],
+          "serviceProviders": [
+            "Wasserversorger des Kreises (Hydrantenplan)"
+          ]
+        },
+        "stack": [
+          "CivitasCore Portal-Backend",
+          "PostGIS",
+          "GeoServer",
+          "Geoportal"
+        ],
+        "resources": {
+          "cost": "S, unter 1.000 Euro",
+          "effort": "M, unter 50 Tage",
+          "costBand": "s",
+          "setupCost": "s",
+          "runningCost": "s",
+          "effortBand": "m",
+          "funding": "Haushaltsmittel des Landkreises Musterland",
+          "note": "Die Feuerwehren prüfen ihre Entnahmestellen einmal im Jahr; dabei werden die Daten gleich mit aktualisiert."
+        },
+        "logicModel": {
+          "input": "Hydrantenplan des Wasserversorgers und die Listen der Feuerwehren zu Brunnen und Teichen.",
+          "output": "Eine Karte aller Löschwasserentnahmestellen mit Nennleistung und Füllzeiten.",
+          "outcome": "Einsatzleitungen sehen auf einen Blick, wo wie viel Löschwasser zu holen ist.",
+          "impact": "Weniger Zeitverlust bei Bränden in Gebieten ohne dichtes Hydrantennetz."
+        },
+        "collaboration": {
+          "wanted": true,
+          "seeking": "Feuerwehren und Kreise, die Löschwasser schon digital führen - für gemeinsame Felder zu Nennleistung und Füllzeit."
+        },
+        "reference": {
+          "url": "https://musterland.example/bevoelkerungsschutz/loeschwasser",
+          "source": "Seite des Landkreises Musterland"
+        }
+      },
+      "title": "Löschwasser und Hydranten",
+      "summary": "Hydranten, Löschwasserbrunnen und -teiche mit Nennleistung und Füllzeiten auf einer Karte, gepflegt mit den Feuerwehren.",
+      "description": "Wasserversorger und Feuerwehren führen ihre Entnahmestellen bisher in getrennten Listen. Der Kreis legt sie in einem Datensatz zusammen: Art, Lage, Nennleistung, eigene Pumpe ja oder nein, bei Teichen die Füllzeit. In Entwicklung im Landkreis Musterland; ein installierbares Paket gibt es noch nicht.",
+      "publisher": "Landkreis Musterland",
+      "categories": [
+        "Katastrophenschutz & Sicherheit"
+      ],
+      "curationTier": "experimental",
+      "compatibility": [
+        "2.0"
+      ],
+      "images": [
+        {
+          "url": "/dashboard-platzhalter.png",
+          "caption": "Löschwasserentnahmestellen auf der Karte des Kreises"
+        }
+      ],
+      "links": [
+        {
+          "title": "Feldbeschreibung Löschwasser",
+          "url": "https://musterland.example/bevoelkerungsschutz/loeschwasser/felder",
+          "description": "Welche Angaben je Hydrant, Brunnen und Teich erfasst werden und wer sie pflegt."
+        }
+      ],
+      "trust": {
+        "maintainer": {
+          "name": "Landkreis Musterland",
+          "contactUrl": "https://musterland.example/bevoelkerungsschutz"
+        },
+        "contactPerson": {
+          "name": "Stabsstelle Bevölkerungsschutz",
+          "role": "Landkreis Musterland",
+          "email": "bevoelkerungsschutz@musterland.example"
+        },
+        "curatedBy": "Open Urban Apps",
+        "curatedAt": "2026-11-19",
+        "license": "EUPL-1.2"
+      },
+      "requirements": {
+        "coreVersions": [
+          "2.0"
+        ],
+        "components": [
+          "PORTAL_BACKEND",
+          "POSTGIS",
+          "GEOSERVER"
+        ],
+        "connectors": [
+          "SQL"
+        ]
+      },
+      "modelForge": {
+        "datasetId": "urn:core:platform:civitas:dataset:common:Loeschwasser-Musterland:1.0.0"
+      }
+    },
+    {
+      "id": "musterland-krankenhauskapazitaeten",
+      "addedAt": "2026-11-19",
+      "updatedAt": "2026-11-19",
+      "softwareUpdatedAt": "2026-11-12",
+      "transferability": "direct",
+      "implementation": {
+        "status": "prototyp",
+        "operator": "Landkreis Musterland",
+        "operatorOrg": "musterland",
+        "parties": {
+          "stakeholders": [
+            "Gesundheitsamt Musterland",
+            "Krankenhäuser im Kreis"
+          ],
+          "serviceProviders": [
+            "Kommunales Rechenzentrum"
+          ]
+        },
+        "stack": [
+          "CivitasCore Portal-Backend",
+          "PostGIS",
+          "Superset"
+        ],
+        "resources": {
+          "costBand": "s",
+          "setupCost": "s",
+          "runningCost": "s",
+          "effortBand": "s",
+          "funding": "Haushaltsmittel des Landkreises Musterland",
+          "note": "Die Krankenhäuser melden einmal am Tag; der Aufwand liegt beim Abstimmen der Felder, nicht bei der Technik.",
+          "cost": "S, unter 1.000 Euro",
+          "effort": "S, unter 10 Tage"
+        },
+        "logicModel": {
+          "input": "Tägliche Bettenmeldung der Krankenhäuser, Stammdaten zu Notstrom und Landeplatz.",
+          "output": "Freie Betten, Intensiv- und Verbrennungsbetten je Haus, als Karte und Tabelle.",
+          "outcome": "Rettungsdienst und Krisenstab sehen, wohin Verletzte gebracht werden können.",
+          "impact": "Bei einem Massenanfall von Verletzten wird kein Haus überlastet, solange ein anderes frei ist."
+        },
+        "collaboration": {
+          "wanted": true,
+          "seeking": "Kreise, die dieselben Felder nutzen wollen - damit Meldungen über Kreisgrenzen hinweg vergleichbar sind."
+        }
+      },
+      "title": "Krankenhauskapazitäten Musterland",
+      "summary": "Freie Betten, Intensiv- und Verbrennungsbetten der Krankenhäuser im Kreis - täglich gemeldet, mit Notstrom und Hubschrauberlandeplatz.",
+      "description": "Jedes Krankenhaus im Kreis meldet einmal am Tag seine Betten, getrennt nach Normal-, Intensiv- und Verbrennungsbetten. Dazu kommen Stammdaten, die die Kreisbeschreibung verlangt: Notstromversorgung, Hubschrauberlandeplatz und ein Kontakt, der rund um die Uhr erreichbar ist. Das Paket bringt die Datenstrukturen und eine Kartenansicht mit, keine Daten.",
+      "publisher": "Landkreis Musterland",
+      "categories": [
+        "Katastrophenschutz & Sicherheit"
+      ],
+      "curationTier": "community",
+      "compatibility": [
+        "2.0",
+        "2.1"
+      ],
+      "requiredCapabilities": [
+        "PORTAL_BACKEND"
+      ],
+      "includedArtifacts": [
+        {
+          "id": "urn:core:platform:civitas:dataset:common:Krankenhauskapazitaeten-Musterland:1.0.0",
+          "title": "Krankenhauskapazitäten Musterland",
+          "kind": "dataset",
+          "description": "Datensatz für die täglichen Bettenmeldungen."
+        },
+        {
+          "id": "urn:core:platform:civitas:datastructure:safety:CriticalFacility:1.0.0",
+          "title": "CriticalFacility",
+          "kind": "datastructure",
+          "description": "Eine Einrichtung, wie die Kreisbeschreibung sie erfasst: Art, Lage, Notstromversorgung und Kontakt rund um die Uhr."
+        },
+        {
+          "id": "urn:core:platform:civitas:datastructure:health:HospitalCapacity:1.0.0",
+          "title": "HospitalCapacity",
+          "kind": "datastructure",
+          "description": "Eine Bettenmeldung: Zeitpunkt, Betten gesamt und frei, getrennt nach Intensiv- und Verbrennungsbetten.",
+          "requires": [
+            {
+              "label": "Tägliche Bettenmeldung der Krankenhäuser",
+              "note": "Per Formular oder als Export aus dem Meldeweg, den die Häuser schon nutzen."
+            }
+          ]
+        }
+      ],
+      "modelForge": {
+        "datasetId": "urn:core:platform:civitas:dataset:common:Krankenhauskapazitaeten-Musterland:1.0.0",
+        "note": "Beim Installieren legt der Marketplace die beiden Datenstrukturen und den Datensatz über das CivitasCore Portal-Backend an. Daten werden nicht mitgeliefert."
+      },
+      "deploymentRef": {
+        "url": "https://gitlab.example/landkreis-musterland/kreisbeschreibung-krankenhaeuser",
+        "ref": "1ac2e6001387cb39948adb922742e0921b587f70",
+        "releaseTag": "v1.0.0",
+        "path": "."
+      },
+      "trust": {
+        "maintainer": {
+          "name": "Landkreis Musterland",
+          "contactUrl": "https://musterland.example/bevoelkerungsschutz"
+        },
+        "contactPerson": {
+          "name": "Stabsstelle Bevölkerungsschutz",
+          "role": "Landkreis Musterland",
+          "email": "bevoelkerungsschutz@musterland.example"
+        },
+        "license": "EUPL-1.2",
+        "curatedBy": "Open Urban Apps",
+        "curatedAt": "2026-11-19"
+      },
+      "requirements": {
+        "coreVersions": [
+          "2.0",
+          "2.1"
+        ],
+        "components": [
+          "PORTAL_BACKEND",
+          "POSTGIS"
+        ],
+        "connectors": [
+          "SQL"
+        ]
+      },
+      "provides": [
+        {
+          "kind": "map",
+          "label": "Krankenhäuser mit freien Betten als Kartenebene",
+          "standard": "WFS"
+        },
+        {
+          "kind": "dashboard",
+          "label": "Bettenlage im Kreis",
+          "note": "Für Krisenstab und Rettungsdienst, mit Verlauf der letzten Tage."
+        }
+      ],
+      "roles": [
+        {
+          "key": "betten-meldung",
+          "label": "Bettenmeldung",
+          "description": "Darf die tägliche Meldung des eigenen Hauses eintragen.",
+          "permissions": [
+            "DATASET_PAYLOAD_UPDATE"
+          ]
+        },
+        {
+          "key": "krisenstab-lesen",
+          "label": "Krisenstab",
+          "description": "Darf die Bettenlage aller Häuser sehen - nur lesen.",
+          "permissions": [
+            "DATASET_READ"
+          ]
+        }
+      ],
+      "adopters": [
+        {
+          "name": "Landkreis Beispielkreis",
+          "since": "2026",
+          "stage": "pilot"
+        }
+      ],
+      "installQuestions": [
+        "Welche Krankenhäuser melden ihre Betten, und auf welchem Weg kommen die Meldungen heute an?"
+      ],
+      "images": [
+        {
+          "url": "/dashboard-platzhalter.png",
+          "caption": "Freie Betten je Krankenhaus im Kreis"
+        }
+      ],
+      "demoData": {
+        "contains": "drei erfundene Krankenhäuser mit einer Woche Bettenmeldungen",
+        "note": "Die Beispieldaten sind erfunden. Die echten Meldungen binden Sie später an, ohne neu zu installieren - sie bleiben in Ihrer Instanz."
+      },
+      "links": [
+        {
+          "title": "Feldbeschreibung Bettenmeldung",
+          "url": "https://musterland.example/bevoelkerungsschutz/krankenhaeuser/felder",
+          "description": "Welche Betten getrennt gemeldet werden und was als frei gilt."
+        },
+        {
+          "title": "Meldeweg für Krankenhäuser",
+          "url": "https://musterland.example/bevoelkerungsschutz/krankenhaeuser/meldeweg",
+          "description": "Wie die Häuser ihre tägliche Meldung abgeben und wer sie prüft."
+        }
+      ],
+      "endUserSurfaces": [
+        {
+          "kind": "superset",
+          "label": "Bettenlage im Kreis",
+          "summary": "Freie Normal-, Intensiv- und Verbrennungsbetten je Haus, mit Verlauf.",
+          "requiresAddon": "Superset",
+          "via": "API-Route dieses Datensatzes"
+        },
+        {
+          "kind": "masterportal",
+          "label": "Krankenhäuser auf der Kreiskarte",
+          "summary": "Lage, freie Betten und Hubschrauberlandeplatz im Klick-Overlay.",
+          "requiresAddon": "Geoportal",
+          "via": "OWS-Route /karte"
+        }
+      ]
+    },
+    {
+      "id": "musterland-notunterkuenfte",
+      "addedAt": "2026-11-19",
+      "updatedAt": "2026-11-19",
+      "softwareUpdatedAt": "2026-11-12",
+      "transferability": "direct",
+      "implementation": {
+        "status": "prototyp",
+        "operator": "Landkreis Musterland",
+        "operatorOrg": "musterland",
+        "parties": {
+          "stakeholders": [
+            "Stabsstelle Bevölkerungsschutz",
+            "Schulverwaltung",
+            "Hilfsorganisationen im Kreis"
+          ],
+          "serviceProviders": [
+            "Hilfsorganisationen (Betreuungsdienst)"
+          ]
+        },
+        "stack": [
+          "CivitasCore Portal-Backend",
+          "PostGIS"
+        ],
+        "resources": {
+          "costBand": "s",
+          "setupCost": "s",
+          "runningCost": "s",
+          "effortBand": "m",
+          "funding": "Haushaltsmittel des Landkreises Musterland",
+          "note": "Der meiste Aufwand steckt im Begehen der Gebäude: Plätze, Küche und Barrierefreiheit werden vor Ort geprüft.",
+          "cost": "S, unter 1.000 Euro",
+          "effort": "M, unter 50 Tage"
+        },
+        "logicModel": {
+          "input": "Liste der weiterführenden Schulen, Hallen und Hotels, geprüft bei einer Begehung.",
+          "output": "Ein Verzeichnis der Notunterkünfte mit Plätzen, Küche und Barrierefreiheit.",
+          "outcome": "Bei einer Evakuierung ist in Minuten klar, wo wie viele Menschen unterkommen.",
+          "impact": "Betroffene werden schneller und passender untergebracht, Familien bleiben zusammen."
+        },
+        "collaboration": {
+          "wanted": true,
+          "seeking": "Kreise, die ihre Notunterkünfte schon erfasst haben - für gemeinsame Felder zu Plätzen, Küche und Barrierefreiheit."
+        }
+      },
+      "title": "Notunterkünfte und Betreuungsplätze",
+      "summary": "Schulen, Versammlungsräume und Hotels, die Betroffene aufnehmen können - mit Plätzen, Küche und Barrierefreiheit.",
+      "description": "Die Kreisbeschreibung fragt nach Orten, an denen unverletzte Betroffene länger untergebracht werden können: weiterführende Schulen, Hallen, Hotels. Für jeden Ort erfasst der Kreis die Plätze, ob es eine Küche gibt und ob er barrierefrei ist. Das Paket bringt die Datenstrukturen mit, keine Daten.",
+      "publisher": "Landkreis Musterland",
+      "categories": [
+        "Katastrophenschutz & Sicherheit"
+      ],
+      "curationTier": "experimental",
+      "compatibility": [
+        "2.0",
+        "2.1"
+      ],
+      "requiredCapabilities": [
+        "PORTAL_BACKEND"
+      ],
+      "includedArtifacts": [
+        {
+          "id": "urn:core:platform:civitas:dataset:common:Notunterkuenfte-Musterland:1.0.0",
+          "title": "Notunterkünfte Musterland",
+          "kind": "dataset",
+          "description": "Datensatz für die Notunterkünfte des Kreises."
+        },
+        {
+          "id": "urn:core:platform:civitas:datastructure:safety:CriticalFacility:1.0.0",
+          "title": "CriticalFacility",
+          "kind": "datastructure",
+          "description": "Eine Einrichtung, wie die Kreisbeschreibung sie erfasst: Art, Lage, Notstromversorgung und Kontakt rund um die Uhr."
+        },
+        {
+          "id": "urn:core:platform:civitas:datastructure:safety:ShelterCapacity:1.0.0",
+          "title": "ShelterCapacity",
+          "kind": "datastructure",
+          "description": "Eine Unterkunft: Art, Plätze, Küche, Barrierefreiheit.",
+          "requires": [
+            {
+              "label": "Begehung der Gebäude",
+              "note": "Plätze, Küche und Barrierefreiheit lassen sich nur vor Ort verlässlich prüfen."
+            }
+          ]
+        }
+      ],
+      "modelForge": {
+        "datasetId": "urn:core:platform:civitas:dataset:common:Notunterkuenfte-Musterland:1.0.0",
+        "note": "Beim Installieren legt der Marketplace die beiden Datenstrukturen und den Datensatz an; CriticalFacility wird wiederverwendet, falls es schon existiert."
+      },
+      "deploymentRef": {
+        "url": "https://gitlab.example/landkreis-musterland/kreisbeschreibung-notunterkuenfte",
+        "ref": "4c3386387f04f1863ff6137afab15563cc4397a0",
+        "releaseTag": "v1.0.0",
+        "path": "."
+      },
+      "trust": {
+        "maintainer": {
+          "name": "Landkreis Musterland",
+          "contactUrl": "https://musterland.example/bevoelkerungsschutz"
+        },
+        "contactPerson": {
+          "name": "Stabsstelle Bevölkerungsschutz",
+          "role": "Landkreis Musterland",
+          "email": "bevoelkerungsschutz@musterland.example"
+        },
+        "license": "EUPL-1.2",
+        "curatedBy": "Open Urban Apps",
+        "curatedAt": "2026-11-19"
+      },
+      "requirements": {
+        "coreVersions": [
+          "2.0",
+          "2.1"
+        ],
+        "components": [
+          "PORTAL_BACKEND",
+          "POSTGIS"
+        ],
+        "connectors": [
+          "SQL"
+        ]
+      },
+      "provides": [
+        {
+          "kind": "map",
+          "label": "Notunterkünfte als Kartenebene",
+          "standard": "WFS"
+        },
+        {
+          "kind": "download",
+          "label": "Unterkunftsliste für den Krisenstab",
+          "note": "Als Tabelle, nach Gemeinde und Art sortiert."
+        }
+      ],
+      "roles": [
+        {
+          "key": "unterkunft-pflege",
+          "label": "Pflege Unterkünfte",
+          "description": "Darf Unterkünfte anlegen und Plätze nach der Begehung eintragen.",
+          "permissions": [
+            "DATASET_UPDATE",
+            "DATASET_PAYLOAD_UPDATE"
+          ]
+        },
+        {
+          "key": "unterkunft-belegung",
+          "label": "Belegung",
+          "description": "Darf im Einsatz die freien Plätze aktualisieren.",
+          "permissions": [
+            "DATASET_PAYLOAD_UPDATE"
+          ]
+        }
+      ],
+      "adopters": [
+        {
+          "name": "Stadt Beispielhausen",
+          "since": "2026",
+          "stage": "pilot"
+        }
+      ],
+      "installQuestions": [
+        "Welche Gebäude sind bei Ihnen für Betreuungseinsätze vorgeplant?"
+      ],
+      "images": [
+        {
+          "url": "/dashboard-platzhalter.png",
+          "caption": "Notunterkünfte mit freien Plätzen"
+        }
+      ],
+      "demoData": {
+        "contains": "zwölf erfundene Unterkünfte - Schulen, Hallen und Hotels",
+        "note": "Die Beispieldaten sind erfunden. Ihre eigenen Unterkünfte tragen Sie nach der Begehung ein; sie bleiben in Ihrer Instanz."
+      },
+      "links": [
+        {
+          "title": "Begehungsbogen für Notunterkünfte",
+          "url": "https://musterland.example/bevoelkerungsschutz/notunterkuenfte/begehung",
+          "description": "Was bei der Begehung zu Plätzen, Küche, Sanitär und Barrierefreiheit geprüft wird."
+        }
+      ],
+      "endUserSurfaces": [
+        {
+          "kind": "masterportal",
+          "label": "Notunterkünfte auf der Kreiskarte",
+          "summary": "Wo wie viele Plätze frei sind, mit Küche und Barrierefreiheit im Klick-Overlay.",
+          "requiresAddon": "Geoportal",
+          "via": "OWS-Route /karte"
+        }
+      ]
+    },
+    {
+      "id": "musterland-schutzraeume",
+      "addedAt": "2026-11-19",
+      "updatedAt": "2026-11-19",
+      "transferability": "inspiration",
+      "implementation": {
+        "status": "idee",
+        "operator": "Landkreis Musterland",
+        "operatorOrg": "musterland",
+        "parties": {
+          "stakeholders": [
+            "Stabsstelle Bevölkerungsschutz",
+            "Bauaufsicht",
+            "Gebäudemanagement des Kreises"
+          ],
+          "serviceProviders": [
+            "Ingenieurbüro für die Begehungen (noch auszuschreiben)"
+          ]
+        },
+        "stack": [
+          "CivitasCore Portal-Backend",
+          "PostGIS",
+          "Geoportal"
+        ],
+        "resources": {
+          "cost": "M, unter 10.000 Euro",
+          "effort": "L, unter 100 Tage",
+          "costBand": "m",
+          "setupCost": "m",
+          "runningCost": "s",
+          "effortBand": "l",
+          "funding": "Noch offen",
+          "note": "Teuer sind die Begehungen: jeder mögliche Zufluchtsort muss vor Ort auf Zugang, Größe und Zustand geprüft werden."
+        },
+        "logicModel": {
+          "input": "Unterlagen zu noch betriebenen Schutzräumen und eine Sichtung öffentlicher Gebäude mit Kellern und Tiefgaragen.",
+          "output": "Ein Verzeichnis von Schutzräumen und möglichen Zufluchtsorten mit Personenzahl und Zustand.",
+          "outcome": "Der Kreis weiß, wo Menschen im öffentlichen Raum Schutz finden können.",
+          "impact": "Grundlage, um Zufluchtsorte gezielt zu ertüchtigen und auszuschildern."
+        },
+        "collaboration": {
+          "wanted": true,
+          "seeking": "Kreise, die schon Zufluchtsorte erfasst haben - für eine gemeinsame Liste der Prüfkriterien."
+        },
+        "reference": {
+          "url": "https://musterland.example/bevoelkerungsschutz/schutzraeume",
+          "source": "Seite des Landkreises Musterland"
+        }
+      },
+      "title": "Schutzräume und Zufluchtsorte",
+      "summary": "Noch betriebene Schutzräume und Gebäude, die als Zufluchtsort dienen können - mit Personenzahl und baulichem Zustand.",
+      "description": "Neben den wenigen noch betriebenen Schutzräumen fragt die Kreisbeschreibung nach Gebäuden, die als Zufluchtsort taugen: Keller öffentlicher Gebäude, Tiefgaragen, unterirdische Anlagen. Noch eine Idee im Landkreis Musterland; ein installierbares Paket gibt es noch nicht.",
+      "publisher": "Landkreis Musterland",
+      "categories": [
+        "Katastrophenschutz & Sicherheit",
+        "Planen, Bauen & Immobilien"
+      ],
+      "curationTier": "experimental",
+      "compatibility": [
+        "2.0"
+      ],
+      "links": [
+        {
+          "title": "Prüfliste für mögliche Zufluchtsorte (Entwurf)",
+          "url": "https://musterland.example/bevoelkerungsschutz/schutzraeume/pruefliste",
+          "description": "Nach welchen Kriterien Gebäude bei der Begehung bewertet werden sollen."
+        }
+      ],
+      "trust": {
+        "maintainer": {
+          "name": "Landkreis Musterland",
+          "contactUrl": "https://musterland.example/bevoelkerungsschutz"
+        },
+        "contactPerson": {
+          "name": "Stabsstelle Bevölkerungsschutz",
+          "role": "Landkreis Musterland",
+          "email": "bevoelkerungsschutz@musterland.example"
+        },
+        "curatedBy": "Open Urban Apps",
+        "curatedAt": "2026-11-19",
+        "license": "EUPL-1.2"
+      },
+      "requirements": {
+        "coreVersions": [
+          "2.0"
+        ],
+        "components": [
+          "PORTAL_BACKEND",
+          "POSTGIS"
+        ],
+        "connectors": []
+      },
+      "modelForge": {
+        "datasetId": "urn:core:platform:civitas:dataset:common:Schutzraeume-Musterland:1.0.0"
+      }
+    },
+    {
+      "id": "musterland-sirenen",
+      "addedAt": "2026-11-19",
+      "updatedAt": "2026-11-19",
+      "softwareUpdatedAt": "2026-11-10",
+      "transferability": "tailored",
+      "adopters": [
+        {
+          "name": "Stadt Beispielhausen",
+          "since": "2026",
+          "stage": "pilot"
+        }
+      ],
+      "implementation": {
+        "status": "in-entwicklung",
+        "operator": "Landkreis Musterland",
+        "operatorOrg": "musterland",
+        "parties": {
+          "stakeholders": [
+            "Kreisleitstelle",
+            "Gemeinden des Kreises"
+          ],
+          "serviceProviders": [
+            "Hersteller der Sirenensteuerung (Statusmeldungen)"
+          ]
+        },
+        "stack": [
+          "Sirenensteuerung",
+          "MQTT",
+          "FROST-Server",
+          "NiFi",
+          "Geoportal"
+        ],
+        "resources": {
+          "cost": "M, unter 10.000 Euro",
+          "effort": "M, unter 50 Tage",
+          "costBand": "m",
+          "setupCost": "m",
+          "runningCost": "s",
+          "effortBand": "m",
+          "funding": "Förderprogramm für Sirenen, ergänzt aus Haushaltsmitteln",
+          "note": "Die Sirenen selbst kommen aus dem Förderprogramm; hier geht es nur um die Anbindung ihrer Statusmeldungen."
+        },
+        "logicModel": {
+          "input": "Standorte der Sirenen, Statusmeldungen der Sirenensteuerung und die Liste der Lautsprecherfahrzeuge.",
+          "output": "Eine Karte der Warnmittel mit Betriebszustand, Reichweite und letztem Probealarm.",
+          "outcome": "Die Leitstelle sieht vor einer Warnung, wo keine Sirene funktioniert.",
+          "impact": "Lücken in der Warnung werden geschlossen, bevor sie im Ernstfall auffallen."
+        },
+        "collaboration": {
+          "wanted": true,
+          "seeking": "Kreise mit derselben Sirenensteuerung - für eine gemeinsame Anbindung der Statusmeldungen."
+        },
+        "reference": {
+          "url": "https://musterland.example/bevoelkerungsschutz/warnung",
+          "source": "Seite des Landkreises Musterland"
+        }
+      },
+      "title": "Sirenen und Warnmittel",
+      "summary": "Standorte und Betriebszustand der Sirenen, dazu Lautsprecherfahrzeuge und das in MoWaS geschulte Personal.",
+      "description": "Die Sirenen im Kreis melden ihren Zustand an die Steuerung. Der Kreis führt sie zusammen mit den Lautsprecherfahrzeugen auf einer Karte, mit Reichweite und letztem Probealarm. In Entwicklung im Landkreis Musterland; ein installierbares Paket gibt es noch nicht.",
+      "publisher": "Landkreis Musterland",
+      "categories": [
+        "Katastrophenschutz & Sicherheit"
+      ],
+      "curationTier": "experimental",
+      "compatibility": [
+        "2.0"
+      ],
+      "images": [
+        {
+          "url": "/dashboard-platzhalter.png",
+          "caption": "Sirenen mit Betriebszustand und Reichweite"
+        }
+      ],
+      "links": [
+        {
+          "title": "Ergebnisse der letzten Probewarnung",
+          "url": "https://musterland.example/bevoelkerungsschutz/warnung/probewarnung",
+          "description": "Welche Sirenen beim letzten Warntag ausgelöst haben und wo nachgebessert wird."
+        }
+      ],
+      "trust": {
+        "maintainer": {
+          "name": "Landkreis Musterland",
+          "contactUrl": "https://musterland.example/bevoelkerungsschutz"
+        },
+        "contactPerson": {
+          "name": "Stabsstelle Bevölkerungsschutz",
+          "role": "Landkreis Musterland",
+          "email": "bevoelkerungsschutz@musterland.example"
+        },
+        "curatedBy": "Open Urban Apps",
+        "curatedAt": "2026-11-19",
+        "license": "EUPL-1.2"
+      },
+      "requirements": {
+        "coreVersions": [
+          "2.0"
+        ],
+        "components": [
+          "PORTAL_BACKEND",
+          "FROST",
+          "NIFI"
+        ],
+        "connectors": [
+          "MQTT"
+        ]
+      },
+      "modelForge": {
+        "datasetId": "urn:core:platform:civitas:dataset:common:Sirenen-Musterland:1.0.0"
+      }
     }
   ],
   "dataStructures":   [
@@ -1050,6 +1877,15 @@ const RAW_INDEX = {
       "id": "civitasconnect",
       "name": "Civitas Connect e. V.",
       "website": "https://civitasconnect.digital"
+    },
+    {
+      "id": "musterland",
+      "name": "Landkreis Musterland",
+      "website": "https://musterland.example",
+      "contact": {
+        "name": "Stabsstelle Bevölkerungsschutz",
+        "email": "bevoelkerungsschutz@musterland.example"
+      }
     }
   ],
   "groups": [
@@ -1140,6 +1976,66 @@ const RAW_INDEX = {
       "contact": { "name": "Team Smart City", "email": "smartcity@musterstadt.example" },
       "addedAt": "2026-11-12",
       "updatedAt": "2026-11-12"
+    },
+    {
+      "id": "kreisbeschreibung-musterland",
+      "title": "Kreisbeschreibung Landkreis Musterland",
+      "summary": "Die Grundlagendaten für die Zivile Verteidigung nach dem Muster des BBK - je Abschnitt ein Anwendungsfall, geteilt ohne Daten.",
+      "description": "Mit der Kreisbeschreibung erfassen Kreise und kreisfreie Städte an einer Stelle, was sie für die Zivile Verteidigung wissen müssen: von der Bevölkerung über Wasser und Gesundheit bis zur Warnung. Der Landkreis Musterland führt die Abschnitte, die sich als Daten pflegen lassen, auf seiner Datenplattform. Jeder Abschnitt ist ein eigener Anwendungsfall. Geteilt werden Datenstrukturen, Karten und Auswertungen - die Daten selbst nie, denn gesammelt sind sie nur für den Dienstgebrauch (VS-NfD).",
+      "publisher": "Landkreis Musterland",
+      "publisherOrg": "musterland",
+      "categories": [
+        "Katastrophenschutz & Sicherheit"
+      ],
+      "members": [
+        {
+          "id": "musterhausen-trafficcounter",
+          "optional": true,
+          "note": "Abschnitt 5.4.2 Pendlerbewegungen: die Zählstellen der Stadt Musterhausen zeigen Pendlerströme und Stoßzeiten auf den Hauptachsen."
+        },
+        {
+          "id": "musterland-tag-nacht-bevoelkerung",
+          "note": "Abschnitt 5.4.3: wer tagsüber und nachts in jeder Gemeinde ist - die Grundlage für Evakuierungen."
+        },
+        {
+          "id": "musterland-loeschwasser",
+          "note": "Abschnitt 5.6.2 Löschwasser: Hydranten, Brunnen und Teiche mit Nennleistung."
+        },
+        {
+          "id": "musterland-krankenhauskapazitaeten",
+          "note": "Abschnitt 5.13.1 Krankenhäuser: freie Betten, Intensivbetten, Notstrom und Landeplatz."
+        },
+        {
+          "id": "musterland-notunterkuenfte",
+          "note": "Abschnitt 5.14.3 Betreuung und Unterbringung: Schulen, Hallen und Hotels mit ihren Plätzen."
+        },
+        {
+          "id": "musterland-schutzraeume",
+          "note": "Abschnitt 5.17 Schutzraumbauten: Schutzräume und mögliche Zufluchtsorte."
+        },
+        {
+          "id": "musterland-sirenen",
+          "note": "Abschnitt 5.18 Warnung der Bevölkerung: Sirenen und weitere Warnmittel."
+        }
+      ],
+      "story": {
+        "problem": "Die Angaben für die Kreisbeschreibung liegen verstreut in Fachämtern, Feuerwehrbedarfsplänen und Tabellen. Sie müssen regelmäßig aktualisiert werden, damit im Ereignisfall schnell und sicher entschieden werden kann.",
+        "goal": "Jeden Abschnitt als Datensatz mit festen Feldern pflegen: Standort, Kapazität, Notstromversorgung und ein Kontakt, der rund um die Uhr erreichbar ist. So entsteht die Kreisbeschreibung aus aktuellen Daten statt aus einem Dokument.",
+        "next": "2027 folgen Energie, Wasser und Ernährung. Das BBK erarbeitet ein ergänzendes Dokument zur digitalen Umsetzung - danach werden die Felder daran angeglichen."
+      },
+      "links": [
+        {
+          "title": "Muster: Kreisbeschreibung für Zwecke der Zivilen Verteidigung (BBK, Mai 2026)",
+          "url": "https://www.bbk.bund.de/SharedDocs/Downloads/DE/Mediathek/Publikationen/KRITIS/kreisbeschreibung-zv.pdf?__blob=publicationFile&v=2",
+          "description": "Die Vorlage mit allen 19 Themenbereichen, nach der die Abschnitte gegliedert sind."
+        }
+      ],
+      "contact": {
+        "name": "Stabsstelle Bevölkerungsschutz",
+        "email": "bevoelkerungsschutz@musterland.example"
+      },
+      "addedAt": "2026-11-19",
+      "updatedAt": "2026-11-19"
     }
   ]
 };

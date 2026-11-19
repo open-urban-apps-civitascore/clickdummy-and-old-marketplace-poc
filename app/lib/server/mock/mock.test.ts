@@ -46,10 +46,10 @@ function testDeps(): InstallDeps {
 }
 
 describe("mock mode — fixtures", () => {
-  test("catalog fixture carries the six use cases and the bundles of the pinned ones", () => {
+  test("catalog fixture carries the twelve use cases and the bundles of the pinned ones", () => {
     // The index parsed through the real zod schema at import (else this file
     // would not even load). Assert content + that every use case has a bundle.
-    assert.equal(mockRepoListIndex.useCases.length, 6);
+    assert.equal(mockRepoListIndex.useCases.length, 12);
     assert.ok(mockRepoListIndex.addons.length > 0, "addons fixture is empty");
     assert.equal(mockRepoListIndex.dataStructures.length, 4);
     // Every row carries a catalog date, else "zuletzt hinzugefügt" silently
