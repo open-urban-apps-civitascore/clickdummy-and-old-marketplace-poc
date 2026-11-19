@@ -325,6 +325,7 @@ One glyph, one meaning, app-wide.
 | `ShieldCheck` / `Users` / `FlaskConical` | Verifiziert / Community / Experimentell | `use-case-status.tsx` |
 | `PackagePlus` | contribute | sidebar, contribute CTA |
 | `PackageCheck` | installed | sidebar |
+| `CopyCheck` / `Scissors` / `Lightbulb` | Übertragbarkeit: Direkt übertragbar / Mit eigenem Zuschnitt / Zur Inspiration | use-case Steckbrief |
 
 `Sparkles` on the install button promised magic and was removed on 2026-09-23;
 installing is a deterministic provisioning sequence.

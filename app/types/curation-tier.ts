@@ -66,3 +66,20 @@ export const INSTALL_PATH_LABELS: Record<InstallPath, string> = {
   operator: "Durch den Betreiber",
   adaptation: "Mit Anpassung",
 };
+
+// How much of a use case another commune can take over - a fact about the
+// content, not a grade, so it is never shown in the tier colours.
+export const transferabilitySchema = z.enum(["direct", "tailored", "inspiration"]);
+export type Transferability = z.infer<typeof transferabilitySchema>;
+
+export const TRANSFERABILITY_LABELS: Record<Transferability, string> = {
+  direct: "Direkt übertragbar",
+  tailored: "Mit eigenem Zuschnitt",
+  inspiration: "Zur Inspiration",
+};
+
+export const TRANSFERABILITY_HINTS: Record<Transferability, string> = {
+  direct: "Läuft mit den eigenen Daten weitgehend so, wie es geliefert wird.",
+  tailored: "Das Gerüst passt, Teile werden an die eigene Kommune angepasst - etwa Datenquellen, Orte oder Schwellenwerte.",
+  inspiration: "Stark auf die Kommune zugeschnitten, aus der es stammt - zeigt einen Lösungsweg, den man selbst nachbaut.",
+};

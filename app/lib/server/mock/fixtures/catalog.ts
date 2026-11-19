@@ -11,7 +11,8 @@ import { repoListIndexSchema, type RepoListIndex } from "@/types/repo-list";
  * `roles`, `implementation`, `adopters`, `addedAt`, `updatedAt` and
  * `softwareUpdatedAt`, the whole `dataStructures`, `organisations` and `groups`
  * sections, three invented described-only use cases (no package),
- * plus the trust vocabulary `curationTier` / `deprecated` — see
+ * plus the trust vocabulary `curationTier` / `deprecated` and the fact
+ * `transferability` — see
  * `types/use-cases.ts`, `types/implementation.ts` and `types/curation-tier.ts`.
  * They are NOT in the published index.json yet, because nothing authors or
  * curates them so far.
@@ -321,6 +322,7 @@ const RAW_INDEX = {
   "useCases": [
     {
       "id": "tree-register-starter",
+      "transferability": "direct",
       "addedAt": "2026-08-28",
       "updatedAt": "2026-09-02",
       "softwareUpdatedAt": "2026-09-30",
@@ -471,6 +473,7 @@ const RAW_INDEX = {
     },
     {
       "id": "musterhausen-trafficcounter",
+      "transferability": "tailored",
       "addedAt": "2026-07-02",
       "updatedAt": "2026-09-18",
       "softwareUpdatedAt": "2026-10-08",
@@ -676,6 +679,7 @@ const RAW_INDEX = {
     },
     {
       "id": "musterhausen-feinstaub",
+      "transferability": "direct",
       "addedAt": "2026-05-20",
       "updatedAt": "2026-10-06",
       "softwareUpdatedAt": "2026-06-03",
@@ -846,6 +850,7 @@ const RAW_INDEX = {
     },
     {
       "id": "musterstadt-hitzeinseln",
+      "transferability": "inspiration",
       "addedAt": "2026-10-20",
       "updatedAt": "2026-11-04",
       "implementation": {
@@ -881,6 +886,7 @@ const RAW_INDEX = {
     },
     {
       "id": "musterstadt-giesspatenschaften",
+      "transferability": "inspiration",
       "addedAt": "2026-10-28",
       "updatedAt": "2026-11-04",
       "implementation": {

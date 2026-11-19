@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { type ReactNode } from "react";
-import { ChevronRight, ClipboardList, ExternalLink, Handshake, PlayCircle } from "lucide-react";
+import { ChevronRight, ClipboardList, CopyCheck, ExternalLink, Handshake, Lightbulb, PlayCircle, Scissors, type LucideIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +13,7 @@ import { AdopterSummary } from "@/components/use-cases/adopters";
 import { TierExplainer } from "@/components/use-cases/tier-explainer";
 import { formatCatalogDate } from "@/lib/catalog-recency";
 import { cn } from "@/lib/utils";
+import { TRANSFERABILITY_HINTS, TRANSFERABILITY_LABELS, type Transferability } from "@/types/curation-tier";
 import {
   collaborationLabel,
   COST_BAND_LABELS,
@@ -102,6 +103,13 @@ export function UseCaseInfobox({
             hint={USE_CASE_STATUS_HINTS[status]}
           >
             {USE_CASE_STATUS_LABELS[status]}
+          </Field>
+        ) : null}
+
+        {/* A fact about the content, so neutral: the tier colours stay with the tier (§4.1). */}
+        {useCase.transferability ? (
+          <Field label="Übertragbarkeit" hint={TRANSFERABILITY_HINTS[useCase.transferability]}>
+            <TransferabilityValue value={useCase.transferability} />
           </Field>
         ) : null}
 
@@ -282,6 +290,22 @@ export function UseCaseInfobox({
         </div>
       ) : null}
     </aside>
+  );
+}
+
+const TRANSFERABILITY_ICONS: Record<Transferability, LucideIcon> = {
+  direct: CopyCheck,
+  tailored: Scissors,
+  inspiration: Lightbulb,
+};
+
+function TransferabilityValue({ value }: { value: Transferability }) {
+  const Icon = TRANSFERABILITY_ICONS[value];
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <Icon aria-hidden className="size-3.5 shrink-0" />
+      {TRANSFERABILITY_LABELS[value]}
+    </span>
   );
 }
 

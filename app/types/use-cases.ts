@@ -4,6 +4,7 @@ import {
   curationTierSchema,
   deprecationSchema,
   installPathSchema,
+  transferabilitySchema,
 } from "@/types/curation-tier";
 import { implementationSchema } from "@/types/implementation";
 
@@ -281,6 +282,8 @@ const useCaseObjectSchema = z.object({
   // carry `maturity`/`installability` instead — the transform below fills in.
   curationTier: curationTierSchema.optional(),
   installPath: installPathSchema.optional(),
+  /** How much another commune can take over; absent until someone assessed it. */
+  transferability: transferabilitySchema.optional(),
   maturity: legacyMaturitySchema.optional(),
   installability: legacyInstallabilitySchema.optional(),
   // Deprecation overlay: visible with a warning + successor pointer (unlike
