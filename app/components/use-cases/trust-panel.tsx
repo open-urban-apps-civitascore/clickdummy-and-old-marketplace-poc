@@ -1,5 +1,6 @@
 import { BadgeCheck, ExternalLink, MapPin, Scale, UserRound, Wrench } from "lucide-react";
 
+import { FieldList } from "@/components/ui/layout";
 import { TierExplainer } from "@/components/use-cases/tier-explainer";
 import { type CurationTier } from "@/types/curation-tier";
 import type { TrustMetadata } from "@/types/use-cases";
@@ -41,9 +42,9 @@ export function TrustPanel({
         <h2 className="text-sm font-semibold text-foreground">Vertrauen</h2>
       </div>
 
-      <div className="mt-4">
+      <FieldList className="mt-4">
         <TierExplainer tier={tier} showRevocable />
-      </div>
+      </FieldList>
 
       {!trust ? (
         <p className="mt-4 border-t pt-4 text-xs text-muted-foreground">

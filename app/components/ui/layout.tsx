@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 
+import { Explanation } from "@/components/ui/explanation";
 import { cn } from "@/lib/utils";
 
 /**
@@ -214,22 +215,34 @@ export function Field({
   label,
   children,
   hint,
+  explanation,
+  explainedValue,
   layout = "stacked",
 }: {
   label: string;
   children: ReactNode;
-  /** A muted line under the value — an explanation, not a second value. */
+  /** A muted line under the value, always visible: a qualifier such as „Nach eigener Angabe“. */
   hint?: ReactNode;
+  /** What the term or value means, behind a „?“ after the label (§5 „Erklären“). */
+  explanation?: ReactNode;
+  /** The value's name when the explanation is about the value, not the field: shown in the bubble. */
+  explainedValue?: string;
   layout?: "stacked" | "columns";
 }) {
+  const term = (
+    <dt className={cn("relative flex items-center gap-1 text-xs text-muted-foreground", layout === "columns" && "sm:pt-0.5")}>
+      {label}
+      {explanation ? <Explanation term={label} value={explainedValue}>{explanation}</Explanation> : null}
+    </dt>
+  );
   if (layout === "columns") {
     return (
       <>
-        <dt className="text-xs text-muted-foreground sm:pt-0.5">{label}</dt>
+        {term}
         <dd className="text-sm text-foreground">
           {children}
           {hint ? (
-            <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
+            <span className="mt-0.5 block text-xs leading-snug text-muted-foreground">
               {hint}
             </span>
           ) : null}
@@ -244,11 +257,11 @@ export function Field({
   // only (§2 of the communication design system).
   return (
     <div className="flex flex-col gap-0.5">
-      <dt className="text-xs text-muted-foreground">{label}</dt>
+      {term}
       <dd className="text-sm font-medium text-foreground">
         {children}
         {hint ? (
-          <span className="mt-0.5 block text-xs font-normal leading-relaxed text-muted-foreground">
+          <span className="mt-0.5 block text-xs font-normal leading-snug text-muted-foreground">
             {hint}
           </span>
         ) : null}

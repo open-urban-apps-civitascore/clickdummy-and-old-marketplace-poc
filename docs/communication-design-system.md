@@ -97,6 +97,8 @@ consistent or it signals nothing.
 | E3 cards inside a section | `gap-4` |
 | E4 fields inside a card | `gap-3` |
 | Label and its value | `gap-0.5` |
+| A value and its visible explanation line | `mt-0.5`, `leading-snug` - one block with the value |
+| A label and its „?“ | 6px (the 24px button overlaps the gap) |
 
 If two things are closer together than two other things, the reader reads them
 as more related. That is not decoration — it is the layout making a claim, so
@@ -304,6 +306,23 @@ not judgements. They get neutral badges. Tinting a cost band green would say
   verb phrase on a coloured panel *is* a button as far as the reader is
   concerned.
 
+### Erklären: three kinds, one rule each
+
+Decided 2026-11-19, from `open-urban-apps-meta-planning/docs/exploration/2026-11-19-erklaerungen-standard-ux-research.md`.
+
+| Kind | Answers | Shown as |
+|---|---|---|
+| **Erklärung** | What does this word or value mean? | A „?“ after the label or badge (`Explanation`, or `Field explanation=…`). Click, tap or Enter opens a bubble with 1-2 sentences or a short list; Esc, a click outside or tabbing away closes it. Hidden by default. Text only. |
+| **Einschränkung** | How far can I trust this value? | A short muted line under the value (`Field hint=…`), always visible: „Nach eigener Angabe“. |
+| **Mehr dazu** | How does this work? | A `Disclosure` with a question as its label, closed by default: „Was ist ein Merge Request?“. Use this as soon as there is a link. |
+
+- The „?“ always follows the field's **label**, never a value: a badge gets a label of its own (the curation badge: „Siegel“). Same colour as the label.
+- Never hover-only, never `title`: neither works on touch or for many screen readers.
+- Nothing essential goes behind the „?“: the page must read correctly without opening it.
+- When the text explains the value, the bubble names it first: „Use Case Status: **Prototyp**“, then the explanation. Otherwise it reads as a definition of the whole field.
+- Hint text in forms stays visible: it says what to enter.
+- For now on detail pages only; catalogue cards keep the bare badge.
+
 ### Empty is a state, not a gap
 
 A missing value renders as an honest sentence ("Noch keine gemeldet"), or the
@@ -325,6 +344,8 @@ One glyph, one meaning, app-wide.
 | `ShieldCheck` / `Users` / `FlaskConical` | Verifiziert / Community / Experimentell | `use-case-status.tsx` |
 | `PackagePlus` | contribute | sidebar, contribute CTA |
 | `PackageCheck` | installed | sidebar |
+| `CircleHelp` | „?“: an explanation of the term next to it — nothing else | `components/ui/explanation.tsx` |
+| `CircleDashed` | not checkable automatically | fit check („Passt zu dieser Instanz?“) |
 | `CopyCheck` / `Scissors` / `Lightbulb` | Übertragbarkeit: Direkt übertragbar / Mit eigenem Zuschnitt / Zur Inspiration | use-case Steckbrief |
 
 `Sparkles` on the install button promised magic and was removed on 2026-09-23;

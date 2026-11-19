@@ -1,4 +1,4 @@
-import { Check, CircleAlert, CircleHelp, ServerCog } from "lucide-react";
+import { Check, CircleAlert, CircleDashed, ServerCog } from "lucide-react";
 
 import { Panel } from "@/components/ui/layout";
 import { checkFit, getInstanceProfile } from "@/lib/instance-profile";
@@ -44,7 +44,7 @@ export function FitCheck({ useCase }: { useCase: UseCase }) {
             {row.status === "ok" ? (
               <Check className="mt-0.5 size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
             ) : row.status === "unknown" ? (
-              <CircleHelp className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
+              <CircleDashed className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
             ) : (
               <CircleAlert className="mt-0.5 size-3.5 shrink-0 text-amber-600 dark:text-amber-400" />
             )}

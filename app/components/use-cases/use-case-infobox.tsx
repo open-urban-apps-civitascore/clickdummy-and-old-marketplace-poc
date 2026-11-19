@@ -93,14 +93,13 @@ export function UseCaseInfobox({
       </div>
 
       <Group label="Einordnung">
-        <div className="pb-1 pt-3">
-          <TierExplainer tier={useCase.curationTier} showRevocable />
-        </div>
+        <TierExplainer tier={useCase.curationTier} showRevocable />
 
         {status ? (
           <Field
             label={IMPLEMENTATION_LABELS.status}
-            hint={USE_CASE_STATUS_HINTS[status]}
+            explanation={USE_CASE_STATUS_HINTS[status]}
+            explainedValue={USE_CASE_STATUS_LABELS[status]}
           >
             {USE_CASE_STATUS_LABELS[status]}
           </Field>
@@ -108,7 +107,11 @@ export function UseCaseInfobox({
 
         {/* A fact about the content, so neutral: the tier colours stay with the tier (§4.1). */}
         {useCase.transferability ? (
-          <Field label="Übertragbarkeit" hint={TRANSFERABILITY_HINTS[useCase.transferability]}>
+          <Field
+            label="Übertragbarkeit"
+            explanation={TRANSFERABILITY_HINTS[useCase.transferability]}
+            explainedValue={TRANSFERABILITY_LABELS[useCase.transferability]}
+          >
             <TransferabilityValue value={useCase.transferability} />
           </Field>
         ) : null}
@@ -259,7 +262,7 @@ export function UseCaseInfobox({
       {hasDates ? (
         <Group label="Aktualität" last>
           {useCase.softwareUpdatedAt ? (
-            <Field label="Letztes Software-Update" hint="Letzte Änderung im Code-Repository">
+            <Field label="Letztes Software-Update" explanation="Letzte Änderung im Code-Repository.">
               {formatCatalogDate(useCase.softwareUpdatedAt)}
             </Field>
           ) : null}
