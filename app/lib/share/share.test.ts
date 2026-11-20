@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 
 import { getShareDatasets, type ShareDataset } from "@/lib/share/datasets";
 import { byKind } from "@/lib/share/kinds";
-import { emptyMetadata, LEAD_CODE_PATH, LEAD_PATH } from "@/lib/share/metadata";
+import { emptyMetadata, fieldHint, LEAD_CODE_PATH, LEAD_PATH, METADATA_FIELDS } from "@/lib/share/metadata";
 import { slugify } from "@/lib/share/names";
 import {
   composeLead,
@@ -66,6 +66,17 @@ describe("what stops the preview", () => {
     assert.match(steckbriefProblem(dataset("baumkataster"), { ...startingBasics(dataset("baumkataster"), MUSTERSTADT), version: "1.0.0" }, metadata, LISTED) ?? "", /muss höher sein, zum Beispiel 1\.0\.1/);
     const contact = { ...metadata, fields: { ...metadata.fields, "contact.name": "Team Smart City" } };
     assert.equal(steckbriefProblem(dataset("radverkehr"), basics, contact, LISTED), "Kontakt: bitte eine E-Mail oder eine Kontaktseite angeben.");
+  });
+});
+
+describe("Übertragbarkeit in the Steckbrief", () => {
+  const field = METADATA_FIELDS.find((candidate) => candidate.path === "transferability");
+
+  it("asks the question until a step is chosen, then says what that step means", () => {
+    assert.ok(field);
+    assert.equal(fieldHint(field, ""), "Wie viel davon kann eine andere Kommune übernehmen?");
+    assert.match(fieldHint(field, "inspiration") ?? "", /^Stark auf die Kommune zugeschnitten/);
+    assert.equal(field.options?.tailored, "Mit eigenem Zuschnitt");
   });
 });
 

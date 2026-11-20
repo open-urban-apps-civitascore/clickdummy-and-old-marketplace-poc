@@ -46,6 +46,19 @@ describe("use-case facets", () => {
     assert.equal(cooperation.labelOf?.("nicht-gesucht"), "Keine Mitstreiter explizit gesucht");
   });
 
+  test("Übertragbarkeit offers its three steps in order; an entry without one has none", () => {
+    const transferability = facet("uebertragbarkeit");
+    const options = facetOptions(transferability, mockRepoListIndex.useCases);
+    assert.deepEqual(options, ["direct", "tailored", "inspiration"]);
+    assert.deepEqual(options.map((value) => transferability.labelOf?.(value)), [
+      "Direkt übertragbar",
+      "Mit eigenem Zuschnitt",
+      "Zur Inspiration",
+    ]);
+    assert.deepEqual(transferability.valuesOf({ ...sample, transferability: "tailored" }), ["tailored"]);
+    assert.deepEqual(transferability.valuesOf({ ...sample, transferability: undefined }), []);
+  });
+
   test("Nachnutzende filters by name", () => {
     const adopters = facet("nachnutzer");
     const entry = {

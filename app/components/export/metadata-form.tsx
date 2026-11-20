@@ -3,7 +3,7 @@
 import { inputClass } from "@/components/export/fields";
 import { LeadOrganisationField, type OrganisationChoice, type OrganisationOptions } from "@/components/export/organisation-field";
 import { Button } from "@/components/ui/button";
-import { LEAD_CODE_PATH, LEAD_PATH, METADATA_GROUPS, type MetadataDraft } from "@/lib/share/metadata";
+import { fieldHint, LEAD_CODE_PATH, LEAD_PATH, METADATA_GROUPS, type MetadataDraft } from "@/lib/share/metadata";
 import { USE_CASE_THEMES } from "@/types/implementation";
 
 const BOX = "rounded-xl border bg-card p-5";
@@ -72,7 +72,7 @@ export function MetadataForm({
                     onChange={(event) => changeField(field.path, event.target.value)}
                   />
                 )}
-                {field.hint || field.kind === "list" ? <span className="text-xs text-muted-foreground">{field.hint ?? "Ein Eintrag pro Zeile."}</span> : null}
+                <FieldHint text={fieldHint(field, value.fields[field.path] ?? "")} />
               </label>
             ),
           )}
@@ -110,3 +110,5 @@ export function MetadataForm({
     </>
   );
 }
+
+const FieldHint = ({ text }: { text?: string }) => (text ? <span className="text-xs text-muted-foreground">{text}</span> : null);

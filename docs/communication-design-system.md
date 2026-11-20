@@ -140,8 +140,8 @@ Rules:
 - **A facet that cannot narrow anything is not rendered.** If every entry
   shares one value, the control is a lie about the data.
 - **A fixed vocabulary shows all its options.** Themengebiet, Siegel, Status,
-  the cost and effort bands, Installationsweg and Kooperationsbedarf list
-  every option, also those no entry carries yet, greyed out at 0: the list
+  Übertragbarkeit, the cost and effort bands, Installationsweg and
+  Kooperationsbedarf list every option, also those no entry carries yet, greyed out at 0: the list
   tells the reader what the catalog takes (ideas too, not only finished
   solutions) before the first such entry exists (feedback 2026-11-02). Open
   sets (Herausgeber, Nachnutzende, Core-Version) list what exists. Whether a
@@ -170,7 +170,7 @@ call:
 
 | Mode | When | Behaviour | Here |
 |---|---|---|---|
-| `multi` | categorical; an entry may carry several; people ask "A **or** B" | OR within the facet, AND across facets | Themengebiet, Siegel, Status, Herausgeber, Core-Version, Nachnutzende, Kooperationsbedarf |
+| `multi` | categorical; an entry may carry several; people ask "A **or** B" | OR within the facet, AND across facets | Themengebiet, Siegel, Status, Übertragbarkeit, Herausgeber, Core-Version, Nachnutzende, Kooperationsbedarf |
 | `ordinal` | an ordered scale | choosing a step means **at most** that step | Aufbaukosten, laufende Kosten, Ressourceneinsatz |
 | `toggle` | a yes/no property | one option, on or off | none at the moment |
 

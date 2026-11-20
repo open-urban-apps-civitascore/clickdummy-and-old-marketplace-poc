@@ -5,8 +5,11 @@ import {
   CURATION_TIER_LABELS,
   INSTALL_PATH_LABELS,
   installPathSchema,
+  TRANSFERABILITY_LABELS,
+  transferabilitySchema,
   type CurationTier,
   type InstallPath,
+  type Transferability,
 } from "@/types/curation-tier";
 import {
   collaborationLabel,
@@ -29,8 +32,8 @@ import type { UseCase } from "@/types/use-cases";
  *
  * MODE PER FACET (audited 2026-09-23). The mode follows the data, not taste:
  *   - categorical, an entry may carry several, people ask "A or B"  → `multi`
- *     Themengebiet, Siegel, Status, Herausgeber, CivitasCore-Version,
- *     Nachnutzer, Kooperationsbedarf
+ *     Themengebiet, Siegel, Status, Übertragbarkeit, Herausgeber,
+ *     CivitasCore-Version, Nachnutzer, Kooperationsbedarf
  *   - an ordered scale where a choice means "at most this"          → `ordinal`
  *     Aufbaukosten, laufende Kosten, Ressourceneinsatz — the labels already
  *     say „unter 10.000 €", so an entry under 1.000 € has to match
@@ -73,6 +76,15 @@ export const USE_CASE_FACETS: FacetDef<UseCase>[] = [
       useCase.implementation?.status ? [useCase.implementation.status] : [],
     options: USE_CASE_STATUS_ORDER,
     labelOf: (value) => USE_CASE_STATUS_LABELS[value as UseCaseStatus],
+  },
+  {
+    // Ordered, but the labels name no threshold, so a choice means exactly that one.
+    id: "uebertragbarkeit",
+    label: "Übertragbarkeit",
+    mode: "multi",
+    valuesOf: (useCase) => (useCase.transferability ? [useCase.transferability] : []),
+    options: transferabilitySchema.options,
+    labelOf: (value) => TRANSFERABILITY_LABELS[value as Transferability],
   },
   {
     id: "aufbaukosten",

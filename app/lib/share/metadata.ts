@@ -1,3 +1,4 @@
+import { TRANSFERABILITY_HINTS, TRANSFERABILITY_LABELS } from "@/types/curation-tier";
 import {
   COLLABORATION_LABELS,
   COST_BAND_LABELS,
@@ -17,6 +18,8 @@ export interface MetadataField {
   /** `organisation`: written by the lead organisation's picker, never a field of its own. */
   kind?: "multiline" | "list" | "email" | "url" | "organisation";
   options?: Record<string, string>;
+  /** What the chosen option means; shown under the select in place of the hint. */
+  optionHints?: Record<string, string>;
   hint?: string;
 }
 
@@ -28,6 +31,13 @@ export const METADATA_GROUPS: { title: string; fields: MetadataField[] }[] = [
     title: "Umsetzung & Beteiligte",
     fields: [
       { path: "implementation.status", label: "Stand der Umsetzung", options: USE_CASE_STATUS_LABELS },
+      {
+        path: "transferability",
+        label: "Übertragbarkeit",
+        options: TRANSFERABILITY_LABELS,
+        optionHints: TRANSFERABILITY_HINTS,
+        hint: "Wie viel davon kann eine andere Kommune übernehmen?",
+      },
       { path: LEAD_PATH, label: "Federführende Organisation" },
       { path: LEAD_CODE_PATH, label: "Federführende Organisation (Kürzel)", kind: "organisation" },
       { path: "implementation.parties.stakeholders", label: "Relevante Stakeholder", kind: "list" },
@@ -95,6 +105,10 @@ export interface MetadataDraft {
 export function emptyMetadata(themes: string[] = []): MetadataDraft {
   return { fields: Object.fromEntries(METADATA_FIELDS.map((field) => [field.path, ""])), themes, media: [] };
 }
+
+/** The line under a field: what the chosen option means, else the field's own hint. */
+export const fieldHint = (field: MetadataField, value: string): string | undefined =>
+  field.optionHints?.[value] ?? field.hint ?? (field.kind === "list" ? "Ein Eintrag pro Zeile." : undefined);
 
 /** The filled-in fields, as the package's manifest would carry them. */
 export function filledFields(draft: MetadataDraft): MetadataField[] {
